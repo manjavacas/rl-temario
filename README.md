@@ -17,7 +17,7 @@ Principales fuentes empleadas en la elaboración de este temario:
 
 - Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.
 - Morales, M. (2020). Grokking deep reinforcement learning. Manning Publications.
-- [Coursera RL speclization](https://www.coursera.org/specializations/reinforcement-learning)
+- [Coursera RL speclization](https://www.coursera.org/specializations/reinforcement-learning).
 
 ## 🚀 Contribuye 
 
