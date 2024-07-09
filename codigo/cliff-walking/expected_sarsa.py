@@ -6,7 +6,7 @@ from cliff_env import CliffWalk
 
 class ExpSARSA:
     '''
-    Q-learning agent class
+    Expected SARSA agent class
     '''
 
     def __init__(self, env, alpha=.1, gamma=1, epsilon=.1):
