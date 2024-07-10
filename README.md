@@ -1,6 +1,6 @@
 ![License](https://img.shields.io/badge/license-GPLv3-blue)
 
-> ℹ️ Temario en desarrollo. Se irá completando progresivamente y revisando los existentes.
+> **ℹ️  Temario en desarrollo**. Se irá completando y revisando progresivamente.
 
 # Aprendizaje por refuerzo
 
