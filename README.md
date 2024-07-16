@@ -8,6 +8,25 @@ Temario sobre **aprendizaje por refuerzo** (_reinforcement learning_) en españo
 
 Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es)).
 
+## 📃 Contenidos
+
+### Parte 1. [Métodos tabulares](temario/Parte_1/)
+
+0. [Introducción](temario/Parte_1/0_Introduccion.pdf)
+1. [Bandits](temario/Parte_1/1_Bandits.pdf)
+2. [Procesos de decisión de Markov](temario/Parte_1/2_MDPs.pdf)
+3. [Programación dinámica](temario/Parte_1/3_Prog_Dinamica.pdf)
+4. Métodos basados en muestreo\
+    4.1. [Parte 1](temario/Parte_1/4_Muestreo_p1.pdf)\
+    4.2. [Parte 2](temario/Parte_1/4_Muestreo_p2.pdf)\
+    4.3. [Parte 3](temario/Parte_1/4_Muestreo_p3.pdf)
+5. [Planificación y modelos](temario/Parte_1/5_Planificacion.pdf)
+6. [Resumen](temario/Parte_1/6_Resumen.pdf)
+
+### Parte 2. Métodos basados en aproximación de funciones
+
+> **🚧  En desarrollo**.
+
 ## 📁 Material
 
 - [Diapositivas](temario/) (elaboradas con el paquete [Polylux](https://polylux.dev/book/polylux.html) de [Typst](https://typst.app/)).
