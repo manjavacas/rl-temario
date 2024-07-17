@@ -26,6 +26,8 @@ class Maze:
         self.goal_pos = goal_pos
         self.wall_pos = wall_pos
 
+        self.actions = ['up', 'down', 'left', 'right']
+
         self.grid = self.__make_grid()
 
     def step(self, state, action):

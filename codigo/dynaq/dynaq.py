@@ -12,13 +12,11 @@ class DynaQ:
         self.q_table = {}
         self.model = {}
 
-        self.actions = ['up', 'down', 'left', 'right']
-
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
 
-    def __e_greedy(self, state):
+    def __e_greedy(self, state, actions):
         '''
         Selects an action using epsilon-greedy policy.
 
@@ -30,7 +28,7 @@ class DynaQ:
         '''
 
         if np.random.uniform(0, 1) < self.epsilon:
-            return np.random.choice(self.actions)
+            return np.random.choice(actions)
         else:
             state_actions = self.q_table[state]
             max_value = max(state_actions.values())
@@ -82,10 +80,10 @@ class DynaQ:
 
                 # Register state in Q-table
                 if s not in self.q_table:
-                    self.q_table[s] = {action: 0 for action in self.actions}
+                    self.q_table[s] = {action: 0 for action in env.actions}
 
                 # E-greedy action selection
-                a = self.__e_greedy(s)
+                a = self.__e_greedy(s, env.actions)
 
                 # Perform action. Observe s', r and end condition
                 s_next, r, end = env.step(s, a)
@@ -94,7 +92,7 @@ class DynaQ:
                 # Register next state in Q-table
                 if s_next not in self.q_table:
                     self.q_table[s_next] = {
-                        action: 0 for action in self.actions}
+                        action: 0 for action in env.actions}
 
                 # Q-learning update
                 td_target = r + self.gamma * max(self.q_table[s_next].values())
