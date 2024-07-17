@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+'''
+Custom implementation of the SARSA, Q-learnign and Expected
+SARSA algorithms from Sutton, R. S., & Barto, A. G. (2018). 
+Reinforcement learning: An introduction (2nd ed.). MIT press.
+
+Author: Antonio Manjavacas
+'''
+
 from cliff_env import CliffWalk
 
 from sarsa import SARSA
