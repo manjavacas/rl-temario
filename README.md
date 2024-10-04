@@ -30,7 +30,7 @@ Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es))
 ## 📁 Material
 
 - [Diapositivas](temario/) (elaboradas con el paquete [Polylux](https://polylux.dev/book/polylux.html) de [Typst](https://typst.app/)).
-- [Código](codigo/) de ejemplo y ejercicios referenciados a lo largo del temario.
+- [Ejemplos y ejercicios](ejemplos/) referenciados a lo largo del temario.
 
 ## 📚 Bibliografía
 
