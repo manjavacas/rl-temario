@@ -1,18 +1,12 @@
-SUBDIRS := $(wildcard */)
-SUBDIRS := $(patsubst %/,%,$(SUBDIRS))
+TYP_FILES := $(shell find . -type f -name "*.typ")
 
-all: clean compile
+EXEC := ./typst
 
-compile:
-	@for dir in $(SUBDIRS); do \
-		for file in $$(find $$dir -name '*.typ'); do \
-			base_name=$$(basename $$file .typ); \
-			echo "Compilando $$file..."; \
-			./typst compile $$file ../$$base_name.pdf; \
-		done; \
-	done
+all: $(TYP_FILES:.typ=.pdf)
+
+%.pdf: %.typ
+	$(EXEC) compile $< $@
+	mv $@ ..
 
 clean:
 	rm -f ../*.pdf
-
-.PHONY: all

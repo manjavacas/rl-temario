@@ -10,26 +10,29 @@ Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es))
 
 ## 📃 Contenidos
 
-### Parte 1. [Métodos tabulares](temario/parte-1/)
+### Parte 1. [Introducción a RL](temario/parte-1/)
 
 0. [Introducción](temario/parte-1/0-intro.pdf)
 1. [Bandits](temario/parte-1/1-bandits.pdf)
 2. [Procesos de decisión de Markov](temario/parte-1/2-mdp.pdf)
-3. [Programación dinámica](temario/parte-1/3-prog_dinamica.pdf)
-4. Métodos basados en muestreo\
-    4.1. [Parte 1](temario/parte-1/4-muestreo-1.pdf)\
-    4.2. [Parte 2](temario/parte-1/4-muestreo-2.pdf)\
-    4.3. [Parte 3](temario/parte-1/4-muestreo-3.pdf)
-5. [Planificación y modelos](temario/parte-1/5-planificacion.pdf)
-6. [Resumen](temario/parte-1/6-resumen.pdf)
 
-### Parte 2. Métodos basados en aproximación de funciones
+### Parte 2. [Métodos tabulares](temario/parte-2/)
+
+3. [Programación dinámica](temario/parte-2/3-prog-din.pdf)
+4. Métodos basados en muestreo\
+    4.1. [Parte 1](temario/parte-2/4-muestreo-p1.pdf)\
+    4.2. [Parte 2](temario/parte-2/4-muestreo-p2.pdf)\
+    4.3. [Parte 3](temario/parte-2/4-muestreo-p3.pdf)
+5. [Planificación](temario/parte-2/5-planificacion.pdf)
+6. [Resumen](temario/parte-2/6-resumen.pdf)
+
+### Parte 3. Métodos basados en aproximación de funciones
 
 > **🚧  En desarrollo**.
 
 ## 📁 Material
 
-- [Diapositivas](temario/) (elaboradas con el paquete [Typslides](https://github.com/manjavacas/typslides) de [Typst](https://typst.app/)).
+- [Diapositivas](temario/) (elaboradas con [Typslides](https://github.com/manjavacas/typslides) y [Polylux](https://github.com/andreasKroepelin/polylux)).
 - [Ejemplos y ejercicios](ejemplos/) referenciados a lo largo del temario.
 
 ## 📚 Bibliografía
