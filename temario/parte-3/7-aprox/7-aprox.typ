@@ -10,6 +10,8 @@
 
 #set figure(numbering: none)
 
+#let colmath(x, color: red) = text(fill: color)[$#x$]
+
 // *****************************************************************************
 
 #front-slide(
@@ -257,14 +259,14 @@
   Por ejemplo, definamos de la siguiente forma la #stress[frecuencia de visita] a un estado $s$:
 
   #grayed[$
-      eta(s) = h(s) + sum_(overline(s)) eta(overline(s)) sum_a pi(a | overline(s)) p(s | overline(s), a), #h(1cm) forall s in cal(S)
+      eta(s) = h(s) + sum_(s prime) eta(overline(s)) sum_a pi(a | s prime) p(s | s prime, a), #h(1cm) forall s, s prime in cal(S)
     $]
 
   #set text(size: 19pt)
 
   donde:
 
-  - $eta(s)$ es el número de _timesteps_ que, de media, el agente pasa en el estado $s$ durante un episodio, ya sea porque comienza en $s$, o porque transiciona desde otro estado $overline(s)$.
+  - $eta(s)$ es el número de _timesteps_ que, de media, el agente pasa en el estado $s$ durante un episodio, ya sea porque comienza en $s$, o porque transiciona desde otro estado $s'$.
 
   - $h(s)$ es la probabilidad de que el episodio comience en el estado $s$.
 
@@ -469,9 +471,12 @@
 
   #show math.equation: set text(size: 35pt)
 
+  #let x = text(fill: red)[Tamaño del error]
+  #let y = text(fill: blue)[Dirección de #linebreak() la actualizacion]
+
   #grayed[
     $
-      bold(w) <- bold(w) - alpha[underbrace(v_pi (S_t) - hat(v) (S_t, bold(w)_t), "Tamaño del error") ] underbrace(gradient hat(v) (S_t, bold(w)_t), "Dirección de\nla actualización")
+      bold(w) <- bold(w) - alpha[underbrace(v_pi (S_t) - hat(v) (S_t, bold(w)_t), #x) ] underbrace(gradient hat(v) (S_t, bold(w)_t), #y)
     $
   ]
 
@@ -523,11 +528,13 @@
 
 #slide[
 
-  #set text(size: 30pt)
+  #set text(size: 27pt)
 
-  #emoji.face.think ¿Pero y si no podemos contar con $v_pi$ para calcular el *error*?
+  #framed[#emoji.face.think ¿Pero y si no contamos con $v_pi$ para calcular el *error*?]
 
-  - ¿Podríamos actualizar correctamente $bold(w)$ si en vez de utilizar $v_pi$ para calcular $overline("VE")$ utilizamos un valor aproximado?
+  #v(1cm)
+
+  - ¿Podríamos actualizar correctamente $bold(w)$ si en vez de utilizar $v_pi$ para calcular $overline("VE")$ utilizamos un *valor aproximado*?
 
 ]
 
@@ -538,6 +545,8 @@
   #set text(size: 25pt)
 
   Es decir...
+
+  #v(.3cm)
 
   #framed[¿Qué ocurriría si el #stress[valor objetivo] (_target output_) $U_t in RR$ tal que $S_t |-> U_t$, no es el valor exacto de $v_pi (S_t)$?]
 
@@ -570,13 +579,190 @@
 
 // *****************************************************************************
 
+#slide(title: [Estimación Monte Carlo de $hat(v)$])[
+
+  *Monte Carlo* aproxima $hat(v)$ con garantías porque su _target_ $U_t = G_t$ es una estimacioń #stress[no sesgada] (_unbiased target_) de $v_pi$. Es decir, estamos sustituyendo:
+
+  #grayed[$ w <- w + alpha [ bold(colmath(v_pi (S_t))) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+
+  por:
+
+  #grayed[$ w <- w + alpha [ bold(colmath(G_t)) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+
+  teniendo en cuenta que $ #emoji.checkmark.box v_pi (s) = EE_pi [G_t | S_t = s] $
+
+]
+
+// *****************************************************************************
 
 #slide(title: [Estimación Monte Carlo de $hat(v)$])[
+
+  La estimación del gradiente sigue siendo la misma.
+
+  - #stress[Utilizar retornos estimados obtenidos a través de _sampling_ no afecta al objetivo del descenso del gradiente.]
+
+  #grayed[$ w <- w + alpha [ bold(G_t) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Estimación Monte Carlo de $hat(v)$])[
+
+  #framed[*Idea intuitiva*: sustituyo el valor real $v(S_t)$ de cada estado por la recompensa total $G_t$ que espero obtener en base a mi experiencia.
+
+    - Como nos basamos en experiencia obtenida a partir de trayectorias reales, decimos que $U_t = G_t$ es una estimación *no sesgada* de la función de valor.
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Estimación Monte Carlo de $hat(v)$])[
+
+  La idea general es la siguiente:
+
+  #v(1cm)
+
+  #align(center)[
+    #framed[
+      #set align(left)
+
+      _Gradient MC_
+
+      1. Generar episodio $S_0, A_0, R_1, S_1, A_1, R_2, dots$ siguiendo $pi$.
+
+      2. Para cada _step_ del episodio, actualizar $bold(w)$ tal que:
+
+        $ bold(w) <- bold(w) + alpha [G_t - hat(v) (S_t, bold(w)) gradient hat(v)(S_t, bold(w))] $
+
+        basándonos en retornos muestreados ($G_t$).
+
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [Estimación Monte Carlo de $hat(v)$])[
+
+  #figure(image("images/gradient-mc.png"))
+
+]
+
+#slide()[
+
+  #align(center)[
+    #set text(size: 30pt)
+    #framed[#emoji.face.think ¿Y podríamos combinar TD #linebreak() con aproximación de funciones?]
+  ]
+
+  #v(1cm)
+
+  - En _Gradient MC_, la actualización de los pesos se hacía conforme a $U_t = G_t$, pero realmente el _target_ puede ser cualquier otra estimación del valor.
+
+  Por ejemplo...
+]
+
+// *****************************************************************************
+
+#slide(title: [Diferentes _targets_ para medir el error])[
+
+  - *_n-step return_*:
+
+  #grayed[$ U_t = G_(t:t+n) $]
+
+  - *_DP target_*:
+
+  #grayed[$ U_t = sum_(a,s prime, r) pi(a|S_t)p(s prime, r| S_t, a)[r + gamma hat(v) (s prime, bold(w)_t)] $]
+
+  Son estimaciones basadas en otros valores estimados (#stress[_bootstrapping_]).
+]
+
+// *****************************************************************************
+
+#slide(title: [Métodos semi-gradiente])[
+
+  - Empleando métodos basados en _bootstrapping_, se actualiza $bold(w)$ a partir de estimaciones.
+
+  - Hay que tener en cuenta que estos valores están sesgados y *no producen un verdadero descenso del gradiente*.
+
+  #align(center)[
+    #framed[Se les denomina #stress[métodos semi-gradiente] (_semi-gradient methods_).]
+  ]
+
+  - Por ejemplo, para #stress[_semi-gradient_ TD(0)], el valor objetivo (_bootstrap target_) es:
+
+  #grayed[$ U_t = R_(t+1) + gamma hat(v) (S_(t+1), bold(w)) $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_Semi-gradient TD(0)_])[
+
+  #figure(image("images/semi-gradient-td.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Métodos semi-gradiente])[
+
+  Los métodos semi-gradiente no convergen de forma tan robusta, pero ofrecen ciertas *ventajas* que los hacen preferibles:
+
+  #v(.5cm)
+
+  #emoji.snowboarding #stress[Velocidad de aprendizaje]. Las actualizaciones presentan una menor varianza.
+
+  #emoji.brain #stress[Aprendizaje _online_]. No es necesario esperar a obtener $G_t$.
+
+  #emoji.playback.repeat #stress[Problemas continuados]. Son aplicables a problemas sin un _final_ de episodio.
+
+]
+
+// *****************************************************************************
+
+#focus-slide([Agregación de estados])
+
+// *****************************************************************************
+
+#slide(title: [Agregación de estados])[
+
+  Cabe destacar el concepto de #stress[agregación de estados] (_state aggregation_).
+
+  - Se trata de una técnica que permite generalizar la aproximación de funciones, de tal forma que los estados se agrupan de acuerdo a un mismo valor estimado / vector de pesos $bold(w)$.
+
+  - El valor de cada estado se actualiza junto al valor de cada componente del mismo grupo.
+
+  - Es un caso especial de SGD donde el gradiente $gradient hat(v) (S_t, bold(w))$ es $1$ para los estados en el grupo de $S_t$ y $0$ para el resto.
+
+  #emoji.checkmark.box Simplifica el número de parámetros del modelo.
+
+  #emoji.crossmark Se producen pérdidas de información propias de la discretización del espacio de estados.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Agregación de estados])[
+
+  #figure(image("images/aggregation.png"))
+
+]
+
+// *****************************************************************************
+
+#title-slide("Métodos lineales")
+
+// *****************************************************************************
+
+#slide(title: "Métodos lineales")[
 
   ...
 
 ]
-
 
 // *****************************************************************************
 
