@@ -38,7 +38,7 @@
 
   2. *Problemas continuos*. Los métodos tabulares no pueden manejar espacios de estados/acciones continuos, o bien requieren _discretizar_ estos espacios.
 
-  3. *Generalización*. Los métodos tabulares tratan cada estado o par acción--estado de forma independiente. Esto les impide generalizar el conocimiento aprendido en un estado a otros estados similares.
+  3. *Generalización*. Los métodos tabulares tratan cada estado o par acción--estado de forma independiente. Esto les impide generalizar el conocimiento aprendido de un estado a otros similares.
 
     - Si tenemos dos estados cercanos con dinámicas o recompensas similares, los métodos tabulares no pueden sacar provecho de esta relación.
 
@@ -68,6 +68,12 @@
 
 // *****************************************************************************
 
+// #slide(title: "Por ejemplo...")[
+//     #figure(image("images/table.png"))
+// ]
+
+// *****************************************************************************
+
 #title-slide([Predicción _on-policy_ aproximada])
 
 // *****************************************************************************
@@ -94,9 +100,9 @@
 
   $hat(v) (s, bold(w))$ es el #stress[valor aproximado] del estado $s$ dado el vector de pesos $bold(w)$.
 
-  - Ej. _$hat(v)$ es la función representada por una red neuronal, siendo $bold(w)$ el vector con los pesos de la red._
+  - Ej. _$hat(v)$ es la función representada por un polinomio de grado $n$, siendo $bold(w)$ el vector de coeficientes._
 
-  - Ej. _$hat(v)$ es la función representada por un árbol de decisión, siendo $bold(w)$ el vector todos los nodos divisorios y valores en las hojas del árbol._
+  - Ej. _$hat(v)$ es la función representada por una red neuronal, siendo $bold(w)$ el vector con los pesos de la red._
 
 ]
 
@@ -104,11 +110,11 @@
 
 #slide(title: [Valor aproximado])[
 
-  Normalmente, el número de pesos en $bold(w) in RR^d$ es *mucho menor que el número de estados* $|cal(S)|$, $(d << |cal(S)|)$ por lo que modificar un peso da lugar a una alteración del valor estimado de múltiples estados.
+  #framed[Normalmente, el número de pesos en $bold(w) in RR^d$ es *mucho menor que el número de estados* $|cal(S)|$, $(d << |cal(S)|)$ por lo que modificar un peso da lugar a una alteración del valor estimado de múltiples estados.]
 
-  - De la misma forma, cuando el valor un estado cambia, esta actualización repercute en el valor de otros estados.
+  - De la misma forma, cuando el valor de un estado cambia, esta actualización repercute en el valor de otros estados.
 
-  - Esta #stress[generalización] permite un aprendizaje más _eficiente_, pero también potencialmente más complejo de realizar e interpretar.
+  - Este tipo de #stress[generalización] permite un aprendizaje más _eficiente_, pero también potencialmente más complejo de realizar e interpretar.
 
   La extensión de RL a la aproximación de funciones facilita su aplicación en problemas *parcialmente observables*.
 
@@ -173,20 +179,24 @@
 
 #slide(title: [Aproximación de la función de valor])[
 
+  El aprendizaje de la función de valor es similar al #stress[aprendizaje supervisado].
+
+  Ajustamos un *modelo* mediante ejemplos de entrada--salida:
+
+  #v(.2cm)
+
   #columns(2)[
 
-    #v(2.5cm)
-
-    El aprendizaje de la función de valor es similar al #stress[aprendizaje supervisado]:
-
-    - Ajustamos un *modelo* mediante ejemplos de entrada--salida para *aproximar la función de valor*.
+    #framed(title: "Aprendizaje supervisado")[$(bold(X_1), Y_1), (bold(X_2), Y_2), (bold(X_3), Y_3), dots$]
 
     #colbreak()
 
-    #figure(image("images/supervised.png", width: 80%))
-
+    #framed(title: "En nuestro caso...")[$(S_1, v_pi (S_1)), (S_2, v_pi (S_2)), dots$]
   ]
+
 ]
+
+// *****************************************************************************
 
 #slide(title: [Aproximación de la función de valor])[
 
@@ -208,14 +218,32 @@
 
 ]
 
+// *****************************************************************************
+
+#focus-slide([Discriminación _vs._ generalización])
+
+// *****************************************************************************
+
+#blank-slide[
+
+  #figure(image("images/discrim-gener.png"))
+
+]
+
+// *****************************************************************************
+
+#focus-slide("Error de predicción")
+
+// *****************************************************************************
+
 #slide(title: [Error de predicción])[
 
 
-  El #stress[error] de estimación mide la diferencia entre el valor real $v_pi (s)$ y el aproximado $hat(v) (s, bold(w))$.
+  #framed[El #stress[error de estimación] mide la diferencia entre el valor real $v_pi (s)$ y el valor aproximado $hat(v) (s, bold(w))$.]
 
-  - Se denomina #stress[error de valor cuadrático medio] (_mean squared value error_, MSVE o #stress[#overline("VE")]) y se define tal que:
+  - Se denomina #stress[error de valor cuadrático medio] (#stress[#overline("VE")], _mean squared value error_, MSVE) y se define tal que:
 
-  #grayed[$overline("VE")(bold(w)) = sum_(s in cal(S)) [v_pi (s) - hat(v) (s, bold(w))]^2$]
+  #grayed[$ overline("VE")(bold(w)) = sum_(s in cal(S)) [v_pi (s) - hat(v) (s, bold(w))]^2 $]
 
   - Esta es nuestra #stress[función objetivo], es decir, aquella que trataremos de optimizar/minimizar.
 ]
@@ -224,15 +252,15 @@
 
 #slide(title: [Error de predicción ponderado])[
 
-  Como tenemos más estados que pesos, $|cal(S)| >= |bold(w)|$, hacer estimaciones más precisas de unos estados supondrá un deterioro en las estimaciones de otros.
+  // Como tenemos más estados que pesos, $|cal(S)| >= |bold(w)|$, hacer estimaciones más precisas de unos estados supondrá un deterioro en las estimaciones de otros.
 
-  Podemos decir *qué estados son más relevantes*, de tal forma que el #stress[error] en la estimación de su valor se tenga más en cuenta:
+  Podemos decidir *qué estados son más relevantes*, de tal forma que el #stress[error] en la estimación de su valor se tenga más en cuenta:
 
   $ underbrace(mu (s) >= 0, "importancia\n del error de\n estimación para\n el estado s"), sum_s mu(s) = 1 $
 
   De esta forma, tenemos:
 
-  #grayed[$overline("VE")(bold(w)) = sum_(s in cal(S)) mu(s) [v_pi (s) - hat(v) (s, bold(w))]^2$]
+  #grayed[$ overline("VE")(bold(w)) = sum_(s in cal(S)) mu(s) [v_pi (s) - hat(v) (s, bold(w))]^2 $]
 
 ]
 
@@ -241,12 +269,13 @@
 
 #slide(title: [Error de predicción ponderado])[
 
-  #grayed[$overline("VE")(bold(w)) = sum_(s in cal(S)) mu(s) [v_pi (s) - hat(v) (s, bold(w))]^2$]
+  #grayed[$ overline("VE")(bold(w)) = sum_(s in cal(S)) mu(s) [v_pi (s) - hat(v) (s, bold(w))]^2 $]
 
   #v(1cm)
 
-  - La raíz cuadrada de esta medida nos dice *cuánto difieren* las estimaciones de los valores reales
-    - Ponderando por la importancia asignada al error de cada estado, según $mu(s)$.
+  - La raíz cuadrada de esta medida nos dice *cuánto difieren* las estimaciones de los valores reales.
+
+  - Ponderando por la importancia asignada al error de cada estado, según $mu(s)$.
 
 ]
 
@@ -254,9 +283,9 @@
 
 #slide(title: [Frecuencia de visita a un estado])[
 
-  - $mu(s)$ puede venir dado por la cantidad de tiempo invertido en $s$.
+  Una buena aproximación es que $mu(s)$ venga dado por la cantidad de tiempo invertido en $s$.
 
-  Por ejemplo, definamos de la siguiente forma la #stress[frecuencia de visita] a un estado $s$:
+  - #text(size: 19pt)[Por ejemplo, definamos de la siguiente forma la #stress[frecuencia de visita] a un estado $s$:]
 
   #grayed[$
       eta(s) = h(s) + sum_(s prime) eta(overline(s)) sum_a pi(a | s prime) p(s | s prime, a), #h(1cm) forall s, s prime in cal(S)
@@ -266,7 +295,7 @@
 
   donde:
 
-  - $eta(s)$ es el número de _timesteps_ que, de media, el agente pasa en el estado $s$ durante un episodio, ya sea porque comienza en $s$, o porque transiciona desde otro estado $s'$.
+  - $eta(s)$ es el número de _timesteps_ que, de media, el agente pasa en el estado $s$ durante un episodio, ya sea porque comienza en $s$, o porque transiciona desde otro estado $s prime$.
 
   - $h(s)$ es la probabilidad de que el episodio comience en el estado $s$.
 
@@ -276,14 +305,15 @@
 
 #slide(title: [Distribución _on-policy_])[
 
-
-  Denominamos #stress[distribución _on-policy_], $mu(s)$, a la *fracción de tiempo* invertido en un estado $s$:
+  Denominamos #stress[distribución _on-policy_] $mu(s)$ a la *fracción de tiempo* invertido en un estado $s$:
 
   #grayed[$ mu(s) = eta(s) / (sum_s' eta(s')), #h(1cm) forall s in cal(S) $]
 
-  Este valor indica cuánto se ha visitado $s$ con respecto al resto de estados $s' in cal(S)$ a lo largo de un episodio.
+  Este valor indica cuánto se ha visitado $s$ con respecto al resto de estados $s' in cal(S)$ a lo largo de un episodio. Sirve para ponderar el *error*.
 
-  #align(right)[#text(size: 17pt)[$mu(s)$ es un un valor normalizado, tal que $sum_(s in cal(S)) mu(s) = 1 $]]
+  #v(.1cm)
+
+  - $mu(s)$ es un un valor normalizado, tal que $sum_(s in cal(S)) mu(s) = 1 $
 
 ]
 
@@ -315,7 +345,7 @@
     $ overline("VE") (bold(w)^*) <= overline("VE") (bold(w)), forall bold(w) "próximo a" bold(w)^* $
   ]
 
-  - Pueden ser soluciones subóptimas, aunque normalmente son *suficientes* para obtener una buena política.
+  - Pueden ser soluciones subóptimas, aunque normalmente son *suficientes* para obtener una *buena política*.
 
   - Incluso hay problemas de RL donde las soluciones óptimas son inalcanzables.
 
@@ -370,15 +400,17 @@
 
 #slide(title: "Gradiente estocástico descendente")[
 
-  #columns(2)[
+  #columns(2, gutter: 2cm)[
 
-    #v(1cm)
+    #v(3cm)
 
-    #framed[SGD es un algoritmo de optimización empleado para minimizar una función de #stress[error] (pérdida, _loss_) ajustando los parámetros $bold(w)$ de un modelo.]
+    #framed[#stress[SGD] es un algoritmo de optimización empleado para minimizar una función de #stress[error] (pérdida, _loss_) ajustando los parámetros $bold(w)$ de un modelo.]
 
     #colbreak()
 
-    #figure(image("images/sgd.png"))
+    #v(1cm)
+
+    #figure(image("images/sgd.png", width: 120%))
 
   ]
 
@@ -420,11 +452,11 @@
 
     La actualización de los pesos se lleva a cabo de la siguiente forma:
 
-    #grayed[$ bold(w) <- bold(w) - eta gradient E(bold(w)) $]
+    #grayed[$ bold(w) <- bold(w) - alpha gradient E(bold(w)) $]
 
     #set text(size: 19pt)
 
-    donde $eta$ es la _tasa de aprendizaje_ que controla el _tamaño_ de la actualización.
+    donde $alpha$ es la _tasa de aprendizaje_ que controla el _tamaño_ de la actualización.
 
     #colbreak()
 
@@ -451,7 +483,7 @@
 
     2. Comparamos $v_pi (S_t)$ con el valor predicho por $hat(v) (S_t, bold(w))$, obteniendo así el error de predicción $overline("VE")$.
 
-    3. Ajustamos $bold(w)$ en una pequeña fracción, $alpha$. La dirección de dicho ajuste vendrá guiada por la minimización de $overline("VE")$ que indique el gradiente:]
+    3. Ajustamos $bold(w)$ en una pequeña fracción, $alpha$. La dirección de dicho ajuste vendrá guiada por la minimización de $overline("VE")$ según el gradiente:]
 
   #grayed[
     #show math.equation: set text(size: 26pt)
@@ -502,7 +534,7 @@
 
 #slide(title: "Convergencia")[
 
-  La reducción del error (actualización de $bold(w)$) se realiza en pasos pequeños porque *no* esperamos encontrar una solución perfecta para todos los estados, sino más bien una aproximación que suponga un #stress[error balanceado] para todos los estados.
+  La reducción del error (actualización de $bold(w)$) se realiza en pasos pequeños porque *no* esperamos encontrar una solución perfecta, sino más bien una aproximación que suponga un #stress[error balanceado] para todos los estados.
 
   - Si corrigiésemos completamente el error para el estado actual en cada _timestep_, nunca obtendríamos dicho balance.
 
@@ -526,11 +558,15 @@
 
 // *****************************************************************************
 
-#slide[
+#focus-slide([¿Y si no tenemos $v_pi$?])
+
+// *****************************************************************************
+
+#blank-slide[
 
   #set text(size: 27pt)
 
-  #framed[#emoji.face.think ¿Pero y si no contamos con $v_pi$ para calcular el *error*?]
+  #framed[#emoji.face.think ¿Qué ocurre si no tenemos $v_pi$ para calcular el *error*?]
 
   #v(1cm)
 
@@ -575,13 +611,48 @@
 
 // *****************************************************************************
 
-#focus-slide([Métodos de\ estimación de $hat(v)$])
+// #slide(title: "Valor objetivo aproximado")[
+
+//   #align(center)[#framed[_The expectation of each stochastic\ gradient equals the gradient of the objective._]]
+
+//   #v(1cm)
+
+//    SGD permite estimar $bold(w)$ a partir de gradientes aleatorios (_sampling_, aproximación "rudiosa" del gradiente).
+
+// ]
+
+// *****************************************************************************
+
+#slide(title: "Valor objetivo aproximado")[
+
+  #v(.5cm)
+
+  En resumen, estamos sustituyendo $v_pi$ en:
+
+  #text(size: 22pt)[#align(center)[#framed[$S_1 |-> v_pi (S_1), S_2 |-> v_pi (S_2), dots$]]]
+
+  por un *_objetivo_ aproximado* tal que:
+
+  #columns(2)[
+
+    #align(center)[#framed(title: "MC")[$S_1 |-> G_1,\ S_2 |-> G_2,\ dots$]]
+
+    #colbreak()
+
+    #align(center)[#framed(title: "TD")[$S_1 |-> R_2 + gamma hat(v)(S_2, bold(w)),\ S_2 |-> R_3 + gamma hat(v)(S_3, bold(w)),\ dots$]]
+
+  ]
+]
+
+// *****************************************************************************
+
+#focus-slide([Estimación\ Monte Carlo de $hat(v)$])
 
 // *****************************************************************************
 
 #slide(title: [Estimación Monte Carlo de $hat(v)$])[
 
-  *Monte Carlo* aproxima $hat(v)$ con garantías porque su _target_ $U_t = G_t$ es una estimacioń #stress[no sesgada] (_unbiased target_) de $v_pi$. Es decir, estamos sustituyendo:
+  *Monte Carlo* aproxima $hat(v)$ con garantías porque su _target_ $U_t = G_t$ es una estimación #stress[no sesgada] (_unbiased target_) de $v_pi$. Es decir, estamos sustituyendo:
 
   #grayed[$ w <- w + alpha [ bold(colmath(v_pi (S_t))) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
 
@@ -626,10 +697,8 @@
   #v(1cm)
 
   #align(center)[
-    #framed[
+    #framed(title: "Gradient MC")[
       #set align(left)
-
-      _Gradient MC_
 
       1. Generar episodio $S_0, A_0, R_1, S_1, A_1, R_2, dots$ siguiendo $pi$.
 
@@ -651,6 +720,12 @@
 
 ]
 
+// *****************************************************************************
+
+#focus-slide([Estimación de $hat(v)$\ mediante _bootstrapping_])
+
+// *****************************************************************************
+
 #slide()[
 
   #align(center)[
@@ -660,7 +735,7 @@
 
   #v(1cm)
 
-  - En _Gradient MC_, la actualización de los pesos se hacía conforme a $U_t = G_t$, pero realmente el _target_ puede ser cualquier otra estimación del valor.
+  En _Gradient MC_, la actualización de los pesos se hacía conforme a $U_t = G_t$, pero realmente el _target_ podría ser cualquier otra estimación del valor.
 
   Por ejemplo...
 ]
@@ -677,24 +752,40 @@
 
   #grayed[$ U_t = sum_(a,s prime, r) pi(a|S_t)p(s prime, r| S_t, a)[r + gamma hat(v) (s prime, bold(w)_t)] $]
 
-  Son estimaciones basadas en otros valores estimados (#stress[_bootstrapping_]).
+  ¿Qué ocurre si nuestro objetivo $U_t$ es una estimación basada en otros valores estimados?
+  #emoji.arrow.r #stress[_bootstrapping_]
 ]
 
 // *****************************************************************************
 
 #slide(title: [Métodos semi-gradiente])[
 
-  - Empleando métodos basados en _bootstrapping_, se actualiza $bold(w)$ a partir de estimaciones.
-
-  - Hay que tener en cuenta que estos valores están sesgados y *no producen un verdadero descenso del gradiente*.
-
-  #align(center)[
-    #framed[Se les denomina #stress[métodos semi-gradiente] (_semi-gradient methods_).]
-  ]
+  Empleando métodos basados en _bootstrapping_, se actualiza $bold(w)$ a partir de estimaciones.
 
   - Por ejemplo, para #stress[_semi-gradient_ TD(0)], el valor objetivo (_bootstrap target_) es:
 
   #grayed[$ U_t = R_(t+1) + gamma hat(v) (S_(t+1), bold(w)) $]
+
+  - El objetivo depende de $bold(w)$, por lo que *varía constantemente*, cada vez que se actualiza $bold(w)$.
+
+  - Por eso decimos que el objetivo está #stress[sesgado].
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Métodos semi-gradiente])[
+
+  #grayed[$ U_t = R_(t+1) + gamma hat(v) (S_(t+1), bold(w)) $]
+
+  Si el objetivo está #stress[sesgado], *no se produce un verdadero descenso del gradiente*.
+
+
+  #framed[Debido a esto, a los metodos que estiman $hat(v)$ mediante _bootstrapping_ se les denomina #stress[métodos semi-gradiente] (_semi-gradient methods_).]
+
+  - No podemos garantizar la convergencia en un óptimo local.
+  - No obstante, convergen en la mayoría de los casos.
+  - El sesgo se reduce a medida que las estimaciones mejoran.
 
 ]
 
@@ -720,6 +811,10 @@
 
   #emoji.playback.repeat #stress[Problemas continuados]. Son aplicables a problemas sin un _final_ de episodio.
 
+  #v(1cm)
+  #set text(size: 17pt)
+  #framed[#emoji.finger.r En la práctica el aprendizaje rápido es más útil que el rendimiento asintótico, lo que hace que TD sea mejor que MC en la mayoría de problemas.]
+
 ]
 
 // *****************************************************************************
@@ -732,15 +827,92 @@
 
   Cabe destacar el concepto de #stress[agregación de estados] (_state aggregation_).
 
-  - Se trata de una técnica que permite generalizar la aproximación de funciones, de tal forma que los estados se agrupan de acuerdo a un mismo valor estimado / vector de pesos $bold(w)$.
+  - Se trata de una técnica que permite generalizar la aproximación de funciones, de tal forma que los estados *se agrupan* de acuerdo a un mismo valor estimado / vector de pesos $bold(w)$.
 
-  - El valor de cada estado se actualiza junto al valor de cada componente del mismo grupo.
+  - El valor de cada estado se actualiza junto al valor de los estados del mismo grupo.
 
-  - Es un caso especial de SGD donde el gradiente $gradient hat(v) (S_t, bold(w))$ es $1$ para los estados en el grupo de $S_t$ y $0$ para el resto.
+  - Es un caso especial de SGD donde el gradiente $gradient hat(v) (S_t, bold(w))$ solo considera los estados en el grupo de $S_t$ y se ignora para el resto.
 
   #emoji.checkmark.box Simplifica el número de parámetros del modelo.
 
-  #emoji.crossmark Se producen pérdidas de información propias de la discretización del espacio de estados.
+  #emoji.crossmark Necesario establecer un criterio de agrupamiento. Puede perderse información.
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+
+  Consideremos el siguiente ejemplo (_random walk_), con $pi =$ {#emoji.arrow.r : 0.5, #emoji.arrow.l: 0.5}, $gamma = 1$.
+
+  #figure(image("images/example-random-walk.png", width: 95%))
+
+  #set text(size: 21pt)
+
+  Cada *acción* supone saltar a un estado aleatorio entre los 100 estados inmediatamente anteriores/posteriores.
+
+  Por ejemplo, desde el estado 500, la acción #emoji.arrow.r podría llevar al agente a cualquier estado en $[501, 600]$.
+
+  - Podemos agrupar los estados de 100 en 100, dando lugar a 10 grupos.
+
+]
+
+#slide(title: "Ejemplo")[
+  #set text(size: 28pt)
+  #align(center)[Tras $N$ episodios, estos son los resultados obtenidos...]
+]
+
+// *****************************************************************************
+
+#blank-slide[
+  #v(1.2cm)
+  #figure(image("images/random-walk-values.png", width: 90%))
+]
+
+// *****************************************************************************
+
+#focus-slide("Pregunta...")
+
+// *****************************************************************************
+
+#blank-slide()[
+
+  #set align(center)
+  #set text(size: 28pt)
+
+  #framed[#emoji.quest ¿En qué se diferencian?]
+
+  #v(1cm)
+
+  *Discretización* del espacio de estados
+
+  *Agregación* de estados
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Discretización _vs._ agregación])[
+
+  #set text(size: 21pt)
+
+  #framed(title: "Discretización")[
+    *División* de un espacio continuo en valores discretos. #linebreak()
+    #emoji.circle.blue Ej. Temperatura $in RR ->$ {baja, media, alta}.
+  ]
+
+  #framed(title: "Agregación")[
+    Agrupamiento de las *actualizaciones* de múltiples estados. #linebreak()
+    #emoji.circle.red Ej. ubicaciones cercanas en un mapa se consideran el mismo estado y se actualizan igual.
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Discretización])[
+
+  #figure(image("images/discretization.png", width: 110%))
 
 ]
 
@@ -748,10 +920,9 @@
 
 #slide(title: [Agregación de estados])[
 
-  #figure(image("images/aggregation.png"))
+  #figure(image("images/aggregation.png", width: 110%))
 
 ]
-
 // *****************************************************************************
 
 #title-slide("Métodos lineales")
