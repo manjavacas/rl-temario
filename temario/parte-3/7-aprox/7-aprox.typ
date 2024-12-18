@@ -639,7 +639,9 @@
 
     #colbreak()
 
-    #align(center)[#framed(title: "TD")[$S_1 |-> R_2 + gamma hat(v)(S_2, bold(w)),\ S_2 |-> R_3 + gamma hat(v)(S_3, bold(w)),\ dots$]]
+    #align(center)[#framed(
+        title: "TD",
+      )[$S_1 |-> R_2 + gamma hat(v)(S_2, bold(w)),\ S_2 |-> R_3 + gamma hat(v)(S_3, bold(w)),\ dots$]]
 
   ]
 ]
@@ -819,6 +821,19 @@
 
 // *****************************************************************************
 
+#slide(title: [Semi-gradiente _n-step_])[
+  #set text(size: 24pt)
+  Si ampliamos TD(0) al caso #stress[_n-step_] tendremos el siguiente algoritmo...
+]
+
+// *****************************************************************************
+
+#slide(title: [Semi-gradiente _n-step_])[
+  #figure(image("images/n-step-semi-gradient.png"))
+]
+
+// *****************************************************************************
+
 #focus-slide([Agregación de estados])
 
 // *****************************************************************************
@@ -931,7 +946,148 @@
 
 #slide(title: "Métodos lineales")[
 
-  ...
+  #framed[Un caso relevante en aproximación de funciones es aquel en el cual $hat(v)(dot, bold(w))$ es una #stress[función lineal] de $bold(w)$.]
+
+  #h(.6cm) Esto es, para cada estado $s$ existe un vector de valores $bold(x)$ tal que:
+
+  #grayed[$bold(x)(s) = vec(x_1 (s), x_2 (s), dots, x_d (s))$ ]
+
+  #h(.6cm) Este vector *contiene el mismo número de elementos* que $bold(w)$.
+
+  #h(.6cm) #emoji.arrow.r Como $|bold(x)| = |bold(w)|$, existe #stress[una valor $x_i$ por peso $w_i$].
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Función lineal aproximada")[
+
+  Los métodos lineales aproximan la función estado--valor empleando el producto escalar entre $bold(w)$ y $bold(x)(s)$:
+
+  #grayed[$
+      hat(v)(s, bold(w)) &= bold(w)^T bold(x)(s)\
+      &= sum^d_(i=1) w_i x_i (s)
+    $]
+
+  #framed[Denominamos a $bold(x)(s)$ #stress[vector de características] (_feature vector_) del estado $s$.]
+
+  - Cada componente $x_i (s)$ en $bold(x) (s)$ es el valor de una función $x_i : cal(S) -> RR$.
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Función lineal aproximada")[
+
+  Podemos emplear SGD para aproximar funciones lineales. El gradiente en este caso sería:
+
+  #grayed[$ gradient hat(v) (s, bold(w)) = bold(x) (s) $]
+
+  Y la actualización de pesos se reduce a:
+
+  #grayed[$bold(w)_(t+1) = bold(w)_t + alpha[U_t - hat(v) (S_t, bold(w)_t)] bold(x)(S_t)$]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Convergencia")[
+
+  En la aproximación de funciones lineales, sólo existe un óptimo, por lo que cualquier método que pueda converger en un *óptimo local* lo hará también en el *global*.
+
+  - #stress[Monte Carlo] converge en el óptimo global de $overline("VE")$ siguiendo una aproximación de función lineal siempre que $alpha$ tienda a $0$ con el tiempo.
+
+  - ¿Y #stress[TD]?
+]
+
+// *****************************************************************************
+
+#focus-slide("Aproximación de funciones lineales con TD")
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales con TD")[
+
+  Partimos de la regla de actualización previamente presentada:
+
+  #grayed[$ bold(w) <- bold(w) + alpha delta_t gradient hat(v) (S_t, bold(w)) $]
+
+  donde $delta_t$ es el _TD-error_ definido tal que:
+
+  #let err = text(fill: red)[TD-error]
+  #let tar = text(fill: blue)[TD-target]
+
+  #grayed[$underbrace(delta_t = underbrace(R_(t+1) + gamma hat(v) (S_(t+1), bold(w)), #tar) - hat(v) (S_(t+1), bold(w)), #err)$]
+]
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales con TD")[
+
+  #grayed[$ bold(w) <- bold(w) + alpha delta_t gradient hat(v) (S_t, bold(w)) $]
+
+  - Los pesos $bold(w)$ se ajustan en la dirección del _TD-error_ $times$ el gradiente de la función de valor aproximada.
+
+  En el caso lineal, dicho gradiente es simplemente el *vector de características*:
+
+  $ hat(v) (S_t, bold(w)) = bold(w)^T bold(x)(S_t) $
+
+  $ gradient hat(v) (S_t, bold(w)) = bold(x)(S_t) $
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales con TD")[
+
+  Por tanto, tenemos la siguiente actualización de pesos:
+
+  #grayed[$
+      bold(w)_(t+1) &= bold(w)_t + alpha delta_t gradient hat(v) (S_t, bold(w)_t) \
+      &= bold(w)_t + alpha delta_t bold(x) (S_t)
+    $]
+
+  - Los pesos se actualizan en la dirección del _TD-error_ $times$ el vector de características. Esta actualización se denomina *_semi-gradiente lineal_*.
+
+  #framed[La decisión sobre qué características emplear es, por tanto, muy importante.]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales con TD")[
+
+  TD lineal converge en el llamado *_TD fixed-point_* (_ver Sutton & Barto p. 206_ #emoji.books).
+
+  - Es decir, *no optimiza de forma precisa* la función objetivo (el mínimo de $overline("VE")$), sino que el objetivo es ese #stress[punto fijo].
+
+  #set text(size: 18pt)
+  #framed[¿Cuál es la relación entre la solución encontrada por TD y la solución óptima global?]
+
+  #set text(size: 22pt)
+  #columns(2)[
+    #grayed[$
+        underbrace(overline("VE")(bold(w)_("TD")), "TD fixed-point") <= 1 / (1 - gamma) underbrace("min"_bold(w) overline("VE")(bold(w)), "valor óptimo")
+      $]
+
+    #colbreak()
+
+    Dependiendo de la calidad de las características, el _TD fixed-point_ y el óptimo global serán maś o menos cercanos.
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales")[
+
+  #framed[¿Por qué es interesante la aproximación de funciones lineales?]
+
+  1. TD lineal es una *generalización* de TD tabular y TD con agregación de estados.
+
+  2. Son simples de entender y analizar.
+
+  3. Eficaces si contamos con buenas características, que pueden venir dadas por un experto (_domain knowledge_).
 
 ]
 
