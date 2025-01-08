@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.0": *
+#import "@preview/typslides:1.2.3": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -23,13 +23,11 @@
 
 // *****************************************************************************
 
-#table-of-contents()
+#table-of-contents(title: "Contenidos")
 
 // *****************************************************************************
 
 #slide(title: "Motivación")[
-
-  #v(1cm)
 
   Hasta ahora, nos hemos centrado en #stress[problemas no asociativos]:
 
@@ -39,10 +37,8 @@
 
   No obstante, en problemas de RL más complejos, pueden darse diferentes situaciones donde *el valor de una acción varía dependiendo del estado actual del agente*.
 
-  #v(.5cm)
-
   #align(center)[
-    #framed[Es lo que denominamos un problema de #stress[*búsqueda asociativa*].]
+    #framed[Es lo que denominamos un problema de #stress[búsqueda asociativa].]
   ]
 ]
 
@@ -62,8 +58,6 @@
 
   ]
 
-  #v(1cm)
-
   _Elegir la mejor acción para cada estado, a partir de prueba y error_.
 
 ]
@@ -71,8 +65,6 @@
 // *****************************************************************************
 
 #slide(title: [_Contextual bandits_])[
-
-  #v(.8cm)
 
   #columns(2, gutter: 1cm)[
     A los problemas de búsqueda asociativa también se les denomina #stress[*contextual bandits*] (_bandits_ con contexto).
@@ -93,7 +85,7 @@
 
 #slide(title: [_K-armed bandits_ vs. _Contextual bandits_ vs. RL _completo_])[
 
-  #set text(size: 17pt)
+  #set text(size: 16pt)
   #table(
     columns: 2,
     inset: 10pt,
@@ -171,32 +163,32 @@
 
   #v(-.8cm)
 
-  #figure(image("images/mdp-1.png", width: 50%))
+  #figure(image("images/mdp-1.png", width: 55%))
 
 ]
 
 // *****************************************************************************
 
 #slide(title: "Proceso de decisión de Markov (MDP)")[
-  #figure(image("images/mdp-1.png", width: 88%))
+  #figure(image("images/mdp-1.png", width: 85%))
 ]
 
 // *****************************************************************************
 
 #slide(title: "MDP: agente")[
-  #figure(image("images/mdp-2.png", width: 84%))
+  #figure(image("images/mdp-2.png", width: 75%))
 ]
 
 // *****************************************************************************
 
 #slide(title: "MDP: entorno")[
-  #figure(image("images/mdp-3.png", width: 83%))
+  #figure(image("images/mdp-3.png", width: 75%))
 ]
 
 // *****************************************************************************
 
 #slide(title: "MDP: acción")[
-  #figure(image("images/mdp-4.png", width: 90%))
+  #figure(image("images/mdp-4.png", width: 95%))
 ]
 // *****************************************************************************
 
@@ -284,14 +276,10 @@
 
   Se cumple que:
 
-  #v(.5cm)
-
   #grayed[
     #set text(size: 23pt)
     $ sum_(s' in cal(S), #h(0.1cm) r in cal(R)) p(s', r|s, a) = 1, forall s in cal(S), a in cal(A)(s) $
   ]
-
-  #v(1cm)
 
   - En un MDP, las probabilidades de transición dependen únicamente del estado y acción inmediatamente previos ($S_(t-1), A_(t-1)$).
 
@@ -326,8 +314,6 @@
 // *****************************************************************************
 
 #slide(title: "Transición entre estados")[
-
-  #v(2.5cm)
 
   La siguiente fórmula representa la #stress[regla de transición] entre estados en un MDP:
 
@@ -384,12 +370,12 @@
 
   #columns(2)[
 
-    #figure[#image("images/mdp-example-2.png", width: 100%)]
+    #figure[#image("images/mdp-example-2.png", width: 90%)]
     #columns(2, gutter: 10pt)[
       #grayed[
         $cal(S) = {s_0, s_1}$
 
-        $s_0 :$ #text(size: 15pt)[en movimiento]\
+        $s_0 :$ #text(size: 13pt)[en movimiento]\
         $s_1 :$ #text(size: 17pt)[quieto]
       ]
 
@@ -405,7 +391,7 @@
 
     #colbreak()
 
-    #v(0.5cm)
+    #v(3cm)
 
     $ p(s_1, 0 | s_0, a_1) = $
 
@@ -417,9 +403,6 @@
 
     $ p(s_0, 1 | s_1, a_1) = $
 
-    #v(.5cm)
-
-
   ]
 
 ]
@@ -430,12 +413,12 @@
 
   #columns(2)[
 
-    #figure[#image("images/mdp-example-2.png", width: 100%)]
+    #figure[#image("images/mdp-example-2.png", width: 90%)]
     #columns(2, gutter: 10pt)[
       #grayed[
         $cal(S) = {s_0, s_1}$
 
-        $s_0 :$ #text(size: 15pt)[en movimiento]\
+        $s_0 :$ #text(size: 13pt)[en movimiento]\
         $s_1 :$ #text(size: 17pt)[quieto]
       ]
 
@@ -451,7 +434,7 @@
 
     #colbreak()
 
-    #v(0.5cm)
+    #v(2cm)
 
     $ p(s_1, 0 | s_0, a_1) = bold(1) $
 
@@ -462,8 +445,6 @@
     $ p(s_1, 1 | s_1, a_0) = bold(0) $
 
     $ p(s_0, 1 | s_1, a_1) = bold(0) $
-
-    #v(.5cm)
 
     #stress[Propiedad de Markov]: las transiciones sólo dependen del *estado actual* (y la *acción* realizada).
 
@@ -484,13 +465,11 @@
     $ r(s,a) = EE[R_t | S_(t+1) = s, A_(t-1) = a] = sum_(r in cal(R)) r sum_(s' in cal(S)) p(s', r | s,a) $
   ]
 
-  #v(1cm)
-
   ¿Qué *recompensa* podemos esperar de una tripleta #stress[estado-acción-estado]?
 
   #grayed[
     #set text(size: 24pt)
-    $r(s,a,s') = EE[R_t | S_(t-1) = s, A_(t-1) = a, S_(t) = s'] = sum_(r in cal(R)) r p(s',r|s,a) / p(s'|s,a)$
+    $ r(s,a,s') = EE[R_t | S_(t-1) = s, A_(t-1) = a, S_(t) = s'] = sum_(r in cal(R)) r p(s',r|s,a) / p(s'|s,a) $
   ]
 
 ]
@@ -501,12 +480,12 @@
 
   #columns(2)[
 
-    #figure[#image("images/mdp-example-2.png", width: 100%)]
+    #figure[#image("images/mdp-example-2.png", width: 90%)]
     #columns(2, gutter: 10pt)[
       #grayed[
         $cal(S) = {s_0, s_1}$
 
-        $s_0 :$ #text(size: 15pt)[en movimiento]\
+        $s_0 :$ #text(size: 13pt)[en movimiento]\
         $s_1 :$ #text(size: 17pt)[quieto]
       ]
 
@@ -522,7 +501,7 @@
 
     #colbreak()
 
-    #v(0.5cm)
+    #v(3cm)
 
     $ r(s_0, a_1) = $
 
@@ -534,8 +513,6 @@
 
     $ r(s_1, a_1, s_0) = $
 
-    #v(.2cm)
-
   ]
 
 ]
@@ -546,12 +523,12 @@
 
   #columns(2)[
 
-    #figure[#image("images/mdp-example-2.png", width: 100%)]
+    #figure[#image("images/mdp-example-2.png", width: 90%)]
     #columns(2, gutter: 10pt)[
       #grayed[
         $cal(S) = {s_0, s_1}$
 
-        $s_0 :$ #text(size: 15pt)[en movimiento]\
+        $s_0 :$ #text(size: 13pt)[en movimiento]\
         $s_1 :$ #text(size: 17pt)[quieto]
       ]
 
@@ -598,7 +575,7 @@
 
 #slide(title: "Frontera agente-entorno")[
 
-  #columns(2, gutter: 40pt)[
+  #columns(2)[
 
     #v(2.5cm)
 
@@ -623,7 +600,7 @@
 
 #slide(title: "Interacción agente-entorno")[
 
-  #columns(2, gutter: 40pt)[
+  #columns(2)[
 
     #v(1.5cm)
 
@@ -648,20 +625,16 @@
 // *****************************************************************************
 
 #slide(title: "Representaciones estructuradas")[
+  #text(size: 19pt)[
+    Es común contar con *representaciones estructuradas* de estados y acciones (ej. vectores de valores).
+  ]
+  #columns(2)[
 
-  #columns(2, gutter: 30pt)[
-
-    #text(size: 17pt)[
-      Es común contar con *representaciones estructuradas* de estados y acciones (ej. vectores de valores).
-    ]
-
-    #grayed(text-size: 20pt)[
+    #grayed(text-size: 19pt)[
       $ S_t : {M_t, op("type"), op("pos"), op("next"), op("score")} $
     ]
 
-    #v(.5cm)
-
-    #text(size: 11pt)[
+    #text(size: 14pt)[
       - $M_t$ : matriz con posiciones libres (0) u ocupadas (1)
       - _type_: pieza actual
       - _pos_: posición de la pieza actual
@@ -669,7 +642,7 @@
       - _score_: puntuación acumulada
     ]
 
-    #grayed(text-size: 19pt)[
+    #grayed(text-size: 18pt)[
       $ cal(A) : {0: \u{2B05}, 1 : \u{27A1}, 2 : \u{2B07}, 3: \u{2B06}} $
       $ A_t in {0,1,2,3} $
     ]
@@ -677,8 +650,8 @@
     #colbreak()
 
     #align(center)[
-      #v(0.5cm)
-      #image("images/tetris.png", width: 58%)
+
+      #image("images/tetris.png", width: 50%)
     ]
   ]
 
@@ -691,8 +664,6 @@
   En un proceso de decisión de Markov, el futuro depende únicamente del estado presente y no de los estados anteriores (*propiedad de Markov*).
 
   Sin embargo, podemos encontrarnos ante problemas con #stress[estados no-markovianos], donde el estado actual no contiene toda la información relevante para predecir el futuro.
-
-  #v(1cm)
 
   #framed(title: "Estado no-markoviano")[
     Un estado no-markoviano es aquel en el que la información necesaria para tomar una decisión óptima no está completamente representada por el estado actual del sistema.
@@ -774,9 +745,9 @@
 
     #set text(size: 18pt)
 
-    El #stress[*estado inicial*] de un problema de RL es el estado en el cual comienza la interacción del agente con el entorno.
+    El #stress[estado inicial] de un problema de RL es el estado en el cual comienza la interacción del agente con el entorno.
 
-    Alcanzar un #stress[*estado terminal*] supone el fin de esta interacción.
+    Alcanzar un #stress[estado terminal] supone el fin de esta interacción.
 
     Un problema de RL puede contar con múltiples estados iniciales y finales.
 
@@ -787,11 +758,11 @@
       ]
     ]
 
-    Definimos así el concepto de #stress[*episodio*].
+    Definimos así el concepto de #stress[episodio].
 
     #colbreak()
 
-    #v(1cm)
+    #v(.5cm)
 
     #framed(title: "Episodio")[
       Secuencia de _time steps_ desde un estado inicial hasta un estado terminal.
@@ -810,8 +781,6 @@
 
 #slide[
 
-  #v(3.5cm)
-
   #framed(title: "Problema episódico")[
     Problema dividido en una secuencia *finita* de estados, desde un estado inicial hasta un estado terminal.
   ]
@@ -828,7 +797,7 @@
 
   #v(.3cm)
 
-  En los #stress[*problemas continuados*] (_vs._ episódicos), no existen episodios que finalicen en un estado terminal.
+  En los #stress[problemas continuados] (_vs._ episódicos), no existen episodios que finalicen en un estado terminal.
 
   - Es decir, *no hay estados terminales*.
 
@@ -854,8 +823,6 @@
 
 #slide(title: "Objetivos y recompensas")[
 
-  #v(1cm)
-
   #framed[
     ¿Qué relación hay entre las #stress[señales de recompensa] y los #stress[objetivos] del agente?
   ]
@@ -873,13 +840,11 @@
 
 #slide(title: "Recompensa")[
 
-  #columns(2, gutter: 30pt)[
-
-    #v(.75cm)
+  #columns(2, gutter: 40pt)[
 
     Para guiar a un agente hacia su *objetivo*, empleamos *recompensas*.
 
-    Una señal de #stress[*recompensa*] es un valor numérico que indica al agente si su comportamiento le acerca o no a su objetivo.
+    Una señal de #stress[recompensa] es un valor numérico que indica al agente si su comportamiento le acerca o no a su objetivo.
 
     #text(size: 24pt)[
       $ R_t in RR $
@@ -901,8 +866,6 @@
 
 #slide(title: [_Reward hypotheses_])[
 
-  #v(1.5cm)
-
   #framed[
     _Todo lo que entendemos como objetivo o propósito puede interpretarse como la maximización del valor esperado para una suma acumulada de una señal escalar (llamada recompensa)_.
 
@@ -911,8 +874,6 @@
         #emoji.books _Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT press. (p. 53)._]
     ]
   ]
-
-  #v(1cm)
 
   El uso de una señal de recompensa para formalizar la idea de *objetivo* es uno de los aspectos más distintivos del aprendizaje por refuerzo.
 
@@ -966,7 +927,7 @@
 
   #columns(2)[
 
-    #v(2cm)
+    #v(1.5cm)
 
     La recompensa *no* debe orientarse exclusivamente hacia el cumplimiento de *subobjetivos*, sino hacia el cumplimiento de un *objetivo final*.
 
@@ -992,21 +953,16 @@
 
 #slide(title: "Retorno")[
 
-  El #stress[*retorno*], o *_recompensa acumulada_*, es el valor que tratamos de maximizar.
+  El #stress[retorno] (_return_), o *_recompensa acumulada_*, es el valor que tratamos de maximizar.
 
   Se define de la siguiente manera:
 
-  #text(size: 25pt)[
-    #grayed[
-      $ G_t = R_(t+1) + R_(t+2) + dots + R_(T-1) + R_T $
-    ]
+  #grayed(text-size: 21pt)[
+    $ G_t = R_(t+1) + R_(t+2) + dots + R_(T-1) + R_T $
   ]
 
-  #v(1cm)
 
   Siendo $T$ el último _time step_ del *episodio* (o de una ventana de tiempo determinada).
-
-  #v(.3cm)
 
   #framed(title: "Retorno")[
     Suma de las recompensas a obtener desde el momento presente hasta el final de un episodio o ventana de tiempo determinada.
@@ -1018,15 +974,11 @@
 
 #slide(title: "Retorno")[
 
-  #v(1.3cm)
-
   #text(size: 25pt)[
     #grayed[
       $ G_t = R_(t+1) + R_(t+2) + dots + R_(T-1) + R_T $
     ]
   ]
-
-  #v(1cm)
 
   Esta formulación es válida para *problemas episódicos*, pero...
 
@@ -1034,16 +986,15 @@
 
   Si el _time step_ final es $T = infinity$, la recompensa esperada es una suma infinita $G_t = infinity$.
 
-  #v(.5cm)
+  #v(1cm)
 
-  #framed[Necesitamos reformular la definición de recompensa acumulada.]
+  #align(center)[#framed[Necesitamos reformular la definición de recompensa acumulada.]]
 ]
 
 // *****************************************************************************
 
 #slide(title: "Retorno descontado")[
 
-  #v(1.8cm)
 
   Introducimos el concepto de #stress[retorno descontado]...
 
@@ -1051,8 +1002,6 @@
     #set text(size: 30pt)
     $ G_t = R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + dots = sum_(k=0)^infinity gamma^k R_(t+k+1) $
   ]
-
-  #v(1cm)
 
   Donde $gamma in [0,1]$ se denomina #stress[factor de descuento] (_discount factor_).
 
@@ -1064,14 +1013,10 @@
 
 #slide(title: "Factor de descuento")[
 
-  #v(.8cm)
-
   #grayed[
     #set text(size: 28pt)
     $ G_t = R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + dots = sum_(k=0)^infinity gamma^k R_(t+k+1) $
   ]
-
-  #v(1cm)
 
   - Una recompensa recibida en $k$ _time steps_ futuros tiene un valor $gamma^(k-1)$ veces lo que valdría en el _time step_ actual.
 
@@ -1085,11 +1030,8 @@
 
 #slide(title: "Definición recursiva")[
 
-  #v(0.8cm)
-
   El retorno descontado puede definirse #stress[de forma recursiva]:
 
-  #v(0.8cm)
   #grayed(text-size: 30pt)[
     $
       G_t &= R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + dots \
@@ -1107,11 +1049,8 @@
   #let r = text[Recompensa\ inmediata]
   #let g = text[_Return_\ descontado\ desde $t+1$]
 
-  #v(0.8cm)
-
   El retorno descontado puede definirse #stress[de forma recursiva]:
 
-  #v(0.8cm)
   #grayed(text-size: 30pt)[
     $
       G_t &= R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + gamma^3 R_(t+4) + dots \
@@ -1129,15 +1068,11 @@
   #let r = text[Recompensa\ inmediata]
   #let g = text[_Return_\ descontado\ desde $t+1$]
 
-  #v(1cm)
-
   #grayed(text-size: 30pt)[
     $
       G_t &= colmath(underbracket(R_(t+1), #r), #red) + colmath(underbracket(gamma G_(t+1), #g), #blue)
     $
   ]
-
-  #v(1cm)
 
   #framed[
     Esta formulación será importante para la teoría y algoritmos de RL que veremos más adelante.
@@ -1218,13 +1153,11 @@
 
 #slide(title: [#i])[
 
-  #v(1cm)
-
   Existen formas alternativas de aplicar las funciones de recompensa.
 
   Por ejemplo, el #stress[_inverse reinforcement learning_] (RL inverso) consiste en plantear un ejemplo de comportamiento óptimo y hacer que el agente adivine la recompensa a maximizar que se asocia con este.
 
-  #v(1.5cm)
+  #v(1cm)
 
   #align(center)[
     #framed[
@@ -1238,7 +1171,6 @@
 
 #slide(title: "En resumen...")[
 
-  #v(1cm)
 
   #h(1cm) Un *MDP* se define por la tupla:
 
@@ -1266,9 +1198,7 @@
 
 #slide(title: "Política")[
 
-  #v(1cm)
-
-  Una #stress[*política*] es una función que refleja la probabilidad de emplear una determinada acción $a in cal(A)(s)$ a partir de un estado $s in cal(S)$.
+  Una #stress[política] es una función que refleja la probabilidad de emplear una determinada acción $a in cal(A)(s)$ a partir de un estado $s in cal(S)$.
 
   - La política rige el comportamiento del agente, representando su preferencia por unas acciones u otras ante diferentes estados.
 
@@ -1319,8 +1249,6 @@
     La probabilidad de tomar una acción es 0 ó 1: #h(1cm)$pi(a | s) in {0, 1} $
   ]
 
-  #v(1cm)
-
   #align(center)[#image("images/deterministic.png")]
 
 ]
@@ -1334,8 +1262,6 @@
     $pi(a | s) in [0, 1]$
   ]
 
-  #v(1cm)
-
   #align(center)[#image("images/stochastic.png")]
 
 ]
@@ -1346,7 +1272,7 @@
 
   #columns(2, gutter: 1pt)[
 
-    #v(1.5cm)
+    #v(.5cm)
 
     #framed(title: "Política categórica")[
       Selecciona acciones de una #stress[distribución categórica].
@@ -1368,7 +1294,7 @@
 
   #columns(2, gutter: 1pt)[
 
-    #v(1.5cm)
+    #v(.5cm)
 
     #framed(title: "Política gaussiana")[
       Muestrea acciones de una #stress[distribucción gaussiana].
@@ -1405,17 +1331,13 @@
 
 #slide(title: "Aprendizaje de la política óptima")[
 
-  #v(2cm)
-
-  Nuestro objetivo es hacer que el agente aprenda una #stress[*política de comportamiento óptima*] que le permita alcanzar sus objetivos $dots$
+  Nuestro objetivo es hacer que el agente aprenda una #stress[política de comportamiento óptima] que le permita alcanzar sus objetivos $dots$
 
   $dots$ y, por tanto, #stress[maximizar la recompensa acumulada] (retorno).
 
   Esto se traduce en asignar una mayor probabilidad a aquellas acciones que conduzcan a una mayor recompensa a largo plazo.
 
-  #v(1cm)
-
-  #framed[Para guiar al agente en el proceso de aprendizaje empleamos #stress[*funciones de valor*].]
+  #framed[Para guiar al agente en el proceso de aprendizaje empleamos #stress[funciones de valor].]
 
 ]
 
@@ -1427,10 +1349,7 @@
 
 #slide(title: "Funciones de valor")[
 
-  #v(2.5cm)
-
-  Utilizamos #stress[*funciones de valor*] para evaluar la _calidad_ de #stress[estados] y #stress[acciones].
-
+  Utilizamos #stress[funciones de valor] para evaluar la _calidad_ de #stress[estados] y #stress[acciones].
 
   #columns(2, gutter: 1.8cm)[
 
@@ -1464,14 +1383,10 @@
 
 #slide(title: "Funciones de valor")[
 
-  #v(2.5cm)
-
   Si desarrollamos estas fórmulas tenemos:
 
-  #v(.4cm)
-
-  #columns(2, gutter: 10pt)[
-    #grayed[
+  #columns(2)[
+    #grayed(text-size: 18pt)[
       $
         v_pi (s) &= EE_pi [G_t| S_t = s] \
         &= EE_pi [sum_(k=0)^infinity gamma^k R_(t+k+1) | S_t = s]
@@ -1508,8 +1423,6 @@
 
 #slide(title: [Valor _vs._ recompensa])[
 
-  #v(2cm)
-
   #framed[#stress[Recompensa] $->$ es una señal *inmediata* que el agente recibe después de realizar una acción o transicionar a un estado.]
 
   #framed[#stress[Valor] $->$ es una estimación de las *recompensas* a obtener a largo plazo (_retorno_).]
@@ -1523,13 +1436,10 @@
 
 #slide(title: [Ecuación de Bellman para $v_pi$])[
 
-  #v(1.5cm)
 
   #set text(size: 20pt)
 
   La *ecuación de Bellman* para $v_pi$ es la _definición recursiva_ de la #stress[función estado-valor]:
-
-  #v(0.5cm)
 
   #grayed(text-size: 25pt)[
     $
@@ -1540,6 +1450,8 @@
   ]
 
 ]
+
+// *****************************************************************************
 
 #slide(title: [Ecuación de Bellman para $v_pi$])[
 
@@ -1565,9 +1477,7 @@
 
 #slide(title: [Ecuación de Bellman para $v_pi$])[
 
-  #v(1.7cm)
-
-  #set text(size: 23pt)
+  #set text(size: 24pt)
 
   La *ecuación de Bellman* tiene en cuenta todas las probabilidades de transición, ponderando las #text(fill:orange)[recompensas obtenibles] por su #text(fill:eastern)[probabilidad].
 
@@ -1587,7 +1497,7 @@
 
   #columns(2, gutter: 30pt)[
 
-    #v(3cm)
+    #v(2cm)
 
     Los #stress[diagramas _backup_] representan cómo se transfiere la información sobre los valores desde estados sucesores hasta el estado actual.
 
@@ -1607,11 +1517,7 @@
 
 #slide(title: [Ecuación de Bellman para $q_pi$])[
 
-  #v(1cm)
-
   De forma análoga, esta es la *definición recursiva* de la #stress[función acción-valor]:
-
-  #v(.5cm)
 
   #grayed(text-size: 25pt)[
 
@@ -1623,10 +1529,11 @@
   ]
 ]
 
+// *****************************************************************************
+
 #slide(title: [Ecuación de Bellman para $q_pi$])[
 
   #set text(size: 27pt)
-  #v(1cm)
 
   #let a = text[Probabilidades de transición\ (dependiente del entorno)]
   #let b = text[Recompensa\ inmediata]
@@ -1635,9 +1542,7 @@
   $
     q_pi (s,a) &= EE_pi [G_t|S_t=s, A_t=a] \
     &= sum_(s',r) p(s',r|s,a)[r+gamma EE_pi [G_(t+1) | S_(t+1) = s']] \
-    &= colmath(underbracket(sum_(s',r) p(s',r|s,a), #a), #olive) [
-      colmath(underbracket(r, #b), #red)+colmath(underbracket(gamma sum_(a') pi(a'|s') q_pi (s',a'), #c), #blue)
-    ]
+    &= colmath(underbracket(sum_(s',r) p(s',r|s,a), #a), #olive) [ colmath(underbracket(r, #b), #red)+colmath(underbracket(gamma sum_(a') pi(a'|s') q_pi (s',a'), #c), #blue) ]
   $
 ]
 
@@ -1658,19 +1563,15 @@
 
 #slide(title: "Políticas óptimas")[
 
-  #v(.3cm)
-
-  Siempre existirá, al menos, una política mejor que cualquier otra, denominada #stress[*política óptima*], $pi^*$.
+  Siempre existirá, al menos, una política mejor que cualquier otra, denominada #stress[política óptima], $pi^*$.
 
   #h(1cm) #emoji.warning Puede haber más de una política óptima.
 
-  Las políticas óptimas comparten la misma #stress[*función estado-valor óptima*] $v^*$:
+  Las políticas óptimas comparten la misma #stress[función estado-valor óptima] $v^*$:
 
   #grayed(text-size: 25pt)[
     $ v^* (s) = max_pi #h(0.2cm) v_pi (s), #h(0.5cm) forall s in cal(S) $
   ]
-
-  #v(1cm)
 
   - La función estado-valor óptima es la función estado-valor con el valor más alto entre todas las políticas.
 
@@ -1693,8 +1594,6 @@
 
   Podemos *combinar* políticas subóptimas para formar políticas mejores:
 
-  #v(0.7cm)
-
   #columns(2, gutter: 10pt)[
     #align(center)[#image("images/policies-2.png", width: 90%)]
     #align(center)[#image("images/policies-3.png", width: 90%)]
@@ -1708,28 +1607,18 @@
 
 #slide(title: "Función acción-valor óptima")[
 
-  Las políticas óptimas también comparten la misma #stress[*función _acción-valor_ óptima*]:
+  Las políticas óptimas también comparten la misma #stress[función _acción-valor_ óptima]:
 
   #grayed(text-size: 23pt)[
     $ q^*(s,a) = max_pi q_pi (s,a), #h(0.5cm) forall s in cal(S), a in cal(A) $
   ]
 
-
-  #v(1cm)
-
   También podemos definir $q^*$ en términos de $v^*$ tal que:
-
-  #v(.5cm)
-
-  #v(0.1cm)
-
 
   #grayed(text-size: 23pt)[
     $ q^* (s,a) = EE [R_(t+1) + gamma v^*(S_(t+1)) | S_t = s, A_t = a] $
   ]
 
-
-  #v(1cm)
 
   #text(size: 18pt)[
     _$q^*$ asocia a cada par acción-estado una recompensa esperada igual a la recompensa inmediata + recompensa (descontada) futura de acuerdo a la función de valor óptima $v^*$._
@@ -1746,8 +1635,6 @@
 
   #set text(size: 24pt)
 
-  #v(1cm)
-
   La #stress[función _estado-valor_ óptima] $v^*$ se define de la siguiente forma:
 
   #v(.5cm)
@@ -1761,11 +1648,11 @@
   ]
 ]
 
+// *****************************************************************************
+
 #slide(title: [Ecuación de optimalidad de Bellman para $v^*$])[
 
   #set text(size: 24pt)
-
-  #v(1.5cm)
 
   #grayed(text-size: 27pt)[
     $
@@ -1774,8 +1661,6 @@
       &= colmath(max_a sum_(s',r) p(s',r|s,a)[r+gamma v^*(s')] #h(2cm) (op("Eq. 2")), #olive)
     $
   ]
-
-  #v(1cm)
 
   #text(size: 20pt)[
     _El valor óptimo de un estado será aquel asociado a seguir una acción óptima desde este en adelante_.
@@ -1786,13 +1671,9 @@
 
 #slide(title: [Ecuación de optimalidad de Bellman para $q^*$])[
 
-  #set text(size: 23pt)
-
-  #v(1.5cm)
+  #set text(size: 22pt)
 
   Por otro lado, la #stress[función de _acción-valor_ óptima] $q^*$ puede definirse tal que:
-
-  #v(1cm)
 
   #grayed(text-size: 28pt)[
     $
@@ -1807,8 +1688,6 @@
 
 #slide(title: [Diagramas _backup_ para ecuaciones de optimalidad])[
 
-  #v(1cm)
-
   #align(center)[#image("images/backup.png", width: 100%)]
 
 ]
@@ -1816,8 +1695,6 @@
 // *****************************************************************************
 
 #slide(title: "Obtención de la política óptima")[
-
-  #v(1cm)
 
   #framed[Conociendo $v^*$ podemos extraer fácilmente la política óptima, ya que #stress[cualquier política que actúa de forma _greedy_ con respecto a $v^*$ es óptima:]]
 
@@ -1834,8 +1711,6 @@
 
 #slide(title: "Resolución de las ecuaciones de optimalidad de Bellman")[
 
-  #v(1cm)
-
   En MDPs finitos, las ecuaciones de optimalidad de Bellman tienen #stress[soluciones únicas].
 
   - Definimos una ecuación por estado.
@@ -1850,8 +1725,6 @@
 // *****************************************************************************
 
 #slide(title: "Resolución de las ecuaciones de optimalidad de Bellman")[
-
-  #v(2cm)
 
   No obstante, esto implica dar por supuestos tres aspectos fundamentales que rara vez se dan en la práctica:
 
@@ -1868,8 +1741,6 @@
 // *****************************************************************************
 
 #slide(title: "Resolución de las ecuaciones de optimalidad de Bellman")[
-
-  #v(1.2cm)
 
   A pesar de que se cumpliesen las condiciones:
 
@@ -1891,9 +1762,7 @@
 
 #slide(title: "Resolución de las ecuaciones de optimalidad de Bellman")[
 
-  #v(2cm)
-
-  #align(center)[#image("images/schema.png", width: 100%)]
+  #align(center)[#image("images/schema.png", width: 105%)]
 
 ]
 
