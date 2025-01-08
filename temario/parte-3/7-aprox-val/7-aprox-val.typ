@@ -16,7 +16,7 @@
 
 #front-slide(
   title: "Aprendizaje por refuerzo",
-  subtitle: "Aproximación de funciones",
+  subtitle: "Aproximación de funciones de valor",
   authors: "Antonio Manjavacas",
   info: "manjavacas@ugr.es",
 )
@@ -54,7 +54,7 @@
 
   #v(1cm)
 
-  - Estas funciones de valor aproximadas toman como entrada un estado o par acción--estado, y nos devuelven su *valor aproximado* ($v$, $q$).
+  - Estas #stress[funciones de valor aproximadas] toman como entrada un estado o par acción--estado, y nos devuelven su *valor aproximado* ($v$, $q$).
 
   - El *aprendizaje* de las funciones será otro aspecto importante a abordar, ya que se trata de *funciones parametrizadas*.
 
@@ -1312,7 +1312,7 @@
 
 #front-slide(
   title: "Aprendizaje por refuerzo",
-  subtitle: "Aproximación de funciones",
+  subtitle: "Aproximación de funciones de valor",
   authors: "Antonio Manjavacas",
   info: "manjavacas@ugr.es",
 )
