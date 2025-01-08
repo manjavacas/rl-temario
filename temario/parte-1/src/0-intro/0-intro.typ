@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.1.1": *
+#import "@preview/typslides:1.2.3": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -21,7 +21,7 @@
 
 // *****************************************************************************
 
-#table-of-contents()
+#table-of-contents(title: "Contenidos")
 
 // *****************************************************************************
 
@@ -213,30 +213,29 @@
 
 #slide(title: "Aprendizaje por refuerzo en la IA")[
 
-  #box(height: 400pt)[
-    #v(.6cm)
-    En los últimos años, encontramos algoritmos de #stress[reinforcement learning] aplicados a...
+  #v(.4cm)
 
-    #columns(2)[
+  Recientemente, encontramos algoritmos de #stress[_reinforcement learning_] aplicados a...
 
-      #framed()[
-        - Robótica
-        - Ciencias naturales
-        - Sistemas de recomendación
-        - Conducción autónoma
-        - Energía
-        - Economía e inversión
-        - Aceleradores de partículas
-        - Distribución eléctrica
-        - Telecomunicaciones
-        - ...
-      ]
-
-      #colbreak()
-
-      #v(5cm)
-      #align(center)[#text(size: 25pt)[_*¿Pero cómo funcionan?*_]]
+  #columns(2)[
+    #set text(size: 19pt)
+    #framed[
+      - Robótica
+      - Ciencias naturales
+      - Sistemas de recomendación
+      - Conducción autónoma
+      - Energía
+      - Economía e inversión
+      - Aceleradores de partículas
+      - Telecomunicaciones
+      - ...
     ]
+
+    #colbreak()
+
+    #v(5cm)
+    #align(center)[#text(size: 25pt)[_*¿Pero cómo funcionan?*_ #emoji.face.think]]
+
   ]
 ]
 
@@ -286,7 +285,7 @@
   #align(center)[
     #grid(
       columns: 2,
-      image("images/chess.png", width: 45%), image("images/street.png", width: 45%),
+      image("images/chess.png", width: 40%), image("images/street.png", width: 40%),
     )
   ]
 
@@ -294,10 +293,10 @@
 
   #framed[
     #set text(size: 17.5pt)
-    Sistema dinámico con el que el agente interactúa, recibiendo información o alterándolo.
+    Sistema dinámico con el que el agente interactúa, recibiendo información del mismo o alterándolo.
   ]
 
-  #v(.6cm)
+  #v(.5cm)
 
   El agente percibe el #stress[estado] del entorno, y utiliza esta información para elegir qué #stress[acciones] realizar.
 
@@ -309,6 +308,7 @@
 // *****************************************************************************
 
 #slide(title: "Recompensa")[
+
   #framed[
     Valor que indica #stress[cómo de buena o mala] es una _acción_ o _estado_ para el agente.
   ]
@@ -316,7 +316,7 @@
   #align(center)[
     #grid(
       columns: 2,
-      image("images/good.png", width: 40%), image("images/bad.png", width: 40%),
+      image("images/good.png", width: 35%), image("images/bad.png", width: 35%),
     )
   ]
 
@@ -375,7 +375,7 @@
 
 #slide(title: "En resumen...")[
 
-  #columns(2)[
+  #columns(2, gutter: 1cm)[
 
     - Método de aprendizaje computacional basado en la interacción de un #stress[agente] con su #stress[entorno].
 
@@ -389,7 +389,7 @@
 
     #v(2cm)
 
-    #figure(image("images/rl.png"))
+    #figure(image("images/rl.png", width: 110%))
   ]
 ]
 
@@ -416,23 +416,28 @@
 
 #slide(title: "Problemas de RL")[
   #columns(2)[
+
     #framed(title: "Formalización del problema")[
       #set text(size: 17pt)
-      - ¿Problema episódico o continuado?
-      - Modelo del entorno:
-        - Variables observadas
-        - Función de recompensa
-        - _Model free_ vs. _model-based_
-      - Definición del espacio de acciones (discreto o continuo)
+      ¿Problema episódico o continuado?
+
+      Modelo del entorno:
+      - Variables observadas.
+      - Función de recompensa.
+      - _Model free_ vs. _model-based_.
+
+      Definición del espacio de acciones (discreto o continuo).
     ]
     #colbreak()
+
     #framed(title: "Planteamiento de la solución")[
-      - Sistemas de ecuaciones
-      - Programación dinámica
-      - Monte Carlo
-      - _TD-learning_ (ej. _Q-learning_)
-      - Métodos basados en gradiente
-      - Aproximación de funciones (ej. _tile coding_, _Deep Reinforcement Learning_)
+      #set text(size: 17pt)
+      - Sistemas de ecuaciones.
+      - Programación dinámica.
+      - Monte Carlo.
+      - _TD-learning_ (ej. _Q-learning_).
+      - Métodos basados en gradiente.
+      - Aproximación de funciones (ej. _tile coding_, _Deep Reinforcement Learning_).
     ]
   ]
 ]
@@ -460,9 +465,9 @@
       ]
     ],
     align(center)[
-      #framed(title: "\"Reinforcement learning is supervised learning on optimized data\".")[
+      #framed(title: text(size: 14pt)[_Reinforcement learning is supervised learning on optimized data._])[
 
-        #set text(size: 16pt)
+        #set text(size: 14pt)
         _What makes RL challenging is that, unless you’re doing imitation learning, actually acquiring that “good data” is quite challenging._
 
         #v(0.1cm)
@@ -518,7 +523,7 @@
   Los algoritmos de RL *evalúan*, no *instruyen*.
 
   #framed[
-    #stress[*Instruir*] (_instructive feedback_) consiste en indicar directamente cuál es la mejor decisión.
+    #stress[Instruir] (_instructive feedback_) consiste en indicar directamente cuál es la mejor decisión.
 
     - Siempre se toma la acción que se asume óptima.
     - Se basa en información completa del problema.
@@ -526,14 +531,15 @@
   ]
   #v(-.5cm)
   #framed[
-    #stress[*Evaluar*] (_evaluative feedback_) consiste en indicar cómo buena o mala ha sido una decisión, pero no si ha sido la mejor o peor posible.
+    #stress[Evaluar] (_evaluative feedback_) consiste en indicar cómo buena o mala ha sido una decisión, pero no si ha sido la mejor o peor posible.
 
     - Motiva la exploración.
     - Búsqueda de un comportamiento óptimo en base a información parcial del problema.
     - Es propio del aprendizaje por refuerzo.
   ]
 
-  #set text(size: 10pt)
+  #v(1cm)
+  #set text(size: 15pt)
   \* _Ambos tipos de aprendizaje pueden combinarse._
 
 ]
