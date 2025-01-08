@@ -27,7 +27,6 @@
 
 // *****************************************************************************
 
-
 #slide(title: "Recapitulando...")[
 
   Hemos visto cómo los métodos #stress[tabulares] presentaban una serie de limitaciones:
