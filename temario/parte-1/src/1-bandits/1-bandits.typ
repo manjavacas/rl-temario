@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.0": *
+#import "@preview/typslides:1.2.3": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -23,7 +23,7 @@
 
 // *****************************************************************************
 
-#table-of-contents()
+#table-of-contents(title: "Contenidos")
 
 // *****************************************************************************
 
@@ -74,7 +74,7 @@
 #slide(title: [El problema de los _K-armed bandits_])[
   #columns(2)[
     - #stress[*_K-armed bandits_*], también llamado #stress[_multi-armed bandit problem_]
-      - #text(size: 12pt)["problema de las _tragaperras multi-brazo_" (#emoji.face.inv)]
+      #text(size: 12pt)["problema de las _tragaperras multi-brazo_" (#emoji.face.inv)]
 
     - Problema clásico en RL y teoría de la probabilidad.
 
@@ -173,7 +173,7 @@
     #figure(image("images/distribs.png", width: 60%))
 
     #align(center)[
-      #stress[*Espacio de acciones*]:
+      #stress[Espacio de acciones]:
       $cal(A) = {a_1, a_2, a_3}$
     ]
 
@@ -196,7 +196,7 @@
     #figure(image("images/distribs.png", width: 60%))
 
     #align(center)[
-      #stress[*Espacio de acciones*]:
+      #stress[Espacio de acciones]:
       $cal(A) = {a_1, a_2, a_3}$
     ]
 
@@ -211,7 +211,7 @@
 
 #slide(title: "Valor de una acción")[
 
-  El #stress[*valor de una acción*] (_action-value_) es la recompensa que esperamos obtener al realizarla:
+  El #stress[valor de una acción] (_action-value_) es la recompensa que esperamos obtener al realizarla:
 
   // #alternatives-match((
   //       "1" : [
@@ -299,9 +299,7 @@
 
   #align(center)[
     #text(size: 25pt)[
-      $q_*(a) = EE[
-          R_t | A_t = a
-        ] = colmath(underbracket(sum_r r #h(0.2cm) p(r|a), "Suma ponderada de\nlas recompensas por\n sus probabilidades"), #blue)$
+      $q_*(a) = EE[ R_t | A_t = a ] = colmath(underbracket(sum_r r #h(0.2cm) p(r|a), "Suma ponderada de\nlas recompensas por\n sus probabilidades"), #blue)$
     ]
   ]
 
@@ -466,9 +464,9 @@
       A partir de aquí podemos:
 
       #text(size: 20pt)[
-        *a.* Actuar de forma _*greedy*_ ("voraz"), #stress[*explotando*] indefinidamente la mejor acción ($a_2$).
+        *a.* Actuar de forma _*greedy*_ ("voraz"), #stress[explotando] indefinidamente la mejor acción ($a_2$).
 
-        *b.* Mantener un comportamiento aleatorio, #stress[*explorando*] continuamente las distribuciones de recompensa asociadas a cada acción.
+        *b.* Mantener un comportamiento aleatorio, #stress[explorando] de forma continua las distribuciones de recompensa asociadas a cada acción.
       ]
 
 
@@ -539,9 +537,7 @@
 
   - Pero una acción puede no darnos siempre la misma recompensa...
 
-  #figure(
-    image("images/rewards_distrib.png", width: 50%),
-  )
+  #figure(image("images/rewards_distrib.png", width: 50%))
 
   #align(center)[#framed[¿Cómo determinamos el valor de una acción?]]
 ]
@@ -666,9 +662,7 @@
   #set text(28pt)
 
   $
-    P(
-      a_2
-    ) = underbracket(colmath(bold(0.5), #blue), "Probabilidad\nde explorar") dot underbracket(colmath(bold(0.5), #blue), #s) = 0.25
+    P( a_2 ) = underbracket(colmath(bold(0.5), #blue), "Probabilidad\nde explorar") dot underbracket(colmath(bold(0.5), #blue), #s) = 0.25
   $
 ]
 
@@ -799,9 +793,7 @@
 
   #text(26pt)[
     $
-      Q(A) <- Q(
-        A
-      ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
+      Q(A) <- Q( A ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
     $
   ]
 
@@ -823,9 +815,7 @@
 
   #text(26pt)[
     $
-      Q(A) <- Q(
-        A
-      ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
+      Q(A) <- Q( A ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
     $
   ]
 
@@ -1061,9 +1051,7 @@
 
 #slide(title: "Valores iniciales optimistas")[
 
-  #v(3.5cm)
-
-  En la práctica, el sesgo no suele ser un problema y a veces puede resultar muy útil.
+  En la práctica, el sesgo no suele ser un problema y a veces puede resultar útil.
 
   - Las estimaciones inciales pueden proporcionar #stress[conocimiento previo/experto] sobre qué recompensas podemos esperar de cada acción.
 
@@ -1079,15 +1067,9 @@
   #grid(
     columns: (1fr, 1fr, 1fr),
     gutter: 1pt,
-    grid.cell(
-      figure(image("images/bias-1.png", width: 85%)),
-    ),
-    grid.cell(
-      figure(image("images/bias-2.png", width: 81%)),
-    ),
-    grid.cell(
-      figure(image("images/bias-3.png", width: 85%)),
-    ),
+    grid.cell(figure(image("images/bias-1.png", width: 75%))),
+    grid.cell(figure(image("images/bias-2.png", width: 71%))),
+    grid.cell(figure(image("images/bias-3.png", width: 75%))),
     grid.cell(
       text(size: 15pt)[
         #framed[
@@ -1119,7 +1101,7 @@
   #text(size: 19pt)[
     Utilizamos el sesgo para provocar la exploración inicial de todas/algunas acciones.
 
-    #stress[*Esto permite que incluso un método _greedy_ explore*].
+    #stress[Esto permite que incluso un método _greedy_ explore].
 
     - Se denomina #stress[_optimistic greedy_], porque emplea valores iniciales optimistas.
       - Puede dar lugar a mejores resultados que un $epsilon$-_greedy_ estándar.
@@ -1264,9 +1246,7 @@
   #text(size: 19pt)[
 
     $
-      A_t = op("argmax")_a [
-        colmath(underbracket(Q_t (a), "valor\nestimado"), #blue) + colmath(underbracket(c sqrt((ln t) / (N_t (a))), "incertidumbre"), #red)
-      ]
+      A_t = op("argmax")_a [ colmath(underbracket(Q_t (a), "valor\nestimado"), #blue) + colmath(underbracket(c sqrt((ln t) / (N_t (a))), "incertidumbre"), #red) ]
     $
 
     La selección de una acción depende de:
