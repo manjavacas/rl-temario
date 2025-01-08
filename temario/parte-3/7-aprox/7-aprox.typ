@@ -23,7 +23,7 @@
 
 // *****************************************************************************
 
-#table-of-contents()
+#table-of-contents(title: "Contenidos")
 
 // *****************************************************************************
 
@@ -1072,16 +1072,33 @@
 
     #colbreak()
 
-    Dependiendo de la calidad de las características, el _TD fixed-point_ y el óptimo global serán maś o menos cercanos.
+    Dependiendo de la calidad de las *características* (_features_), el _TD fixed-point_ y el óptimo global serán maś o menos cercanos.
   ]
 
 ]
 
 // *****************************************************************************
 
+// #slide(title: "Definición de características")[
+
+//     Los métodos lineales ofrecen *garantías de convergencia* y *eficiencia*, aunque estas ventajas dependen de las características (_features_) elegidos para representar los #stress[estados].
+
+//     #framed(title: "Característica")[
+//       Aspecto relevante del espacio de estados.
+//       - Ej. localización, velocidad, lectura de sensores, etc.
+//     ]
+
+// ]
+
+// *****************************************************************************
+
 #slide(title: "Aproximación de funciones lineales")[
 
+  // #stress[En resumen]: aunque TD lineal no converge en el valor mínimo de $overline("VE")$, sí que converge en el mínimo de un objetivo definido basado en las ecuaciones de Bellman.
+
   #framed[¿Por qué es interesante la aproximación de funciones lineales?]
+
+  #v(1cm)
 
   1. TD lineal es una *generalización* de TD tabular y TD con agregación de estados.
 
@@ -1089,6 +1106,206 @@
 
   3. Eficaces si contamos con buenas características, que pueden venir dadas por un experto (_domain knowledge_).
 
+]
+
+// *****************************************************************************
+
+#slide(title: "Aproximación de funciones lineales")[
+
+  #stress[Sin embargo], las funciones lineales también presentan ciertan limitaciones...
+
+  - Son incapaces de capturar *relaciones complejas entre variables*.
+
+  - Requieren de una *definición precisa y manual de las características* que definen un estado.
+
+  Esto motiva el uso de métodos #stress[no-lineales] de aproximación de funciones, tales como las #stress[redes neuronales].
+
+  - Permiten capturar relaciones complejas entre variables / _features_.
+
+]
+
+// *****************************************************************************
+
+#title-slide([Aproximación de funciones no lineales mediante redes neuronales])
+
+// *****************************************************************************
+
+#slide(title: "Redes neuronales")[
+
+  #framed[Las #stress[redes neuronales artificiales] (NNs) son modelos matemáticos conexionistas inspirados en el funcionamiento del cerebro humano.]
+
+  Se componen de una serie de #stress[neuronas] interconectadas y organizadas en #stress[capas].
+
+  #figure(image("images/nn.png", width: 30%))
+
+  - Son *aproximadores generales de funciones*, especialmente útiles para ajustar *funciones no lineales*.
+
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Redes neuronales")[
+
+  #columns(2)[
+
+    #v(1cm)
+
+    - Dentro de cada #stress[neurona] hay una #stress[función de activación].
+
+    - La entrada de cada neurona es la suma ponderada de las salidas anteriores. Dicha ponderación viene dada por los #stress[pesos] de las conexiones.
+
+    - Su arquitectura más común es la de #stress[red _feedforward_].
+
+    - Distinguimos entre capa de *entrada*, capa de *salida* y capas *ocultas*.
+
+    #colbreak()
+
+    #figure(image("images/neuron.png", width: 50%))
+
+    #figure(image("images/ann.png", width: 85%))
+
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Neurona")[
+
+  #figure(image("images/neuron_2.png", width: 90%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Funciones de activación")[
+
+  #figure(image("images/activation.png", width: 100%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Entrenamiento")[
+
+  #framed[La salida de una red neuronal se obtiene como la combinación de
+
+    1. Los *valores* de las características (entrada de la red).
+    2. Los *pesos* asignados a las conexiones entre neuronas.
+    3. Los ajustes realizados por las *funciones de activación* a lo largo de las capas de la red.
+
+  ]
+
+  - El #stress[entrenamiento] de una red neuronal implica ajustar los pesos de las conexiones entre neuronas para minimizar progresivamente el error (#stress[_loss_]) entre la predicción/salida de la red y el valor real esperado.
+
+    - En RL, el error puede ser $overline("VE")$. Utilizamos el _TD-error_ para aproximar $v(s)$.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_Backpropagation_])[
+
+  Generalmente, el entrenamiento de NNs se realiza mediante #stress[SGD], integrado en el algoritmo de #stress[_backpropagation_].
+
+  #framed(title: [Algoritmo de _backpropagation_])[
+    1. Pasada hacia delante (_forward pass_) para obtener la salida de la red.
+
+    2. Calcular el error (_loss_).
+
+    3. Pasada hacia atrás (_backward pass_) para calcular los gradientes de la función de pérdida con respecto a los pesos.
+
+    4. Actualización de los pesos (ej. mediante SGD).
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Redes neuronales")[
+
+  #set text(size: 19pt)
+
+  #columns(2)[
+    #framed[#emoji.checkmark.box Existen diferentes formas de *mejorar* el entrenamiento de una red neuronal...]
+
+    - Ajuste de hiperparámetros (ej. _step-size_, número de capas, número de neuronas por capa, funciones de activación, ...).
+    - Inicialización de pesos.
+    - _Momentum_.
+    - _Dropout_.
+    - Regularización, normalización.
+    - _Early stopping_.
+    - ...
+
+    #colbreak()
+
+
+    #framed[#emoji.crossmark También debemos tener en cuenta algunos *problemas* típicos de las redes neuronales...]
+
+    - Coste computacional.
+    - Sobreaprendizaje (_overfitting_).
+    - Explicabilidad.
+    - Calidad de datos.
+    - Desvanecimiento del gradiente.
+    - ....
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Otras arquitecturas")[
+
+  #framed[
+    #emoji.pencil Aparte de las _feedforward_, existen múltiles tipos de redes neuronales.
+
+    Su uso dependerá del problema que tratemos de abordar.
+  ]
+
+  #columns(2, gutter: 0cm)[
+
+    #v(1cm)
+
+    - Redes convolucionales (CNNs).
+    - Redes recurrentes (RNNs).
+    - GANs.
+    - LSTMs.
+    - _Transformers_.
+    - ...
+
+    #colbreak()
+
+    #figure(image("images/cnn-atari.png", width: 110%))
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#title-slide([Control _on-policy_ aproximado])
+
+// *****************************************************************************
+
+#slide(title: [Control _on-policy_ aproximado])[
+
+  ...
+
+]
+
+// *****************************************************************************
+
+#title-slide("Trabajo propuesto")
+
+// *****************************************************************************
+
+#slide(title: "Trabajo propuesto")[
+
+  - Lectura sobre #stress[_coarse coding_] y #stress[_tile coding_] (_ver Sutton & Barto sec. 9.5 & 9.6_ #text(size:18pt)[#emoji.books]).
+
+  #text(size: 24pt)[*Bibliografía y vídeos*]
+
+  - #link("https://youtu.be/Xg0WGzlEefY?si=r8Z2wrocsoHcyo7r")
+  - #link("https://statquest.org/neural-networks-part-1-inside-the-black-box/")
 ]
 
 // *****************************************************************************
