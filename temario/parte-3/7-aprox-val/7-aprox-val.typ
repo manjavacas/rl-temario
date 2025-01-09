@@ -1287,6 +1287,185 @@
 
 #slide(title: [Control _on-policy_ aproximado])[
 
+  Hemos visto cómo estimar la función estado-valor $v(s)$ haciendo uso de métodos aproximados.
+
+  #h(2cm) *PREDICCIÓN* #h(.2cm) #emoji.arrow.r #stress[_semi-gradient TD(0)_]
+
+  Nuestro *objetivo* ahora será aproximar la función *acción-valor* $q(s,a)$, de la cual derivaremos la política óptima.
+
+  #h(2cm) *CONTROL* #h(.2cm) #emoji.arrow.r #stress[_semi-gradient SARSA_]
+
+  Es decir, buscamos obtener *de forma _on-policy_*:
+
+  #grayed[$ hat(q)(s, a, bold(w)) tilde.eq q_*(s,a) $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Control semi-gradiente episódico])[
+
+  Aproximaremos la función acción-valor $hat(q) tilde.eq q_pi$ empleando muestras de entrenamiento de la forma: $S_t, A_t |-> U_t$, donde $U_t$ es nuestro *valor objetivo* (#stress[_update target_]).
+
+  - Es decir, $U_t$ es una aproximación de $q_pi (S_t, A_t)$.
+
+  En este caso, la actualización basada en descenso del gradiente para aproximar $q(s,a)$ es:
+
+  #grayed[$ bold(w)_(t+1) = bold(w)_(t+1) + alpha[U_t - hat(q)(s,a, bold(w_t))] gradient hat(q)(S_t, A_t, bold(w)) $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [SARSA _1-step_ semi-gradiente episódico])[
+
+  Por ejemplo, la versión semi-gradiente de #stress[SARSA] emplearía la siguiente actualización de pesos:
+
+  #grayed[
+    #set text(size: 21pt)
+    $
+      bold(w)_(t+1) = bold(w)_t + alpha [R_(t+1) + gamma hat(q)(S_(t+1), A_(t+1), bold(w)_t) - hat(q)(S_t, A_t, bold(w)_t)] gradient hat(q)(S_t, A_t, bold(w)_t)
+    $
+  ]
+
+  Llamamos a esto #stress[SARSA _1-step_ semi-gradiente episódico] (_episodic semi-gradient 1-step SARSA_).
+
+  - Ofrece las mismas garantías de convergencia y _fixed-point_ que TD(0).
+
+  Se resume en:
+
+  1. Predecir el valor de los pares estado-acción disponibles.
+  2. Elegir acción (ej. $epsilon$-_greedy_).
+  3. Actualizar el valor estimado.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [SARSA _1-step_ semi-gradiente episódico])[
+
+  #figure(image("images/sarsa-update.png", width: 100%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [SARSA _1-step_ semi-gradiente episódico])[
+
+  #figure(image("images/semi-grad-sarsa.png", width: 90%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Función $q$ estimada])[
+
+  Si empleamos una #stress[red neuronal] para representar $hat(q)(s,a, bold(w))$, esta puede definirse de varias formas...
+
+  #columns(2)[
+
+    #v(1cm)
+
+    - Mientras que la primera forma es apropiada cuando el espacio de acciones es *finito*, la segunda es más apropiada en problemas con valores de acción *continuos*.
+
+    - La última capa oculta representa los _features_ $bold(x)$ tales que:
+
+    $ hat(q)(s,a,bold(w)) eq bold(w)^T bold(x)(s,a) $
+
+    #colbreak()
+    #figure(image("images/nns.png"))
+  ]
+]
+
+// *****************************************************************************
+
+#focus-slide("Garantías de exploración")
+
+// *****************************************************************************
+
+#slide(title: [Garantías de exploración])[
+
+  Para garantizar la *exploración*, empleamos $epsilon$-_greedy_.
+
+  - $A_t = "argmax"_a #h(.1cm) hat(q)(S_t, a, bold(w)) $ con probabilidad $1 - epsilon$.
+  - $A_t$ aleatoria con probabilidad $epsilon$.
+
+  Recordemos que (_semi-gradient_) SARSA es un método #stress[_on-policy_], de tal manera que siempre habrá cierta probabilidad de actuar de forma sub-óptima a menos que $epsilon$ se reduzca con el tiempo.
+
+  - No se garantiza una exploración sistémica (_vs._ valores iniciales optimistas), sino que se basa en la aleatoriedad.
+
+  #framed[#emoji.face.think ¿Pero por qué no es posible emplear *valores iniciales optimistas* en problemas con *aproximación de funciones no-lineales*?]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Garantías de exploración])[
+
+  - En problemas con funciones *lineales* tenemos que $hat(q)(s,a,bold(w)) = bold(w)^T bold(x)(s,a)$, por lo que una forma de asegurar valores iniciales optimistas es asignar pesos iniciales lo suficientemente grandes:
+
+  $ bold(w) <- vec(1000, 1000, 1000, ...) $
+
+  - Pero en problemas *no-lineales*, ¿cómo sabemos qué pesos iniciales de una red neuronal son apropiados? #stress[Es por esto por lo que empleamos $epsilon$-_greedy_.]
+
+  $ hat(q)(s,a,bold(w)) = "RN"(s,a,bold(w))\ bold(w) <- ??? $
+
+]
+
+// *****************************************************************************
+
+#focus-slide("Otros métodos")
+
+// *****************************************************************************
+
+#slide(title: [_Expected SARSA_ con función $q$ aproximada])[
+
+  #framed[¿Podemos generalizar para el caso de _Expected SARSA_?]
+
+  #v(.4cm)
+
+  La regla de actualización de pesos para #stress[_Expected SARSA_] empleando una función acción-valor aproximada sería la siguiente:
+
+  #grayed[
+    #set text(size: 21pt)
+    $
+      bold(w) <- bold(w) + alpha[R_(t+1) + gamma sum_a' pi(a'|S_(t+1)) hat(q)(S_(t+1),a',bold(w)) - hat(q)(S_t, A_t, bold(w))] gradient hat(q)(S_t,A_t,bold(w))
+    $
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_Q-learning_ con función $q$ aproximada])[
+
+  #framed[¿Y en el caso de _Q-learning_?]
+
+  #v(.5cm)
+
+  La regla de actualización de pesos para #stress[_Q-learning_] empleando una función acción-valor aproximada sería la siguiente:
+
+  #grayed[
+    #set text(size: 21pt)
+    $
+      bold(w) <- bold(w) + alpha[R_(t+1) + gamma "max"_a' hat(q)(S_(t+1),a',bold(w)) - hat(q)(S_t, A_t, bold(w))] gradient hat(q)(S_t,A_t,bold(w))
+    $
+  ]
+
+  - Utilizamos el valor máximo en lugar del valor esperado.
+
+  - Recordemos que _Q-learning_ es un caso especial de _Expected SARSA_.
+
+]
+
+// *****************************************************************************
+
+#title-slide("Recompensa media")
+
+// *****************************************************************************
+
+#slide(title: [Recompensa media])[
+
   ...
 
 ]
@@ -1305,6 +1484,7 @@
 
   - #link("https://youtu.be/Xg0WGzlEefY?si=r8Z2wrocsoHcyo7r")
   - #link("https://statquest.org/neural-networks-part-1-inside-the-black-box/")
+  - #link("https://michaeloneill.github.io/RL-tutorial.html")
 ]
 
 // *****************************************************************************
