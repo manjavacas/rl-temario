@@ -1094,7 +1094,7 @@
 
   Por otro lado, aunque $G_t$ sea una suma infinita, se convierte en finita si la recompensa es siempre $> 0 $ y constante (con $gamma < 1$).
 
-  - Por ejemplo, si la recompensa es siempre $+1$, el retorno será:
+  - Por ejemplo, si la recompensa es siempre $+1$, $G_t$ será la serie geométrica:
 
   #text(size: 25pt)[
     $ G_t = sum_(k=0)^infinity gamma^k = 1 / (1-gamma) $
