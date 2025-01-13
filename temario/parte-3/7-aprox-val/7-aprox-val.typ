@@ -1464,9 +1464,325 @@
 
 // *****************************************************************************
 
+#slide(title: [Objetivo en MDPs])[
+
+  Hasta el momento, hemos visto dos formas de plantear el *objetivo* de un MDP:
+
+  - Retorno #stress[episódico], empleado en problemas finitos:
+
+  $ G_t = sum^(T-t)_(k=0) r_(t + k + 1) $
+
+  - Retorno #stress[_descontado_], empleable en problemas continuados:
+
+  $ G_t = sum^(infinity)_(k=0) gamma^k r_(t + k + 1) $
+
+  El retorno _descontado_ es útil en entornos tabulares, pero *puede ser problemático* en algunos casos.
+
+  Veamos un ejemplo...
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  - Problema continuado. Partimos de $s$ y podemos seguir $pi_"izq"$ o $pi_"der"$.
+
+  - Todas las transiciones tienen como recompensa +0, excepto las que se indican en la figura.
+
+  #figure(image("images/example.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  #columns(2)[
+
+    - La política $pi_"izq"$ da lugar a:
+
+    $
+      v_"izq" (s) &= 1 + gamma dot 0 + gamma^2 dot 0 + gamma^3 dot 0 + gamma^4 dot 0 \
+      &+ gamma^5 dot 1 + gamma^6 dot 0 + dots + \
+      &+ gamma^10 dot 1 + gamma^11 dot 0 + dots \
+      &= 1 + gamma^5 + gamma^10 + gamma^15 + dots \
+      &= sum^(infinity)_(k=0) gamma^(5k) = 1 / (1 - gamma^5) "(serie geométrica)"
+    $
+
+    #grayed[ $ v_"izq" (s) = 1 / (1 - gamma^5) $]
+
+    #colbreak()
+
+    #v(2cm)
+
+    #figure(image("images/example.png"))
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  #columns(2)[
+
+    - La política $pi_"der"$ da lugar a:
+
+    $
+      v_"der" (s) &= 0 + gamma dot 0 + gamma^2 dot 0 + gamma^3 dot 0 + gamma^4 dot 2 \
+      &+ gamma^5 dot 0 + dots + gamma^9 dot 2 + \
+      &+ gamma^10 dot 0 + dots + gamma^14 dot 2 + dots \
+      &= sum^(infinity)_(k=0) gamma^(4+5k) dot 2 = (2 gamma^4) / (1 - gamma^5)
+    $
+
+    #grayed[ $ v_"der" (s) = (2 gamma^4) / (1 - gamma^5) $]
+
+    #colbreak()
+
+    #v(2cm)
+
+    #figure(image("images/example.png"))
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  #columns(2)[
+
+    #columns(2)[
+      #grayed[ $ v_"izq" (s) = 1 / (1 - gamma^5) $]
+      #colbreak()
+      #grayed[ $ v_"der" (s) = (2 gamma^4) / (1 - gamma^5) $]
+    ]
+
+    Probemos diferentes valores de $gamma dots$
+
+    $gamma = 0.5$ #emoji.arrow.r $v_"izq" (s) tilde.eq 1, #h(.5cm) v_"der" (s) tilde.eq 0.1$
+
+    #h(2cm) $pi_"izq"$ es preferible ( #emoji.crossmark)
+
+    $gamma = 0.9$ #emoji.arrow.r $v_"izq" (s) tilde.eq 2.4, #h(.5cm) v_"der" (s) tilde.eq 3.2$
+
+    #h(2cm) $pi_"der"$ es preferible ( #emoji.checkmark.box)
+
+    #colbreak()
+
+    #v(2cm)
+
+    #figure(image("images/example.png"))
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  #columns(2)[
+
+    - Si queremos encontrar el valor de $gamma$ mínimo que nos lleve a una solución válida:
+
+    $v_"der" (s) > v_"izq" (s)$ cuando $gamma > 2^(-1/4) tilde.eq 0.841 $
+
+    #v(1cm)
+
+    #framed[El problema ante el que nos encontramos es que la magnitud del valor de descuento $gamma$ depende del número de estados del problema.]
+
+    #colbreak()
+
+    #v(2cm)
+
+    #figure(image("images/example.png"))
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  En este caso, necesitaríamos que $gamma > 2^(-1/99) tilde.eq 0.993 $
+
+  #figure(image("images/example-2.png", width: 50%))
+
+  A medida que aumenta el número de estados, #stress[$gamma$ tiende a 1 asintóticamente].
+
+  - ¡Pero $gamma$ no puede ser $=1$ al tratarse de un problema continuado!
+
+  - Y si es cercano a 1, la suma tiende a infinito.
+]
+
+// *****************************************************************************
+
 #slide(title: [Recompensa media])[
 
-  ...
+  Para evitar este tipo de problemas, se plantea una alternativa: la #stress[recompensa media].
+
+  #grayed[$
+      r(pi) &= lim_(h-->infinity) 1 / h sum^h_(t=1) EE[R_t | S_0, A_(0:t-1) tilde pi] \
+      &= lim_(t-->infinity) EE[R_t | S_0, A_(0:t-1) tilde pi] \
+      &= sum_s mu_pi (s) sum_a pi(a|s) sum_(s',r) p(s', r | s,a)r
+    $
+  ]
+
+  donde $mu_pi (s)$ es la distribución de visitas a un estado $s$, tal que: $ mu_pi (s) = lim_(t-->infinity) Pr{S_t = s | A_(0:t-1) tilde pi} $
+]
+
+// *****************************************************************************
+
+#slide(title: [Retorno diferencial])[
+
+  De esta forma, la calidad de una política $pi$ viene dada por la #stress[recompensa media por _timestep_] obtenida bajo esa política.
+
+  #grayed[$ r(pi) &= lim_(h-->infinity) 1 / h sum^h_(t=1) EE[R_t | S_0, A_(0:t-1) tilde pi] $]
+
+  - Toda política que maximice $r(pi)$ es una política óptima.
+
+  - El #stress[retorno] pasa a denominarse #stress[retorno diferencial], y se define tal que:
+
+  #grayed[$ G_t = R_(t+1) - r(pi) + R_(t+2) - r(pi) + R_(t+3) - r(pi) + dots $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ejemplo])[
+
+  #columns(2)[
+
+    Volviendo al ejemplo anterior...
+
+    #grayed[$ r(pi_"izq") = 1 / 5 = 0.2 $]
+
+    #grayed[$ r(pi_"der") = 2 / 5 = 0.4 $]
+
+    La recompensa media nos indica directamente qué política es preferible.
+
+    #colbreak()
+
+    #v(2cm)
+
+    #figure(image("images/example.png"))
+  ]
+]
+
+// // *****************************************************************************
+
+// #slide(title: [Ejemplo])[
+
+//     #columns(4)[
+
+//       Siempre $pi_"izq"$:
+//       $ G_t &= 1 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 0 - 0.2 + dots  = 0.4 \
+//       $
+
+//       #colbreak()
+
+//       Siempre $pi_"der"$:
+//       $ G_t &= 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 2 - 0.4 + dots  = -0.8 \
+//       $
+
+//       #colbreak()
+
+//       $pi_"izq"$ y después $pi_"der"$ siempre:
+//       $ G_t &= 1 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & 0 - 0.4 + \
+//             & -0.8 = -1.8 \
+//       $
+
+//       #colbreak()
+
+//       $pi_"der"$ y después $pi_"izq"$ siempre:
+//       $ G_t &= 0 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 0 - 0.2 + \
+//             & 2 - 0.2 + \
+//             & 0.4= 1.4 \
+//       $
+
+//     ]
+
+// ]
+
+// *****************************************************************************
+
+#slide(title: [Ecuaciones de Bellman con retorno diferencial])[
+
+  Las #stress[ecuaciones de Bellman] con retorno diferencial se definen de la siguiente forma:
+
+  #v(.4cm)
+
+  $ v_pi (s) = sum_a pi(a|s) sum_(r,s') p(s',r|s,a) [r-r(pi) + v_pi (s')] $
+  $ q_pi (s,a) = sum_(r,s') p(s',r|s,a) [r-r(pi) + sum_a' pi(a'|s') q_pi (s',a')] $
+  $ v_* (s) = max_a sum_(r,s') p(s',r|s,a) [r-max_pi r(pi) + v_* (s')] $
+  $ q_* (s,a) = sum_(r,s') p(s',r|s,a) [r-max_pi r(pi) + max_a' q_* (s',a')] $
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_TD-error_ con retorno diferencial])[
+
+  También contamos con una definición de #stress[_TD-error_] empleando retorno diferencial:
+
+  $ delta_t = R_(t+1) - overline(R)_t + hat(v)(S_(t+1), bold(w)_t) - hat(v)(S_t, bold(w)_t) $
+  $ delta_t = R_(t+1) - overline(R)_t + hat(q)(S_(t+1), A_(t+1), bold(w)_t) - hat(q)(S_t, A_t, bold(w)_t) $
+
+  donde $overline(R)_t$ es la estimación en el instante $t$ de la recompensa media $r(pi)$.
+
+  #framed[Empleando estas definiciones alternativas, los algoritmos vistos hasta el momento pueden adaptarse a la formulación de recompensa media sin apenas cambios.]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [SARSA diferencial semi-gradiente])[
+
+  #figure(image("images/diff-sarsa.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_TD-error_ _n-step_ con retorno diferencial])[
+
+  Dada la siguiente definición del #stress[retorno diferencial _n-step_]:
+
+  $
+    G_(t:t+n) = R_(t+1) + overline(R)_(t+n-1) + dots + R_(t+n) - overline(R)_(t+n-1) + hat(q)(S_(t+n), A_(t+n), bold(w)_(t+n-1))
+  $
+
+  la versión #stress[_n-step_ del _TD-error_ diferencial] es:
+
+  $ delta_t = G_(t:t+n) - hat(q) (S_t, A_t, bold(w)) $
+
+  Esto nos permite formular la versión diferencial _n-step_ de SARSA semi-gradiente...
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [SARSA _n-step_ diferencial semi-gradiente])[
+
+  #figure(image("images/sarsa-diff-n.png"))
 
 ]
 
