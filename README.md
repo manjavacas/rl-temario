@@ -28,14 +28,12 @@ Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es))
 
 ### Parte 3. [Métodos basados en aproximación de funciones](temario/parte-3/)
 
-> **🚧  En desarrollo**.
-
 7. [Aproximación de funciones de valor](temario/parte-3/7-aprox-val.pdf)
-8. [Aproximación de políticas](temario/parte-3/8-aprox-poli.pdf)
+8. [Aproximación de políticas](temario/parte-3/8-aprox-poli.pdf) **🚧  En desarrollo**
 
 ### Parte 4. [Aprendizaje por refuerzo profundo](temario/parte-4/)
 
-> **📝 _TO-DO_**.
+> **📝 _TO-DO_**
 
 ## 📁 Material
 
