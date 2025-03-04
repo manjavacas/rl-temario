@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.3": *
+#import "@preview/typslides:1.2.4": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -565,7 +565,7 @@
 
   #set text(size: 27pt)
 
-  #framed[#emoji.face.think ¿Qué ocurre si no tenemos $v_pi$ para calcular el *error*?]
+  #framed[#emoji.face.think ¿Qué ocurre si no contamos con $v_pi$ para calcular el *error*?]
 
   #v(1cm)
 
@@ -1661,7 +1661,7 @@
 
     #grayed[$ r(pi_"der") = 2 / 5 = 0.4 $]
 
-    La recompensa media nos indica directamente qué política es preferible.
+    La recompensa media nos indica directamente qué política es mejor.
 
     #colbreak()
 
@@ -1670,6 +1670,22 @@
     #figure(image("images/example.png"))
   ]
 ]
+
+// *****************************************************************************
+
+#slide(title: [Problema en aproximación de funciones])[
+
+  #framed[
+    ¿Por qué en problemas con aproximación de funciones es preferible la recompensa media al enfoque descontado?
+  ]
+
+  - En entornos descontados, es necesario definir un *factor de descuento $gamma$* ajustado de forma "manual".
+  - En función del valor de $gamma$ elegido, nuestra representación/modelo de la función de valor $v, q$ puede variar significativamente. Esto hace que nuestra aproximación sea *inestable y dependiente de $gamma$*.
+  - Si empleamos el *retorno diferencial*, contamos con *funciones de valor independientes de $gamma$* (solamente dependientes de la recompensa media).
+  - El uso de la *recompensa media nos permite comparar políticas sin depender del valor de $gamma$*.
+
+]
+
 
 // // *****************************************************************************
 
@@ -1794,13 +1810,19 @@
 
 #slide(title: "Trabajo propuesto")[
 
+  - Estudiar las #stress[implementaciones] de los algoritmos vistos.
+    - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/value_approx/")
+    - Impleméntalos por tu cuenta y aplícalos en otros problemas.
   - Lectura sobre #stress[_coarse coding_] y #stress[_tile coding_] (_ver Sutton & Barto sec. 9.5 & 9.6_ #text(size:18pt)[#emoji.books]).
+  - Investiga sobre el algoritmo #stress[DQN] (Deep Q-Network).
 
   #text(size: 24pt)[*Bibliografía y vídeos*]
 
   - #link("https://youtu.be/Xg0WGzlEefY?si=r8Z2wrocsoHcyo7r")
   - #link("https://statquest.org/neural-networks-part-1-inside-the-black-box/")
   - #link("https://michaeloneill.github.io/RL-tutorial.html")
+  - #link("https://www.davidsilver.uk/wp-content/uploads/2020/03/FA.pdf")
+  - #link("https://www.youtube.com/watch?v=Vky0WVh_FSk")
 ]
 
 // *****************************************************************************
