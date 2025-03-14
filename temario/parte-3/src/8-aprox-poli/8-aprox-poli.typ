@@ -729,6 +729,7 @@
   - #link("https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning")
   - #link("https://www.youtube.com/watch?v=e20EY4tFC_Q")
   - #link("https://www.youtube.com/watch?v=AiFM6LZ7Vuo")
+  - #link("https://lilianweng.github.io/posts/2018-04-08-policy-gradient/")
 ]
 
 // *****************************************************************************
