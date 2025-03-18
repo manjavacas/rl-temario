@@ -184,6 +184,18 @@
 
 // *****************************************************************************
 
+#slide(title: [Valor _vs._ preferencia])[
+
+  #framed(
+    title: "Valor",
+  )[Estimación de cuán bueno es un estado/acción en términos de la recompensa esperada a largo plazo.]
+
+  #framed(title: "Preferencia")[Medida de cuánto prefiere el agente una acción sobre otra bajo su política actual. ]
+
+]
+
+// *****************************************************************************
+
 #slide(title: [Políticas parametrizadas _soft-max_ _vs._ $bold(epsilon)$-_greedy_ ])[
 
   Ventaja de emplear políticas parametrizadas + _soft-max_ frente a $epsilon$-_greedy_:
@@ -271,6 +283,22 @@
 
 #slide(title: [Rendimiento de una política])[
 
+  #grayed[$J(bold(theta)) &= v_pi_bold(theta) (s_0)$]
+
+  Esta formulación representa el rendimiento como la expectación de la recompensa total obtenida a partir de un estado inicial $s_0$.
+
+  - También puede expresarse como la recompensa esperada dada una trayectoria $tau$:
+
+  #grayed[
+    $J(bold(theta)) = EE_pi_bold(theta) [r(tau)]$
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Rendimiento de una política])[
+
   La política parametrizada por $bold(theta)$ se optimiza a medida que los valores de $bold(theta)$ dan lugar a un mejor rendimiento.
 
   - Actualización basada en *ascenso del gradiente*.
@@ -347,7 +375,9 @@
     $ gradient_theta J(bold(theta)) prop sum_s mu(s) sum_a q_pi_theta (s,a) gradient_theta pi_theta (a|s,bold(theta)) $
   ]
 
-  Éste ofrece una definición del gradiente del rendimiento con respecto a $bold(theta)$ sin necesidad de tener en cuenta la derivada de la distribución de estados.
+  Éste ofrece una definición del gradiente del rendimiento con respecto a $bold(theta)$ *sin necesidad de tener en cuenta la derivada de la distribución de estados visitados* empleando $pi_bold(theta)$.
+
+  - Es decir, calcular $gradient_bold(theta) J(bold(theta))$ sin necesidad de calcular $sum_s gradient_bold(theta) mu(s)$.
 
 ]
 
@@ -695,7 +725,7 @@
 
   - La distribución $mu(s) = eta(s) / (sum_s' eta(s'))$ es la distribución _on-policy_ bajo $pi$ (tiempo invertido en el estado $s$ bajo la política $pi$).
 
-  Teniendo esto en cuenta, obtenemos finalmente que:
+  Teniendo esto en cuenta, obtenemos que:
 
   #grayed[
     #set text(size: 26pt)
@@ -705,17 +735,238 @@
     $
   ]
 
-
   Esta expresión permite obtener el gradiente del rendimiento con respecto a los parámetros de la política (es decir, $gradient_bold(theta) J(bold(theta))$) sin necesidad de calcular la derivada de la distribución de estados.
-
-  - Veamos ahora cómo aplicarlo...
 
 ]
 
+// *****************************************************************************
+
+#slide(title: [Demostración del teorema del grandiente de la política])[
+
+  Finalmente, podemos reordenar la expresión y escribirla en términos de *valor esperado*, obteniendo:
+
+  #grayed[
+    #set text(size: 26pt)
+    $
+      gradient J(bold(theta))
+      &prop sum_s mu(s) sum_a q_pi (s,a) gradient pi(a|s)\
+      &= EE_pi [sum_a q_pi (S_t,a) gradient pi(a|S_t)]
+    $
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Demostración del teorema del grandiente de la política])[
+
+  #grayed[
+    #set text(size: 26pt)
+    $
+      gradient J(bold(theta))
+      prop EE_pi [sum_a q_pi (S_t,a) gradient pi(a|S_t)]
+    $
+  ]
+
+  #framed(
+    title: "Teorema del gradiente de la política",
+  )[*El gradiente del rendimiento con respecto a los parámetros de la política* $gradient_bold(theta) J(bold(theta))$ es proporcional al *valor esperado de los gradientes de la política* $pi_bold(theta)$ ponderados por los *valores de acción* $q_pi_bold(theta) (s,a)$.]
+
+  Una vez introducido el teorema, veamos cómo aplicarlo para obtener *políticas óptimas*...
+
+]
 
 // *****************************************************************************
 
 #title-slide([REINFORCE:\ gradiente de la política Monte Carlo])
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE])[
+
+  #framed[#stress[REINFORCE]#footnote[_*RE* eward *I* ncrement = *N* onnegative *F* actor $times$ *O* ffset *R* einforcement $times$ *C* haracteristic *E* ligibility_] es un algoritmo clásico basado en gradiente de la política #footnote[#emoji.books _Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine learning, 8, 229-256._].]
+
+  - Es de tipo #stress[Monte Carlo], ya que actualiza los parámetros de la política basándose en el retorno obtenido al final de cada episodio.
+
+  // #cols[
+  //   - Partiendo del teorema: #grayed[#text(size:18pt)[$gradient J(bold(theta))
+  //     prop EE_pi [sum_a q_pi (S_t,a) gradient pi(a|S_t)]$]]
+  // ][
+  //   - Empleamos la #stress[regla de actualización]:#grayed[ #text(size:18pt)[ $bold(theta) <- bold(theta) + alpha sum_a hat(q)(S_t,a,bold(w)) gradient pi (a | S_t, bold(theta))$]]
+  // ]
+
+  #figure(image("images/trajectory.png", width: 60%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE])[
+
+  Partimos de la formulación del *teorema del gradiente de la política*:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi [sum_a gradient pi(a|S_t, bold(theta)) q_pi (S_t,a) ]
+    $
+  ]
+
+  Multiplicamos y dividimos por $pi(a|S_t, bold(theta))$:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi [sum_a gradient pi(a|S_t, bold(theta)) q_pi (S_t,a) (pi(a|S_t, bold(theta))) / (pi(a|S_t, bold(theta))) ]
+    $
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE])[
+
+  Si reorganizamos la expresión, tenemos:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi [sum_a pi(a|S_t, bold(theta)) q_pi (S_t,a) (gradient pi(a|S_t, bold(theta))) / (pi(a|S_t, bold(theta))) ]
+    $
+  ]
+
+  Después, reemplazamos $a$ por $A_t tilde pi$:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi [q_pi (S_t, A_t) (gradient pi(A_t|S_t, bold(theta))) / (pi(A_t|S_t, bold(theta))) ]
+    $
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE])[
+
+  Dado que $q_pi (S_t, A_t) = EE_pi [G_t | S_t, A_t]$, finalmente obtenemos:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi [G_t (gradient pi(A_t|S_t, bold(theta))) / (pi(A_t|S_t, bold(theta)))]
+    $
+  ]
+
+  Donde:
+
+  - $G_t$ es el retorno obtenido#footnote[*REINFORCE es un algoritmo de tipo Monte Carlo* porque actualiza los parámetros de la política basándose en el retorno obtenido al final de cada episodio.].
+
+  - La expresión $G_t (gradient pi(A_t|S_t, bold(theta))) / (pi(A_t|S_t, bold(theta)))$ es una cantidad que puede ser muestreada en cada _timestep_, cuyo valor esperado es igual al gradiente.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE: regla de actualización])[
+
+  A partir de esta fórmula obtenemos la #stress[regla de actualización] de $bold(theta)$ empleada por REINFORCE:
+
+  #grayed[
+    $
+      bold(theta)_(t+1) = bold(theta)_t + alpha G_t (gradient pi(A_t|S_t, bold(theta)_t)) / (pi(A_t|S_t, bold(theta)_t))
+    $
+  ]
+
+  Su interpretación es intuitiva:
+
+  - Cada incremento de $bold(theta)$ es proporcional a el *retorno acumulado* $G_t$ hasta el instante $t$, multiplicado por el *gradiente de la probabilidad de realizar * $A_t$ dividido por la *probabilidad de realizar* $A_t$.
+
+  - El resultado es un *vector* que representa la dirección en el espacio de parámetros que más incrementa la probabilidad de repetir $A_t$ en futuras visitas a $S_t$.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE: regla de actualización])[
+
+  #set text(size: 18pt)
+
+  #framed[
+    #emoji.thumb.up Si una acción lleva a una alta recompensa acumulada, su probabilidad aumentará en futuros epsiodios.
+
+    #emoji.thumb.down Si el retorno obtenido es bajo, la acción se tomará con menor frecuencia.
+
+    #emoji.arm Esto *refuerza* acciones buenas y reduce la probabilidad de realizar acciones potencialmente peores.
+  ]
+
+  Además, #stress[la actualización es proporcional a la probabilidad]:
+
+  - *Acciones que ya eran probables no cambian tanto*. Esto evita que acciones seleccionadas con más frecuencia no tengan una ventaja injusta, ya que podrían predominar sin generar altos retornos.
+
+  - *Acciones que eran improbables* pero resultaron en un alto $G_t$, se ven reforzadas significativamente.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE: regla de actualización compacta])[
+
+  Una *forma alternativa* de expresar la regla de actualización de REINFORCE es la siguiente:
+
+  #grayed[
+    $
+      bold(theta)_(t+1) = bold(theta)_t + alpha G_t gradient ln pi(A_t|S_t, bold(theta)_t)
+    $
+  ]
+
+
+  La simplificación propuesta se debe a la igualdad:
+
+  $ gradient ln x = (gradient x) / x $
+
+  Esto permite una representación más compacta y facilita el cálculo del gradiente.
+
+  #text(size: 16pt)[
+    - Al vector $gradient ln pi(A_t|S_t, bold(theta)_t)$ se le suele denominar *vector de elegiblidad* (_eligibility vector_).
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE])[
+
+  #figure(image("images/reinforce.png"))
+
+  - Se incluye el _factor de descuento_ $gamma$ para problemas con retorno descontado.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Convergencia y limitaciones de REINFORCE])[
+
+  #framed[
+
+    #emoji.checkmark.box REINFORCE ofrece garantías de #stress[convergencia] en óptimos locales en condiciones estocásticas de aproximación y descenso continuo de $alpha$.
+
+    #emoji.crossmark No obstante, al tratarse de un método de tipo Monte Carlo, presenta un #stress[aprendizaje lento] y una #stress[alta varianza].
+
+  ]
+
+  Para abordar estas limitaciones, se proponen las variaciones de REINFORCE que estudiaremos a continuación.
+
+]
+
+// *****************************************************************************
+
+#title-slide([REINFORCE con _baseline_])
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE con _baseline_])[
+
+  ... #footnote[El término _baseline_ es equivalente a _#stress[valor de referencia]_.]
+
+]
 
 // *****************************************************************************
 
@@ -729,7 +980,9 @@
   - #link("https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning")
   - #link("https://www.youtube.com/watch?v=e20EY4tFC_Q")
   - #link("https://www.youtube.com/watch?v=AiFM6LZ7Vuo")
+  - #link("https://www.youtube.com/watch?v=ZODHxkjkuv4")
   - #link("https://lilianweng.github.io/posts/2018-04-08-policy-gradient/")
+
 ]
 
 // *****************************************************************************
