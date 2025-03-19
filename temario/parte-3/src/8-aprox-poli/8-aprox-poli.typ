@@ -778,13 +778,13 @@
 
 // *****************************************************************************
 
-#title-slide([REINFORCE:\ gradiente de la política Monte Carlo])
+#title-slide([REINFORCE])
 
 // *****************************************************************************
 
 #slide(title: [REINFORCE])[
 
-  #framed[#stress[REINFORCE]#footnote[_*RE* eward *I* ncrement = *N* onnegative *F* actor $times$ *O* ffset *R* einforcement $times$ *C* haracteristic *E* ligibility_] es un algoritmo clásico basado en gradiente de la política #footnote[#emoji.books _Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine learning, 8, 229-256._].]
+  #framed[#stress[REINFORCE]#footnote[_*RE* eward *I* ncrement = *N* onnegative *F* actor $times$ *O* ffset *R* einforcement $times$ *C* haracteristic *E* ligibility_], o *_gradiente de la política Monte Carlo_*, es un algoritmo clásico basado en el gradiente de la política #footnote[#emoji.books _Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine learning, 8, 229-256._].]
 
   - Es de tipo #stress[Monte Carlo], ya que actualiza los parámetros de la política basándose en el retorno obtenido al final de cada episodio.
 
@@ -958,13 +958,261 @@
 
 // *****************************************************************************
 
-#title-slide([REINFORCE con _baseline_])
+#title-slide([Valores de referencia])
+
+// *****************************************************************************
+
+#slide(title: [Problemas de REINFORCE])[
+
+  #framed[Los algoritmos que emplean el *retorno episódico* $G$, como #stress[REINFORCE], tienden a presentar una *alta varianza*.]
+
+  #cols[
+
+    - En este caso, la varianza se da en la actualización de los parámetros de la política, $bold(theta)$.
+
+    - El gradiente se calcula a partir de la recompensa acumulada en un episodio completo, lo que introduce *grandes fluctuaciones* en la actualización de los parámetros.
+  ][
+    #figure(image("images/value_update.png", width: 80%))
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [Problemas de REINFORCE])[
+
+  - Además, la *variabilidad entre episodios* puede ser significativa, dificultando la convergencia del aprendizaje.
+
+  #figure(image("images/variability.png", width: 80%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Problemas de REINFORCE])[
+
+  #framed[
+    #emoji.arrow.r La *acumulación de eventos aleatorios* a lo largo de las trayectorias ---incluyendo la *aleatoriedad del estado inicial*--- dan lugar a un retorno $G$ que puede variar significativamente de un episodio a otro.
+  ]
+
+
+]
 
 // *****************************************************************************
 
 #slide(title: [REINFORCE con _baseline_])[
 
-  ... #footnote[El término _baseline_ es equivalente a _#stress[valor de referencia]_.]
+  El teorema del gradiente de la política permite incluir una comparación del valor de $q_pi_bold(theta) (s,a)$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
+
+  - El #stress[valor de referencia] $b(s)$ puede ser cualquier valor o función, siempre que no dependa de la acción tomada $a$.
+
+  De esta forma, tenemos:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(q_pi (s,a) - b(s))) gradient pi(a|s,bold(theta))
+    $
+  ]
+
+  - Dicho valor no afecta al gradiente, simplemente es una expectativa del valor real.
+  - Si este valor se aproxima mínimamente al valor real de $s$, la varianza de la actualización de los parámetros se verá reducida.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Regla de actualización de REINFORCE con _baseline_])[
+
+  De esta forma, tenemos el algoritmo llamado #stress[REINFORCE con _baseline_], también denominado #stress[_Vanilla Policy Gradient_] (*VPG*), que emplea la siguiente #stress[regla de actualización]:
+
+  #grayed[
+    $
+      bold(theta)_(t+1) = bold(theta)_t + alpha (colmath(G_t - b(S_t))) gradient ln pi(A_t|S_t, bold(theta)_t)
+    $
+  ]
+
+  - Se trata de un caso más general que REINFORCE sin _baseline_, ya que si $b(s) = 0$, obtenemos la regla de actualización vista anteriormente.
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE con _baseline_])[
+
+  #cols[
+    Emplear un #stress[_baseline_] permite incorporar una *estimación* del valor real que facilite la actualización de $bold(theta)$.
+
+    - La *dirección* del gradiente se mantiene, ya que la resta de $b(s)$ no afecta a la dirección de la actualización.
+
+    - La *convergencia* del algoritmo se ve favorecida, ya que la *varianza* de la actualización de los parámetros se reduce.
+  ][
+    #grayed[
+      #set text(size: 15pt)
+      $
+        bold(theta)_(t+1) = bold(theta)_t + alpha (G_t - b(S_t)) gradient ln pi(A_t|S_t, bold(theta)_t)
+      $
+    ]
+    #figure(image("images/with_baseline.png", width: 80%))
+  ]
+]
+
+// *****************************************************************************
+
+#focus-slide([¿Qué _baseline_ utilizar?])
+
+// *****************************************************************************
+
+#slide(title: [Elección del _baseline_])[
+
+  #framed[Es común emplear como _baseline_ la estimación del #stress[estado-valor], $hat(v) (S_t, bold(w))$.]
+
+  - Dado que que REINFORCE está basado en Monte Carlo, los pesos $bold(w)$ pueden estimarse *de la misma manera*, tal y como vimos en el tema anterior.
+
+  De esta forma, REINFORCE empleando $hat(v)$ como _baseline_ se resume en:
+  #grayed[
+    #set align(left)
+    #set text(size: 19pt)
+    1. Generar episodio: $S_0, A_0, R_1, dots, S_(T-1), A_(T-1), R_T$ siguiendo $pi_bold(theta)$ \
+    2. Para cada _timestep_ $t = 0, 1, dots, T-1$ del episodio:
+
+      - Calcular $G = sum^T_(k=t+1) gamma^(k-t-1) R_k$
+      - Restar el _baseline_: $delta = G - hat(v)(S_t, bold(w))$ \
+      - Actualizar $bold(w), bold(theta)$
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [REINFORCE con _baseline_])[
+
+  #figure(image("images/reinforce_baseline.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Comparativa])[
+
+  #figure(image("images/comparison.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Conclusiones])[
+
+  - En resumen, #stress[REINFORCE con _baseline_], o #stress[VPG], es un método robusto basado en el teorema del gradiente de la política.
+
+  - Decimos que es un método *_no-sesgado_*, porque la actualización de $bold(theta)$ se basa en #stress[retornos episódicos] $G$, obtenidos directamente a partir de la interacción con el entorno.
+
+  - El único *sesgo* que presentan se encuentran la *función de valor aproximada* $hat(v)$ que empleamos como #stress[_baseline_], pero este sesgo es prácticamente nulo.
+
+]
+
+// *****************************************************************************
+
+#title-slide([Métodos _actor-critic_])
+
+// *****************************************************************************
+
+#slide(title: [Métodos _actor-critic_])[
+
+  #framed[Los métodos #stress[_actor-critic_] son una extensión de REINFORCE con _baseline_ que, en lugar de usar $G_t$, emplean #stress[_bootstrapping_].]
+
+  - Es decir, en vez de esperar al final del episodio y utilizar el retorno real $G$ para actualizar $bold(theta)$, se emplea una *estimación* de este.
+
+  - Es análogo a TD, Sarsa o _Q-learning_, donde sustituimos el retorno de episodios completos por *estimaciones _n_ pasos hacia delante* desde el estado actual.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Métodos _actor-critic_])[
+
+
+  #framed(
+    title: "Actor",
+  )[#emoji.beetle Aprende la política $pi(A_t | S_t, bold(theta))$ y selecciona las acciones a realizar.]
+
+  #framed(
+    title: [_Critic_ (_crítico_)],
+  )[#emoji.beetle.lady Aprende una función de valor $hat(v)(S_t, bold(w))$, $hat(q)(S_t, A_t, bold(w))$ y estima cómo de buenas son las acciones realizadas por el actor.]
+]
+
+// *****************************************************************************
+
+#slide(title: [_One-step actor-critic_])[
+
+  El ejemplo más básico de este tipo de algoritmos es #stress[_one-step actor-critic_], donde se sustituye el retorno $G$ (_full return_) por el _one-step return_: $R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))$.
+
+  - De esta forma, la actualización de $bold(theta)$ es la siguiente:
+
+  #grayed[
+    $
+      bold(theta)_(t+1)
+      = bold(theta)_t + alpha (colmath(R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))) gradient ln pi(A_t|S_t, bold(theta)_t)
+    $
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_One-step actor-critic_])[
+
+  #figure(image("images/one_step_ac.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ventajas])[
+
+  - Los métodos _actor-critic_ es permiten *actualizaciones más frecuentes* de los parámetros de la política, ya que no es necesario esperar al final del episodio para obtener el retorno.
+
+    - De hecho, podemos ajustar al nivel de _bootstrapping_ a emplear (número de _steps_ hacia delante).
+
+  - Además, la *varianza* de la actualización de los parámetros se reduce, ya que se emplea una estimación del retorno en lugar del retorno real.
+
+  - Esto da lugar a una velocidad *convergencia* mayor, y favorece la aplicación en *problemas continuados*.
+]
+
+// *****************************************************************************
+
+#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+  #set text(size: 25pt)
+  Si REINFORCE con _baseline_ utiliza una *función de valor aproximada* $hat(v)(S_t, bold(w))$ como _baseline_... #emoji.face.think
+
+  #v(1cm)
+
+  #set align(center)
+  #framed[¿Por qué no se considera *_actor-critic_*?]
+]
+
+// *****************************************************************************
+
+#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+  ... TO - do
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+  #framed(title: [#emoji.books Morales, M. (2020). Grokking deep reinforcement learning.])[
+    #set text(size: 17pt)
+    (...) _according to one of the fathers of RL, Rich Sutton, policy-gradient methods approximate the gradient of the performance measure, whether or not they learn an approximate
+    value function. However, David Silver, one of the most prominent figures in DRL, and a former
+    student of Sutton, disagrees. He says that policy-based methods don’t additionally learn a
+    value function, only actor-critic methods do. But, Sutton further explains that only methods
+    that learn the value function using bootstrapping should be called actor-critic, because it’s
+    bootstrapping that adds bias to the value function, and thus makes it a “critic.” I like this distinction; therefore, REINFORCE and VPG, as presented in this book, aren’t considered actor-
+    critic methods. But beware of the lingo, it’s not consistent._
+  ]
 
 ]
 
