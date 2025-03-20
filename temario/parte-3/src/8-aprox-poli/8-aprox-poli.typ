@@ -942,6 +942,27 @@
 
 // *****************************************************************************
 
+#slide(title: [Otra posible formulación...])[
+
+  El *objetivo* de REINFORCE también puede expresarse como:
+
+  #grayed[
+    $gradient J(bold(theta)) prop EE_pi [q_pi (S_t, A_t) gradient pi (A_t|S_t, bold(theta))]$
+  ]
+
+  y la *regla de actualización* como:
+
+  #grayed[
+    $
+      bold(theta) <- bold(theta) + alpha q_pi (S_t, A_t) gradient ln pi(A_t|S_t, bold(theta))
+    $
+  ]
+
+  dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$.
+]
+
+// *****************************************************************************
+
 #slide(title: [Convergencia y limitaciones de REINFORCE])[
 
   #framed[
@@ -1001,15 +1022,24 @@
 
 #slide(title: [REINFORCE con _baseline_])[
 
-  El teorema del gradiente de la política permite incluir una comparación del valor de $q_pi_bold(theta) (s,a)$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
+  // El teorema del gradiente de la política permite incluir una comparación del valor de $q_pi_bold(theta) (s,a)$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
+
+  El teorema del gradiente de la política permite incluir una comparación del valor $G$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
 
   - El #stress[valor de referencia] $b(s)$ puede ser cualquier valor o función, siempre que no dependa de la acción tomada $a$.
 
-  De esta forma, tenemos:
+  // De esta forma, y dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$, tenemos:
+  De esta forma, tenemos que:
 
+  // #grayed[
+  //   $
+  //     gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(q_pi (s,a) - b(s))) gradient pi(a|s,bold(theta))
+  //   $
+  // ]
+  //
   #grayed[
     $
-      gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(q_pi (s,a) - b(s))) gradient pi(a|s,bold(theta))
+      gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(G - b(s))) gradient pi(a|s,bold(theta))
     $
   ]
 
@@ -1117,7 +1147,73 @@
 
 #slide(title: [Métodos _actor-critic_])[
 
-  #framed[Los métodos #stress[_actor-critic_] son una extensión de REINFORCE con _baseline_ que, en lugar de usar $G_t$, emplean #stress[_bootstrapping_].]
+  #figure(image("images/AC.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Métodos _actor-critic_])[
+
+  Todo algoritmo _actor-critic_ está compuesto por dos funciones con sus propios conjuntos de parámetros ($bold(theta), bold(w)$):
+
+  #framed(
+    title: "Actor",
+  )[#emoji.beetle Aprende la política $pi(A_t | S_t, bold(theta))$ y muestrea las acciones a realizar.]
+
+  #framed(
+    title: [_Critic_ (_crítico_)],
+  )[#emoji.beetle.lady Aprende una función de valor $hat(v)(S_t, bold(w))$, $hat(q)(S_t, A_t, bold(w))$ y estima cómo de buenas son las acciones realizadas por el actor.]
+]
+
+// *****************************************************************************
+
+#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+  #set text(size: 25pt)
+  Si REINFORCE con _baseline_ aprende una *política* $pi_bold(theta)$ y utiliza una *función de valor aproximada* $hat(v)(S_t, bold(w))$ como _baseline_... #emoji.face.think
+
+  #v(1cm)
+
+  #set align(center)
+  #framed[¿Por qué no se considera *_actor-critic_*?]
+]
+
+// *****************************************************************************
+
+#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+  - #stress[REINFORCE con _baseline_] es un algoritmo de tipo Monte Carlo, ya que requiere esperar *final* del episodio para evaluar el error.
+
+  #grayed[$delta = G - hat(v)(S_t, bold(w))$]
+
+  - #stress[Actor-critic] permite evaluar el error de forma online, convirtiéndolo en un algoritmo basado en TD, es decir, _bootstrapping_.
+
+  #grayed[$delta = R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))$]
+]
+
+// // *****************************************************************************
+
+// #slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+
+//   #framed(title: [#emoji.books Morales, M. (2020). Grokking deep reinforcement learning.])[
+//     #set text(size: 17pt)
+//     (...) _according to one of the fathers of RL, Rich Sutton, policy-gradient methods approximate the gradient of the performance measure, whether or not they learn an approximate
+//     value function. However, David Silver, one of the most prominent figures in DRL, and a former
+//     student of Sutton, disagrees. He says that policy-based methods don’t additionally learn a
+//     value function, only actor-critic methods do. But, Sutton further explains that only methods
+//     that learn the value function using bootstrapping should be called actor-critic, because it’s
+//     bootstrapping that adds bias to the value function, and thus makes it a “critic.” I like this distinction; therefore, REINFORCE and VPG, as presented in this book, aren’t considered actor-
+//     critic methods. But beware of the lingo, it’s not consistent._
+//   ]
+
+// ]
+
+// *****************************************************************************
+
+#slide(title: [Métodos _actor-critic_])[
+
+  #framed[Los métodos #stress[_actor-critic_] son una extensión de REINFORCE con _baseline_ que, en lugar de usar el retorno $G$, emplean #stress[_bootstrapping_].]
 
   - Es decir, en vez de esperar al final del episodio y utilizar el retorno real $G$ para actualizar $bold(theta)$, se emplea una *estimación* de este.
 
@@ -1127,23 +1223,11 @@
 
 // *****************************************************************************
 
-#slide(title: [Métodos _actor-critic_])[
-
-
-  #framed(
-    title: "Actor",
-  )[#emoji.beetle Aprende la política $pi(A_t | S_t, bold(theta))$ y selecciona las acciones a realizar.]
-
-  #framed(
-    title: [_Critic_ (_crítico_)],
-  )[#emoji.beetle.lady Aprende una función de valor $hat(v)(S_t, bold(w))$, $hat(q)(S_t, A_t, bold(w))$ y estima cómo de buenas son las acciones realizadas por el actor.]
-]
-
-// *****************************************************************************
-
 #slide(title: [_One-step actor-critic_])[
 
-  El ejemplo más básico de este tipo de algoritmos es #stress[_one-step actor-critic_], donde se sustituye el retorno $G$ (_full return_) por el _one-step return_: $R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))$.
+  El ejemplo más básico de este tipo de algoritmos es #stress[_one-step actor-critic_], donde se sustituye el retorno $G_t$ (_full return_) por el _one-step return_:
+
+  $ R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w)) $
 
   - De esta forma, la actualización de $bold(theta)$ es la siguiente:
 
@@ -1167,52 +1251,153 @@
 
 // *****************************************************************************
 
-#slide(title: [Ventajas])[
+// #slide(title: [_One-step actor-critic_])[
 
-  - Los métodos _actor-critic_ es permiten *actualizaciones más frecuentes* de los parámetros de la política, ya que no es necesario esperar al final del episodio para obtener el retorno.
+//   Igualmente aplicable para la función $q(s,a,bold(w))$:
+
+//   #figure(image("images/qac.png"))
+
+// ]
+
+// *****************************************************************************
+
+#slide(title: [Arquitectura _actor-critic_])[
+
+  #figure(image("images/ac_arch.png", width: 53%))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [_One-step actor-critic_])[
+
+  Como hemos visto, las reglas de actualización para actor ($bold(theta)$) y crítico ($bold(w)$) son:
+
+  #framed(title: "Actualización del actor")[
+    $bold(theta) <- bold(theta) + alpha_bold(theta)[R_t + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient ln (pi(A_t | S_t, bold(theta)))$
+  ]
+
+  #framed(title: "Actualización del crítico")[
+    $bold(w) <- bold(w) + alpha_bold(w)[R_t + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient hat(v)_pi (S_t, bold(w))$
+  ]
+
+  - A diferencia de REINFORCE con _baseline_, se utiliza el _TD target_ en lugar del retorno.
+
+  #emoji.warning #stress[IMPORTANTE]: *Estas actualizaciones son similares si empleamos la función* $q(s,a)$.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Ventajas de _actor-critic_])[
+
+  - Los métodos _actor-critic_ permiten *actualizaciones más frecuentes* de los parámetros de la política, ya que no es necesario esperar al final del episodio para obtener el retorno.
 
     - De hecho, podemos ajustar al nivel de _bootstrapping_ a emplear (número de _steps_ hacia delante).
 
-  - Además, la *varianza* de la actualización de los parámetros se reduce, ya que se emplea una estimación del retorno en lugar del retorno real.
+  - Mientras que se aumenta el *sesgo* (_bias_), la *varianza* de la actualización de los parámetros se reduce, ya que se emplea una estimación del retorno en lugar del retorno real.
 
   - Esto da lugar a una velocidad *convergencia* mayor, y favorece la aplicación en *problemas continuados*.
 ]
 
 // *****************************************************************************
 
-#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+// #slide(title: [Función de ventaja])[
 
-  #set text(size: 25pt)
-  Si REINFORCE con _baseline_ utiliza una *función de valor aproximada* $hat(v)(S_t, bold(w))$ como _baseline_... #emoji.face.think
+//   De forma general, el gradiente del rendimiento $gradient J(bold(theta))$ se puede expresar como:
 
-  #v(1cm)
+//   #grayed[
+//     $
+//       gradient J(bold(theta)) = EE_pi_bold(theta) [gradient_bold(theta) ln pi_bold(theta) (s,a) A(s, a)]
+//     $
+//   ]
 
-  #set align(center)
-  #framed[¿Por qué no se considera *_actor-critic_*?]
-]
+//   Denominamos a $A(s,a)$ #stress[función de ventaja]. Se define como la diferencia entre valor esperado y real, tal que:
+
+//   #cols(gutter: .1cm)[
+//     #framed(title: [#text(size: 22pt)[REINFORCE con _baseline_]])[
+//       #set text(size: 25pt)
+//       $A(s,a) &= G_t - hat(v)(s,bold(w))$
+//     ]
+//   ][
+//     #framed(title: [_Actor-critic_])[
+//       #set text(size: 23pt)
+//       $A(s,a) = hat(q)_pi (s,a) - hat(v)_pi (s) \ #h(.5cm) tilde.eq r + gamma hat(v)_pi (s') + hat(v)_pi (s)$]
+//   ]
+
+// ]
 
 // *****************************************************************************
 
-#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
-
-  ... TO - do
-
-]
+#focus-slide("Una posible analogía de los métodos vistos...")
 
 // *****************************************************************************
 
-#slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
+#slide[
 
-  #framed(title: [#emoji.books Morales, M. (2020). Grokking deep reinforcement learning.])[
-    #set text(size: 17pt)
-    (...) _according to one of the fathers of RL, Rich Sutton, policy-gradient methods approximate the gradient of the performance measure, whether or not they learn an approximate
-    value function. However, David Silver, one of the most prominent figures in DRL, and a former
-    student of Sutton, disagrees. He says that policy-based methods don’t additionally learn a
-    value function, only actor-critic methods do. But, Sutton further explains that only methods
-    that learn the value function using bootstrapping should be called actor-critic, because it’s
-    bootstrapping that adds bias to the value function, and thus makes it a “critic.” I like this distinction; therefore, REINFORCE and VPG, as presented in this book, aren’t considered actor-
-    critic methods. But beware of the lingo, it’s not consistent._
+  #cols(columns: (2fr, 1fr), gutter: 2cm)[
+    #framed(title: [REINFORCE])[
+
+      - Juego un partido de tenis contra un amigo.
+
+      - *Al final del partido*, analizo cómo he jugado y pienso en qué he de mejorar.
+
+    ]
+  ][
+    #image("images/tenis.jpg", width: 100%)
   ]
+
+  Mejoro lentamente, y mi forma de jugar varía abruptamente hasta dar con la mejor forma de ganar a mi rival.
+
+]
+
+// *****************************************************************************
+
+#slide[
+
+  #cols(columns: (2fr, 1.3fr))[
+    #framed(title: [REINFORCE con _baseline_])[
+
+      - Juego un partido de tenis contra un amigo.
+
+      - *Al final del partido*, analizo cómo he jugado y pienso en qué he de mejorar, teniendo como referencia los consejos de mi *entrenador/a*.
+
+    ]
+
+    Mi entrenador/a me ofrece buenos consejos sobre cómo poder superar a mi rival.
+  ][
+    #image("images/tenis.jpg", width: 85%)
+    #image("images/tenis-2.png", width: 90%)
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide[
+
+  #cols(columns: (2fr, 1.3fr), gutter: 1cm)[
+    #framed(title: [_Actor-critic_])[
+      - Juego un partido de tenis contra un amigo.
+      - *Tras cada punto*, analizo cómo he jugado y pienso en qué he de mejorar, teniendo como referencia *los consejos de mi entrenador/a*.
+    ]
+
+  ][
+    #image("images/tenis-3.jpg", width: 110%)
+  ]
+  Mi entrenador/a me ofrece consejos sobre cómo poder superar a mi rival con mucha más frecuencia, en base a cómo estamos jugando actualmente.
+
+]
+
+// *****************************************************************************
+
+#title-slide([Espacios de acciones continuos])
+
+// *****************************************************************************
+
+#slide(title: [Espacios de acciones continuos])[
+
+  ...
 
 ]
 
@@ -1230,6 +1415,7 @@
   - #link("https://www.youtube.com/watch?v=AiFM6LZ7Vuo")
   - #link("https://www.youtube.com/watch?v=ZODHxkjkuv4")
   - #link("https://lilianweng.github.io/posts/2018-04-08-policy-gradient/")
+  - #link("https://tatika.pythonanywhere.com/post_group/12")
 
 ]
 
