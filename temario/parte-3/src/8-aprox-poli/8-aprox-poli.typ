@@ -27,7 +27,7 @@
 
 // *****************************************************************************
 
-#title-slide("Políticas parametrizadas")
+// #title-slide("Políticas parametrizadas")
 
 // *****************************************************************************
 
@@ -84,8 +84,8 @@
     $ pi(a | s, bold(theta)) = Pr{A_t = a | S_t = s, bold(theta)_t = bold(theta)} $
   ]
 
-  #set text(size: 17pt)
-  - Si el método empleado usa además una función de valor aproximada, entonces volveremos a contar con el vector de pesos $bold(w) in RR^d$ y $hat(v)(s, bold(w))$.
+  // #set text(size: 17pt)
+  // - Si el método empleado usa además una función de valor aproximada, entonces volveremos a contar con el vector de pesos $bold(w) in RR^d$ y $hat(v)(s, bold(w))$.
 
 ]
 
@@ -109,16 +109,16 @@
 
 // *****************************************************************************
 
-#slide(title: [Métodos actor-crítico])[
+// #slide(title: [Métodos actor-crítico])[
 
-  También veremos métodos que aproximan la *política* y la *función de valor* al mismo tiempo.
+//   También veremos métodos que aproximan la *política* y la *función de valor* al mismo tiempo.
 
-  Estos se denominan #stress[actor-crítico] (_actor-critic_), donde:
+//   Estos se denominan #stress[actor-crítico] (_actor-critic_), donde:
 
-  - El *actor* es la política aprendida.
+//   - El *actor* es la política aprendida.
 
-  - El *crítico* es la función de valor aproximada (normalmente, estado-valor).
-]
+//   - El *crítico* es la función de valor aproximada (normalmente, estado-valor).
+// ]
 
 // *****************************************************************************
 
@@ -942,24 +942,24 @@
 
 // *****************************************************************************
 
-#slide(title: [Otra posible formulación...])[
+// #slide(title: [Otra posible formulación...])[
 
-  El *objetivo* de REINFORCE también puede expresarse como:
+//   El *objetivo* de REINFORCE también puede expresarse como:
 
-  #grayed[
-    $gradient J(bold(theta)) prop EE_pi [q_pi (S_t, A_t) gradient pi (A_t|S_t, bold(theta))]$
-  ]
+//   #grayed[
+//     $gradient J(bold(theta)) prop EE_pi [q_pi (S_t, A_t) gradient pi (A_t|S_t, bold(theta))]$
+//   ]
 
-  y la *regla de actualización* como:
+//   y la *regla de actualización* como:
 
-  #grayed[
-    $
-      bold(theta) <- bold(theta) + alpha q_pi (S_t, A_t) gradient ln pi(A_t|S_t, bold(theta))
-    $
-  ]
+//   #grayed[
+//     $
+//       bold(theta) <- bold(theta) + alpha q_pi (S_t, A_t) gradient ln pi(A_t|S_t, bold(theta))
+//     $
+//   ]
 
-  dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$.
-]
+//   dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$.
+// ]
 
 // *****************************************************************************
 
@@ -1397,18 +1397,127 @@
 
 #slide(title: [Espacios de acciones continuos])[
 
-  ...
+  Hasta ahora hemos visto cómo aplicar los métodos basados en _gradient de la política_ empleando #stress[espacios de acciones discretos].
+
+  #cols(columns: (2fr, 1fr))[
+    - Es decir, el conjunto de acciones es finito y cada acción tiene una probabilidad asociada.
+
+    #framed[¿Pero qué ocurre si abordamos un problema con #stress[espacio de acciones continuo] / infinito?]
+  ][
+    #image("images/action_probs.png", width: 100%)
+  ]
+
+  Este tipo de espacios de acciones son comunes en problemas de robótica, control de vehículos, etc.
 
 ]
 
 // *****************************************************************************
 
+#slide(title: [Espacios de acciones continuos])[
+
+  #cols[
+    #figure(image("images/pendulum.png", width: 70%))
+  ][
+    #figure(image("images/mujoco.jpeg", width: 70%))
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Espacios de acciones continuos])[
+
+  La forma de abordar estos problemas es sustituyendo la distribución categórica de acciones por una #stress[distribución continua] (ej. gaussiana).
+
+  #figure(image("images/distrib.png"))
+
+  - La política se modela como una distribución de densidad de probabilidad. Por ejemplo, una *distribución normal*:
+
+  $ pi(a|s, bold(theta)) = cal(N)(a; mu(s,bold(theta)), sigma(s, bold(theta))) $
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Espacios de acciones continuos])[
+
+  #grayed[$ pi(a|s, bold(theta)) = cal(N)(a; mu(s,bold(theta)), sigma(s, bold(theta))) $]
+
+  - $a$ es una acción en el espacio continuo
+  - $s$ es el estado observado
+  - $mu(s,bold(theta))$ es la media de la distribución
+  - $sigma(s, bold(theta))$ es la desviación estándar de la distribución
+
+  #v(.3cm)
+
+  #framed[Los espacios de acciones continuas son una generalización de los espacios de acciones discretos. Permiten abordar problemas con mayor precisión a costa de una mayor complejidad.]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Espacios de acciones continuos])[
+
+  Así, el agente asigna diferentes distribuciones de acciones para diferentes estados.
+
+  #grayed[$
+      pi(a|s, bold(theta)) = 1 / (sigma(s,bold(theta))sqrt(2 pi)) exp(-((a - mu(s,bold(theta)))^2)/(2 sigma(s, bold(theta))^2))
+    $]
+
+  donde $mu:cal(S) times RR^d' --> RR $ y $sigma: cal(S) times RR^d' --> RR^+$ son funciones paramétricas que definen la distribución de acciones para cada estado.
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [Estimación de $mu$ y $sigma$])[
+
+  El proceso seguido para muestrear una acción en un espacio de acciones continuo es el siguiente:
+
+  1. Partimos de un estado arbitrario $s$
+  2. Calculamos $mu$ y $sigma$ para dicho estado (por ejemplo, pueden venir dados por una red neuronal)
+  3. Muestreamos la acción de la distribución definida por $mu(s, bold(theta))$ y $sigma(s, bold(theta))$.
+
+  #figure(image("images/nn.png"))
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [Exploración])[
+
+  #set text(size: 18pt)
+
+  El #stress[valor inicial de $sigma$] es importante, ya que determinará la exploración de la política.
+  - Favorece la exploración de forma natural.
+
+  #figure(image("images/sigma.png"))
+
+  #framed[A medida que el agente aprende, la desviación estándar se reduce, lo que implica una menor exploración y una mayor tendencia al comportamiento representado por la acción central de la distribución.]
+
+]
+
+// *****************************************************************************
+
+#title-slide("Trabajo propuesto")
+
+// *****************************************************************************
+
 #slide(title: "Trabajo propuesto")[
 
-  -
-  -
+  #set text(size: 18pt)
+  - #stress[Implementar los algoritmos estudiados] y utilizarlos en un entorno de Gymnasium.
+    - REINFORCE, REINFORCE con _baseline_ y _One-step actor-critic_.
+    - Compara su rendimiento.
+  - Implementar un agente en un entorno de Gymnasium con un #stress[espacio de acciones continuo].
+  - ¿Qué algoritmos basados en gradiente de la política son más empleados en la actualidad?
+    - ¿Y _actor-critic_?
+  - Investiga sobre el algoritmo #stress[A2C] y trata de implementarlo.
 
-  #text(size: 24pt)[*Bibliografía y vídeos*]
+  #text(size: 24pt)[*Bibliografía, vídeos y material recomendado*]
+  #set text(size: 13pt)
 
   - #link("https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning")
   - #link("https://www.youtube.com/watch?v=e20EY4tFC_Q")
@@ -1416,7 +1525,8 @@
   - #link("https://www.youtube.com/watch?v=ZODHxkjkuv4")
   - #link("https://lilianweng.github.io/posts/2018-04-08-policy-gradient/")
   - #link("https://tatika.pythonanywhere.com/post_group/12")
-
+  - #link("https://medium.com/geekculture/policy-based-methods-for-a-continuous-action-space-7b5ecffac43a")
+  - #link("https://www.decisionsanddragons.com/")
 ]
 
 // *****************************************************************************
