@@ -1133,6 +1133,10 @@
 
 // *****************************************************************************
 
+#focus-slide("Hablando en Python...")
+
+// *****************************************************************************
+
 #slide(title: "Evaluación (síncrona) de la política")[
   #align(center)[
     #box(height: 500pt)[
@@ -1267,7 +1271,471 @@
 
 // *****************************************************************************
 
-#focus-slide("Hablando en Python...")
+#slide(title: "Limitaciones de iteración de la política")[
+
+  El algoritmo de #stress[iteración de la política] presenta un *problema*:
+
+  #framed[*Cada iteración supone evaluar la política actual hasta alcanzar la convergencia*, siendo necesarias múltiples iteraciones.]
+
+  #text(fill: red)[#emoji.warning *Dicha evaluación puede ser un proceso demasiado lento...*]
+
+  #v(0.4cm)
+
+  #text(size: 25pt)[
+    $
+      pi_0 -->^(bold(E) #h(0.1cm) #emoji.clock) v_pi_0 -->^I pi_1 -->^(bold(E) #h(0.1cm) #emoji.clock) v_pi_1 -->^I pi_2 --> dots
+    $
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Limitaciones de iteración de la política")[
+
+  La _evaluación iterativa de la política_ #stress[puede truncarse sin pérdida de información].
+
+  #align(center)[#framed[#emoji.lightbulb No es necesario esperar a que los valores converjan.]]
+
+  #grayed[
+    $
+      v_pi_1, v_pi_2, v_pi_3 dots, underbrace(colmath(v_pi_(k-2)) comma colmath(v_pi_(k-1))), v_pi_k = v_pi
+    $
+  ]
+
+  Las funciones de valor aproximadas $colmath(v_pi_(k-2))$ y $colmath(v_pi_(k-1))$ pueden no haber convergido pero ser *estimaciones suficientes* para mejorar $pi$.
+
+  - Es decir, $v_pi_(k-2)$, $v_pi_(k-1)$ y $v_pi_(k)$ #stress[pueden conducir a la misma política $pi'$].
+]
+
+// *****************************************************************************
+
+#slide(title: "Limitaciones de iteración de la política")[
+
+  En el ejemplo visto, la política obtenida mediante $pi = op("greedy")(V)$ *no varía* desde la iteración 4 hasta la 78. Es decir:
+
+  #grayed[
+    $ pi = op("greedy")(v^78_pi) = op("greedy")(v^4_pi) $
+  ]
+
+  Aunque las funciones de valor son diferentes, la política a la que conducen es la misma. Por tanto, #stress[no es necesario esperar a la convergencia de los valores para mejorar la política actual].
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Limitaciones de iteración de la política")[
+
+  #align(center)[
+    #cols[
+
+      #text[$pi = op("greedy")(v^78_pi)$]
+      #image("images/convergence-policy.png")
+
+    ][
+
+      #text[$pi = op("greedy")(v^4_pi)$]
+      #image("images/non-convergence-policy.png")
+
+    ]
+  ]
+
+]
+
+// *****************************************************************************
+
+#focus-slide(text-size: 40pt)[#emoji.arrow.l.hook Iteración de valor\ #text(size:21pt)[_Value iteration_]]
+
+
+// *****************************************************************************
+
+#let itv = text[#emoji.arrow.l.hook Iteración de valor]
+
+#slide(title: [#itv])[
+
+  La #stress[iteración de valor] (_value iteration_) es un caso extremo en el que #stress[solamente realizamos una iteración de _policy evaluation_], y seguidamente mejoramos nuestra política.
+
+  - Es decir, el valor de cada estado se evalúa/actualiza una única vez.
+
+  La iteración de valor equivale a convertir la *ecuación de optimalidad de Bellman* en una #stress[regla de actualización]:
+
+  #grayed[$ v_(k+1) = max_a sum_(s',r) p(s',r|s,a)[r + gamma v_k (s')] $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#itv])[
+
+  #grayed[$ v_(k+1) = max_a sum_(s',r) p(s',r|s,a)[r + gamma v_k (s')] $]
+
+  #framed[
+    - La *convergencia* está teóricamente garantizada.
+
+    - En la práctica, el algoritmo de _value iteration_ converge cuando la diferencia etre $v_k$ y $v_(k+1)$ es lo suficientemente pequeña ($epsilon$).
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#itv])[
+
+  Recordemos los diagramas correspondientes a las ecuaciones de optimalidad de Bellman...
+
+  #figure(image("images/backup.png"))
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [#itv])[
+
+  #figure(image("images/value-iteration.png"))
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#itv])[
+  #align(center)[
+    #text(size: 40pt)[
+      #emoji.arrow.l.hook $= (#emoji.chart.bar + #emoji.chart.up) times n_"iter"$
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+
+  #cols[
+
+    Veamos cómo funciona #stress[_value iteration_] para el ejemplo visto.
+
+    - En este caso consideramos $gamma = 0.9$
+    #text(size:13pt)[_Aunque no tendrá efectos notables en la política final obtenida_].
+
+  ][
+
+    #align(center)[#image("images/vi-0.png")]
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+  #align(center)[
+    #box(height: 300pt)[
+      #stress[Evaluación] de $pi_0$ #h(3cm) #stress[Mejora]: $pi_1 = op("greedy")(v^1_pi_0)$
+      #image("images/vi-1.png")
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+  #align(center)[
+    #box(height: 300pt)[
+      #stress[Evaluación] de $pi_1$ #h(3cm) #stress[Mejora]: $pi_2 = op("greedy")(v^1_pi_1)$
+      #image("images/vi-2.png")
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+  #align(center)[
+    #box(height: 300pt)[
+      #stress[Evaluación] de $pi_2$ #h(3cm) #stress[Mejora]: $pi_3 = op("greedy")(v^1_pi_2)$
+      #image("images/vi-3.png")
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+  #align(center)[
+    #box(height: 300pt)[
+      #stress[Evaluación] de $pi_3$ #h(3cm) #stress[Mejora]: $pi_4 = op("greedy")(v^1_pi_3)$
+      #image("images/vi-4.png")
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+  #align(center)[
+    #box(height: 300pt)[
+      #stress[Evaluación] de $pi_4$ #h(3cm) #stress[Mejora]: $pi_5 = op("greedy")(v^1_pi_4) = pi_4$ \ #h(4.8cm) #text(fill:green)[*CONVERGENCIA*] #emoji.checkmark.box
+      #v(-.5cm)
+      #image("images/vi-5.png")
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Ejemplo")[
+
+  #cols[
+
+    #emoji.checkmark.box En 5 _iteraciones de valor_ hemos obtenido la *política óptima*.
+
+    - Son más iteraciones totales que en el caso de _policy iteration_ (5 > 2), pero son mucho más cortas.
+
+    - La elección de un método u otro dependerá del problema, aunque #stress[generalmente _value iteration_ es más rápido].
+
+  ][
+
+    #align(center)[#image("images/vi-5.png")]
+
+  ]
+]
+
+// *****************************************************************************
+
+#focus-slide[¿Qué método elegir?]
+
+// *****************************************************************************
+
+#slide(title: "Comparativa")[
+
+  #align(center)[
+
+    #table(
+      columns: 2,
+      inset: 18pt,
+      fill: (x, y) => if x == 0 and y == 0 { green.lighten(80%) } else if x == 1 and y == 0 { blue.lighten(85%) },
+      table.header(
+        [*Iteración de la política*],
+        [*Iteración de valor*],
+      ),
+
+      [Parte de una política aleatoria], [Parte de una función de valor aleatoria],
+      [Algoritmo más complejo. Implica:\ (1) evaluación hasta convergencia\ (2) mejora de la política\ en varias iteraciones],
+      [Algoritmo más simple:\ un sólo paso incluye\ evaluación y mejora],
+
+      [Requiere pocas iteraciones\ para converger],
+      [Requiere más iteraciones\ para converger, aunque\ generalmente es más rápido],
+    )
+  ]
+
+]
+
+// *****************************************************************************
+
+#focus-slide[Programación dinámica asíncrona]
+
+
+// *****************************************************************************
+
+#slide(title: "Programación dinámica asíncrona")[
+
+  #set text(size: 18pt)
+
+  #cols[
+
+    Los algoritmos estudiados pueden converger en una política óptima *sin necesidad de actualizar todos los estados en cada iteración*.
+
+    - Esto puede ser útil para reducir el coste computacional por iteración en entornos con un gran número de estados.
+
+    - La #stress[programación dinámica asíncrona] supone actualizar valores de forma irregular.
+
+    - La aplicación de métodos asíncronos dependerá de la naturaleza del problema abordado.
+
+  ][
+
+    #v(1cm)
+
+    #align(center)[
+      #table(
+        columns: 3,
+        inset: 40pt,
+        fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) } else if x > 0 and y > 0 { red.lighten(80%) } else {
+          blue.lighten(70%)
+        },
+        align: horizon,
+        [$s_0$], [$s_1$], [$s_2$],
+        [$s_3$], [$s_4$], [$s_5$],
+        [$s_6$], [$s_7$], [$s_8$],
+      )
+    ]
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Programación dinámica asíncrona")[
+
+
+  #framed(title: "Ejemplos de aplicación")[
+
+    - Alternancia en la actualización de estados en posiciones pares/impares.
+
+    - Actualizar más frecuentemente los estados cercanos a estados finales.
+
+    - Actualizar con menor frecuencia aquellos estados con más transiciones posibles (mayor coste computacional).
+
+    - _Etc_.
+  ]
+]
+
+// *****************************************************************************
+
+#title-slide[Iteración de la política generalizada]
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política generalizada")[
+
+  Hemos visto que la *#itp* consiste en la alternancia entre:
+
+  - *#eval*: hacer consistente la función de valor con la política actual.
+
+  - *#impr*: construir una política _greedy_ con respecto a la función de valor actual.
+
+  $ pi_0 -->^E v_pi_0 -->^I pi_1 -->^E v_pi_1 -->^I pi_2 --> dots -->^I pi^* -->^E v_(pi^*) $
+
+  $ pi_0 -->^E q_pi_0 -->^I pi_1 -->^E q_pi_1 -->^I pi_2 --> dots -->^I pi^* -->^E q_(pi^*) $
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política generalizada")[
+
+  Podemos generalizar el proceso de evaluación + mejora empleando el término #stress[iteración de la política generalizada] (_generalized policy iteration_, o *GPI*).
+
+  #text(size: 40pt)[
+    $ pi arrows.lr v $
+  ]
+
+  #v(.4cm)
+  #framed(title: "Iteración de la política generalizada")[
+    Conjunto de algoritmos basados en la alternancia entre _policy evaluation_ y _policy improvement_ para obtener una política óptima.
+  ]
+
+  - Independientemente de la granularidad y detalles de implementación.
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política generalizada")[
+
+  - *#itv* sólo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
+    #h(1cm) #emoji.arrow.l.hook $= (#emoji.chart.bar + #emoji.chart.up) times n_"iter"$
+
+  - *#itp* utiliza los valores de convergencia de _policy evaluation_ antes de cada _policy improvement_:
+    #h(1cm) $#emoji.arrows.cycle = (infinity times #emoji.chart.bar + #emoji.chart.up) times n_"iter"$
+
+  - *Cualquier método intermedio entre iteración de valor e iteración de la política* utiliza un número arbitrario $K$ de evaluaciones antes de cada mejora de la política: $ #emoji.quest = (K times #emoji.chart.bar + #emoji.chart.up) times n_"iter" $
+
+  - También tenemos que considerar los *métodos asíncronos* que siguen una actualización de valores irregular.
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política generalizada")[
+
+  #box(height: 360pt, inset: 20pt, outset: 10pt, radius: 10pt, stroke: red)[
+
+    #text(fill: red, size: 22pt)[*¡ TODOS ESTÁN DENTRO DE GPI !*]
+    #v(0.5cm)
+
+    #text(size: 17pt)[
+      - *#itv* sólo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
+        #h(1cm) #emoji.arrow.l.hook $= (#emoji.chart.bar + #emoji.chart.up) times n_"iter"$
+
+      - *#itp* utiliza los valores de convergencia de _policy evaluation_ antes de cada _policy improvement_:
+        #h(1cm) $#emoji.arrows.cycle = (infinity times #emoji.chart.bar + #emoji.chart.up) times n_"iter"$
+
+      - *Cualquier método intermedio entre iteración de valor e iteración de la política* utiliza un número arbitrario $K$ de evaluaciones antes de cada mejora de la política: $ #emoji.quest = (K times #emoji.chart.bar + #emoji.chart.up) times n_"iter" $
+
+      - También tenemos que considerar los *métodos asíncronos* que siguen una actualización de valores irregular.
+    ]
+  ]
+]
+
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política generalizada")[
+
+
+  De hecho, #stress[la mayoría de métodos de RL se definen en el marco de GPI]:
+
+  #framed[
+    #set text(size: 18pt)
+    1. Política y función de valor identificadas.
+
+    2. La política se mejora a partir de la función de valor.
+
+    3. La función de valor se actualiza empleando la política.
+
+    4. La función de valor se estabiliza cuando es consistente con la política actual.
+
+    5. La política se estabiliza cuando es _greedy_ con respecto a la función de valor actual.
+  ]
+
+  Se trata de un proceso donde política y función de valor cooperan y compiten al mismo tiempo hasta obtener $pi^*$ y $v_(pi^*)$
+]
+
+// *****************************************************************************
+
+#title-slide("Eficiencia en programación dinámica")
+
+// *****************************************************************************
+
+#slide(title: "Eficiencia de la programación dinámica")[
+
+  Los algoritmos de programación dinámica son métodos bastante *eficientes* para resolver MDPs en comparación con otras alternativas.
+
+  #emoji.clock El tiempo de ejecución es #stress[polinomial con respecto al número de estados y acciones] (en el peor de los casos).
+
+  #framed[
+    - Mejor que otras alternativas, como *algoritmos de búsqueda* en el espacio de políticas.
+    - La *programación lineal* es otra alternativa que en la mayoría de situaciones _NO_ supera a la programación dinámica.
+  ]
+
+  #text(
+    fill: red,
+  )[No obstante, los algoritmos de programación dinámica *no son prácticos en problemas con espacios de estados/acciones muy grandes*.]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "Eficiencia de la programación dinámica")[
+
+  Sobre qué algoritmo de DP elegir, no hay un consenso en el uso de *#itp* o *#itv*. Dependerá del coste computacional de las evaluaciones.
+
+  - En problemas con grandes espacios de estados, los *métodos asíncronos* son una buena alternativa.
+
+  También existen *alternativas* basadas en GPI que limitan la computación y memoria:
+
+  #framed[
+    - _¿Para qué actualizar estados por los que no se va a pasar nunca?_
+    - Es lo que denominamos #stress[actualizaciones selectivas] (_selective updates_).
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Eficiencia de la programación dinámica")[
+
+  En general, la principal limitación de la programación dinámica es que se ve considerablemente afectada por la #stress[dimensionalidad del problema] (_the curse of dimensionality_).
+
+  - El tamaño del espacio de estados crece exponencialmente a medida que aumenta el número de características relevantes en el problema abordado.
+]
 
 // *****************************************************************************
 
@@ -1277,12 +1745,29 @@
 
 #slide(title: "Trabajo propuesto")[
 
-  - ...
-  - ...
+  #box(height: 500pt)[
+    #text(size: 18pt)[
 
-  #text(size: 24pt)[*Bibliografía y vídeos*]
+      - Analizar los #stress[algoritmos] vistos:
+        - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/policy_iteration")
+        - Prueba a implementarlos y comprobar su convergencia en un entorno de *Gymnasium*.
+        - Compara los *tiempos de ejecución*, variando el número de *estados* y *acciones*.
+      - Profundizar sobre el concepto *"_curse of dimensionality_"* y conocer su impacto en RL.
 
+      #text(size: 24pt)[*Bibliografía y vídeos*]
+
+      #text(size: 18pt)[
+        - *Capítulo 4* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
+        - #link("https://cs.stanford.edu/people/karpathy/reinforcejs/gridworld_dp.html")
+        - #link("https://www.youtube.com/watch?v=Nd1-UUMVfz4&t=2148s")
+        - #link("https://www.youtube.com/watch?v=l87rgLg90HI")
+        - #link("https://www.youtube.com/watch?v=sJIFUTITfBc")
+        - #link("https://www.youtube.com/watch?v=_j6pvGEchWU")
+      ]
+    ]
+  ]
 ]
+
 
 // *****************************************************************************
 
