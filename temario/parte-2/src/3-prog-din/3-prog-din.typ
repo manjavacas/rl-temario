@@ -781,6 +781,496 @@
 
 // *****************************************************************************
 
+#slide(title: [#impr])[
+
+  #framed[*Objetivo*: #stress[mejorar una política $pi$ a partir de su funcion de valor $v_pi$]]
+
+  - Problema de *control* $-->$ mejora de una política dada.
+
+  - El objetivo perseguido calculando $v_pi$ para una política $pi$ es buscar cómo mejorarla.
+
+  Podemos mejorar $pi$ #stress[actuando de forma voraz (_greedy_)] con respecto a los valores previamente calculados mediante evaluación iterativa de la política.
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#impr])[
+
+  #let a = text(size: 16pt, fill: red)[Calculado mediante\ _policy evaluation_]
+  #let b = text(size: 25pt, fill: red)[Política que maximiza $q_pi (s,a)$]
+
+  La actualización de la política $pi -> pi'$ se hace de la siguiente forma:
+
+  #grayed[
+
+    $
+      pi'(s) &= underbrace(op("argmax")_a q_pi (s,a), #b) \
+      &= op("argmax")_a EE[R_(t+1) + gamma v_pi (S_(t+1)) | S_t = s, A_t = a] \
+      &= op("argmax")_a sum_(s',r) p(s',r|s,a) [r + gamma underbrace(v_pi (s'), #a)] \
+    $
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#impr])[
+
+  #grayed[
+    $ pi'(s) = op("argmax")_a sum_(s',r) p(s',r|s,a) [r + gamma v_pi (s')] $
+  ]
+
+  - $pi'$ es una nueva política que elige las acciones asociadas a mayores recompensas esperadas de acuerdo con $v_pi$.
+
+  #framed[#emoji.books De acuerdo con el #stress[_teorema de mejora de la política_], _$pi'$ será siempre mejor o igual que $pi$_.]
+]
+
+// *****************************************************************************
+
+#slide(title: [#impr])[
+
+  Al proceso de obtención de una política mejorada a partir de una política anterior lo denominamos #stress[mejora de la política] (_policy improvement_).
+
+  Si la política que tratamos de mejorar ya es óptima, entonces se cumplirá que:
+
+  #grayed[
+    #text(size: 25pt)[
+      $ v_pi = v_pi' = v^* $
+    ]
+  ]
+
+  #framed[Esto se cumple tanto para políticas *deterministas* como para *estocásticas*.]
+]
+
+// *****************************************************************************
+
+#slide(title: "En resumen...")[
+
+  1. Evaluamos la política actual $pi$, aproximando iterativamente su función de valor $v_pi$:
+    #grayed[$ v_(k+1) (s) = sum_a pi(a|s) sum_(s',r) p(s',r|s,a) [r + gamma v_k (s')] $]
+
+  2. Utilizamos $v_pi$ para obtener $pi'$, tal que:
+    #grayed[$ pi' = op("argmax")_a sum_(s',r) p(s',r|s,a) [r + gamma v_pi (s')] $]
+
+]
+
+// *****************************************************************************
+
+#slide(title: "En resumen...")[
+
+  #cols[
+
+    1. *_Policy evaluation_* ($pi$, $v^78_pi tilde.eq v_pi$)
+
+      #text(size: 15pt)[
+        #align(center)[
+          #table(
+            columns: 3,
+            fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+            align: horizon,
+            [$v(s_0) = 0$],
+            [$v(s_1) tilde.eq -14.9$\ #image(
+                "images/arrow.png",
+                width: 50%,
+              )],
+            [$v(s_2) tilde.eq -20.9$\ #image("images/arrow.png", width: 50%)],
+
+            [$v(s_3) tilde.eq -14.9$ #image("images/arrow.png", width: 50%)],
+            [$v(s_4) tilde.eq -20$\ #image(
+                "images/arrow.png",
+                width: 50%,
+              )],
+            [v($s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
+
+            [$v(s_6) tilde.eq -21$\ #image("images/arrow.png", width: 50%)],
+            [$v(s_7) tilde.eq -23.3$\ #image(
+                "images/arrow.png",
+                width: 50%,
+              )],
+            [$v(s_8) tilde.eq -25.1$\ #image("images/arrow.png", width: 50%)],
+          )
+        ]
+      ]
+
+  ][
+
+    2. *_Policy improvement_* ($pi -> pi'$)
+      #text(size: 15pt)[
+        #align(center)[
+          #table(
+            columns: 3,
+            inset: (35pt, 35pt, 35pt),
+            fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+            align: horizon,
+            [$s_8$], [$s_7$ #emoji.arrow.l.filled], [$s_6$ #emoji.arrow.l.filled],
+            [$s_5$ #emoji.arrow.t.filled],
+            [$s_4$\ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+            [$s_3$ #emoji.arrow.l.filled],
+
+            [$s_2$ #emoji.arrow.t.filled], [$s_1$ #emoji.arrow.t.filled], [$s_0$ #emoji.arrow.t.filled],
+          )
+        ]
+
+        #text(size: 14pt)[_Hay varias políticas óptimas_]
+      ]
+
+  ]
+
+]
+
+// *****************************************************************************
+
+#focus-slide(text-size: 40pt)[#emoji.arrows.cycle Iteración de la política\ #text(size:21pt)[_Policy iteration_]]
+
+// *****************************************************************************
+
+#let itp = text[#emoji.arrows.cycle Iteración de la política]
+
+#slide(title: [#itp])[
+
+  Hasta el momento, dada una política inicial $pi$, hemos obtenido su función de valor $v_pi$ y la hemos mejorado tal que:
+
+  #let e = text(size: 20pt, fill: blue)[evaluación]
+  #let i = text(size: 20pt, fill: red)[mejora]
+  #let p = text(size: 27pt, fill: black)[\ *Iteración de la política*]
+
+  #v(0.5cm)
+
+  #grayed[
+    #set text(size: 31pt)
+    $underbrace(pi_0 underbrace(-->^E, #e) v_pi_0 underbrace(-->^I, #i) pi_1, #p)$
+  ]
+
+
+  #text(size: 19pt)[
+    #framed[Denominamos #stress[iteración de la política] (_policy iteration_) a la aplicación de una #text(fill:blue)[evaluación iterativa de la política] seguida de una #text(fill:red)[mejora de la política].]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+
+  Si repetimos este proceso iterativamente, obtenemos una #stress[secuencia de políticas] que mejoran de forma monotónica:
+
+  #v(.5cm)
+
+  #grayed[
+    $pi_0 -->^E v_pi_0 -->^I pi_1 -->^E v_pi_1 -->^I pi_2 --> dots -->^I pi^* -->^E v_(pi^*)$
+  ]
+
+  #align(center)[
+    #framed[Finalmente se converge en la #stress[política óptima].]
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+  #text(size: 33pt)[
+    $ #emoji.arrows.cycle = (infinity times #emoji.chart.bar + #emoji.chart.up) times n_"iter" $
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+
+  #cols[
+    #align(center)[#image("images/iteration-loop.png", width: 52%)]
+  ][
+    #align(left)[#image("images/iteration-convergence.png", width: 100%)]
+    $ pi, p, gamma --> "Policy evaluation" --> v_pi $
+    $ pi, gamma --> "Policy improvement" --> pi^* $
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+
+  #align(center)[#stress[_POLICY ITERATION_]]
+
+  #cols[
+    #text(size: 15pt)[
+      #align(center)[
+        *_POLICY EVALUATION_* ($pi_0 comma v^78_pi_1 tilde.eq v_pi_0$)
+        #v(0.2cm)
+        #table(
+          columns: 3,
+          fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+          align: horizon,
+          [$v(s_0) = 0$],
+          [$v(s_1) tilde.eq -14.9$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [$v(s_2) tilde.eq -20.9$\ #image("images/arrow.png", width: 50%)],
+
+          [$v(s_3) tilde.eq -14.9$ #image("images/arrow.png", width: 50%)],
+          [$v(s_4) tilde.eq -20$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [v($s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
+
+          [$v(s_6) tilde.eq -21$\ #image("images/arrow.png", width: 50%)],
+          [$v(s_7) tilde.eq -23.3$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [$v(s_8) tilde.eq -25.1$\ #image("images/arrow.png", width: 50%)],
+        )
+      ]
+    ]
+
+  ][
+
+    #align(center)[
+      #text(size: 15pt)[
+        *_POLICY IMPROVEMENT_* ($pi_1$)
+      ]
+      #table(
+        columns: 3,
+        inset: (30pt, 30pt, 30pt),
+        fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+        align: horizon,
+        [$s_8$], [$s_7$ #emoji.arrow.l.filled], [$s_6$ #emoji.arrow.l.filled],
+        [$s_5$ #emoji.arrow.t.filled],
+        [$s_4$ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+        [$s_3$ #emoji.arrow.l.filled],
+
+        [$s_2$ #emoji.arrow.t.filled], [$s_1$ #emoji.arrow.t.filled], [$s_0$ #emoji.arrow.t.filled],
+      )
+    ]
+  ]
+
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+
+  #align(center)[#stress[_POLICY ITERATION_]]
+
+  #cols[
+    #text(size: 15pt)[
+      #align(center)[
+        *_POLICY EVALUATION_* ($pi_1 comma v^5_pi_1 tilde.eq v_pi_1$)
+        #v(0.2cm)
+        #table(
+          columns: 3,
+          fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+          align: horizon,
+          [$v(s_0) = 0$],
+          [$v(s_1) tilde.eq -1$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [$v(s_2) tilde.eq -2$\ #image("images/arrow.png", width: 50%)],
+
+          [$v(s_3) tilde.eq -1$ #image("images/arrow.png", width: 50%)],
+          [$v(s_4) tilde.eq -2$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [v($s_5) tilde.eq -3$\ #image("images/arrow.png",width:50%)],
+
+          [$v(s_6) tilde.eq -2$\ #image("images/arrow.png", width: 50%)],
+          [$v(s_7) tilde.eq -3$\ #image(
+              "images/arrow.png",
+              width: 50%,
+            )],
+          [$v(s_8) tilde.eq -4$\ #image("images/arrow.png", width: 50%)],
+        )
+      ]
+    ]
+
+  ][
+
+    #align(center)[
+      #text(size: 15pt)[
+        *_POLICY IMPROVEMENT_* ($pi_2 tilde.eq pi^*$)
+      ]
+      #set text(size: 15pt)
+      #table(
+        columns: 3,
+        inset: (30pt, 30pt, 30pt),
+        fill: (x, y) => if x == 0 and y == 0 { green.lighten(70%) },
+        align: horizon,
+        [$s_8$], [$s_7$ #emoji.arrow.l.filled], [$s_6$ #emoji.arrow.l.filled],
+        [$s_5$ #emoji.arrow.t.filled],
+        [$s_4$ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+        [$s_3$ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+
+        [$s_2$ #emoji.arrow.t.filled],
+        [$s_1$ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+        [$s_0$ #emoji.arrow.l.filled #emoji.arrow.t.filled],
+      )
+
+      #align(left)[
+        #text(size: 15pt)[
+          Son necesarias *2* iteraciones de la política para converger en $pi^*$.
+          *Problemas más complejos requerirán un mayor número de iteraciones*.
+        ]
+      ]
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: [#itp])[
+  #align(center)[
+    #box(height: 500pt)[
+      #image("images/policy-iteration.png", width: 80%)
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Evaluación (síncrona) de la política")[
+  #align(center)[
+    #box(height: 500pt)[
+      #text(size: 18pt)[
+        ```python
+        def sync_policy_eval(states, pi, theta):
+          while (True):
+              delta = 0
+              states_old = copy.deepcopy(states)
+              for state in states:
+                  if not is_terminal(state):
+                      v_old = state.value
+                      v_new = 0
+                      for action in pi[state]:
+                          action_prob = pi[state][action]
+                          if action_prob > 0:
+                              next_state, reward = get_transition(
+                                  state, action, states_old)
+                              v_new += action_prob * \
+                                  (reward + GAMMA * next_state.value)
+                      state.value = v_new
+                      delta = max(delta, abs(v_old - v_new))
+              if (delta < theta):
+                  break
+        ```
+      ]
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Evaluación (asíncrona) de la política")[
+  #align(center)[
+    #box(height: 500pt)[
+      #text(size: 18pt)[
+        ```python
+        def async_policy_eval(states, pi, theta):
+            while (True):
+                delta = 0
+                for state in states:
+                    if not is_terminal(state):
+                        v_old = state.value
+                        v_new = 0
+                        for action in pi[state]:
+                            action_prob = pi[state][action]
+                            if action_prob > 0:
+                                next_state, reward = get_transition(
+                                    state, action, states)
+                                v_new += action_prob *
+                                  (reward + GAMMA * next_state.value)
+                        state.value = v_new
+                        delta = max(delta, abs(v_old - v_new))
+                if (delta < theta):
+                    break
+        ```
+      ]
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Mejora de la política")[
+  #align(center)[
+    #box(height: 500pt)[
+      #text(size: 15pt)[
+        ```python
+        def policy_improvement(states, pi):
+          policy_stable = True
+          for state in states:
+              if not is_terminal(state):
+                  old_actions = [action for action,
+                                 prob in pi[state].items() if prob > 0]
+                  action_values = {}
+                  for action in pi[state]:
+                      action_prob = pi[state][action]
+                      if action_prob > 0:
+                          next_state, reward = get_transition(
+                              state, action, states)
+                          action_values[action] = reward + GAMMA * next_state.value
+                  best_actions = [action for action, value in action_values.items(
+                  ) if value == max(action_values.values())]
+                  for action in ACTIONS:
+                      if action in best_actions:
+                          pi[state][action] = 1 / len(best_actions)
+                      else:
+                          pi[state][action] = 0
+                  if old_actions != best_actions:
+                      policy_stable = False
+          return policy_stable
+        ```
+      ]
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#slide(title: "Iteración de la política")[
+  #align(center)[
+    #box(height: 500pt)[
+      #text(size: 18pt)[
+        ```python
+        # states
+        states = []
+        for i in range(3):
+            for j in range(3):
+                states.append(State(i, j))
+
+        # policy
+        pi = {}
+        for state in states:
+            pi[state] = {}
+            for action in ACTIONS:
+                pi[state][action] = 1/len(ACTIONS)
+
+        def policy_iteration(states, pi):
+            policy_stable = False
+            while not policy_stable:
+                sync_policy_eval(states, pi)
+                policy_stable = policy_improvement(states, pi)
+        ```
+      ]
+    ]
+  ]
+]
+
+// *****************************************************************************
+
+#title-slide[Iteración de valor]
+
+// *****************************************************************************
+
+#focus-slide("Hablando en Python...")
+
+// *****************************************************************************
+
 #title-slide("Trabajo propuesto")
 
 // *****************************************************************************
