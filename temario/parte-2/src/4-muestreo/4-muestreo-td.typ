@@ -1247,11 +1247,11 @@
       - Probar los #stress[algoritmos] vistos (_trata de hacer tu propia implementación_):
 
         #text(size: 16pt)[
-          - #link("https://github.com/manjavacas/rl-temario/tree/main/codigo/cliff_walking")
+          - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/cliff_walking")
         ]
 
         #text(size: 16pt)[
-          - #link("https://github.com/manjavacas/rl-temario/tree/main/codigo/montecarlo")
+          - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/montecarlo")
         ]
 
 
@@ -1259,7 +1259,7 @@
 
         - Pruébalos en un entorno de Gymnasium.
 
-      *Bibliografía y webs recomendadas*
+      *Bibliografía y recursos*
 
       #text(size: 14pt)[
         - *Capítulos 6 y 7* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.

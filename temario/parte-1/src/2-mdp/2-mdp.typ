@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.3": *
+#import "@preview/typslides:1.2.5": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -115,7 +115,7 @@
 
 // *****************************************************************************
 
-#focus-slide("Un ejemplo...")
+#focus-slide("Ejemplo")
 
 // *****************************************************************************
 
@@ -354,7 +354,7 @@
 
 // *****************************************************************************
 
-#focus-slide("Un ejemplo...")
+#focus-slide("Ejemplo")
 
 // *****************************************************************************
 
@@ -1055,7 +1055,7 @@
     $
       G_t &= R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + gamma^3 R_(t+4) + dots \
       &= R_(t+1) + gamma (R_(t+2) + gamma R_(t+3) + gamma^2 R_(t+4) + dots) \
-      &= colmath(underbracket(R_(t+1), #r), #red) + colmath(underbracket(gamma G_(t+1), #g), #blue)
+      &= colmath(underbrace(R_(t+1), #r), #red) + colmath(underbrace(gamma G_(t+1), #g), #blue)
     $
   ]
 
@@ -1070,7 +1070,7 @@
 
   #grayed(text-size: 30pt)[
     $
-      G_t &= colmath(underbracket(R_(t+1), #r), #red) + colmath(underbracket(gamma G_(t+1), #g), #blue)
+      G_t &= colmath(underbrace(R_(t+1), #r), #red) + colmath(underbrace(gamma G_(t+1), #g), #blue)
     $
   ]
 
@@ -1324,7 +1324,7 @@
 
 #focus-slide([
   #v(-1.5cm)
-  #emoji.warning\ *NO*, porque se incumple la propiedad de Markov.
+  #emoji.warning\ NO, porque se incumple la propiedad de Markov.
 ])
 
 // *****************************************************************************
@@ -1416,7 +1416,7 @@
 
 // *****************************************************************************
 
-#focus-slide([_¿Cuál es la diferencia entre *valor* y *recompensa*?_])
+#focus-slide([_¿Cuál es la diferencia entre valor y recompensa?_])
 
 
 // *****************************************************************************
@@ -1455,9 +1455,7 @@
 
 #slide(title: [Ecuación de Bellman para $v_pi$])[
 
-  #v(1cm)
-
-  #set text(size: 30pt)
+  #set text(size: 32pt)
 
   #let a = text[Probabilidad\ de elegir\ cada acción]
   #let b = text[Probabilidad\ de transición]
@@ -1466,7 +1464,7 @@
   $
     v_pi (s) &= EE_pi [G_t|S_t=s] \
     &= EE_pi [R_(t+1) + gamma G_(t+1) | S_t = s] \
-    &= colmath(underbracket(sum_a pi(a|s), #a), #red) colmath(underbracket(sum_(s',r) p(s',r|s,a), #b), #blue) colmath(underbracket([r+gamma v_pi (s')], #c), #olive)
+    &= colmath(underbrace(sum_a pi(a|s), #a), #red) colmath(underbrace(sum_(s',r) p(s',r|s,a), #b), #blue) colmath(underbrace([r+gamma v_pi (s')], #c), #olive)
   $
 
   #v(1cm)
@@ -1481,8 +1479,7 @@
 
   La *ecuación de Bellman* tiene en cuenta todas las probabilidades de transición, ponderando las #text(fill:orange)[recompensas obtenibles] por su #text(fill:eastern)[probabilidad].
 
-  #v(1cm)
-
+  #set text(size: 32pt)
   $
     v_pi(s) &= EE_pi [G_t|S_t=s] \
     &= EE_pi [R_(t+1) + gamma G_(t+1) | S_t = s] \
@@ -1504,8 +1501,6 @@
     - Similar para pares _acción-estado_.
 
     #colbreak()
-
-    #v(1cm)
 
     #image("images/backup-v.png", width: 150%)
 
@@ -1542,7 +1537,7 @@
   $
     q_pi (s,a) &= EE_pi [G_t|S_t=s, A_t=a] \
     &= sum_(s',r) p(s',r|s,a)[r+gamma EE_pi [G_(t+1) | S_(t+1) = s']] \
-    &= colmath(underbracket(sum_(s',r) p(s',r|s,a), #a), #olive) [ colmath(underbracket(r, #b), #red)+colmath(underbracket(gamma sum_(a') pi(a'|s') q_pi (s',a'), #c), #blue) ]
+    &= colmath(underbrace(sum_(s',r) p(s',r|s,a), #a), #olive) [ colmath(underbrace(r, #b), #red)+colmath(underbrace(gamma sum_(a') pi(a'|s') q_pi (s',a'), #c), #blue) ]
   $
 ]
 
@@ -1550,13 +1545,16 @@
 
 #slide(title: "Políticas y funciones de valor")[
 
-  Podemos comparar políticas y establecer un #stress[orden] entre ellas empleando las funciones de valor:
+  #cols[
+    Podemos comparar políticas y establecer un #stress[orden] entre ellas empleando las funciones de valor:
 
-  #grayed(text-size: 25pt)[
-    $ pi >= pi' <=> v_pi (s) >= v_pi' (s), #h(0.5cm) forall s in cal(S) $
+    #grayed(text-size: 24pt)[
+      $ pi >= pi' <=> v_pi (s) >= v_pi' (s), #h(0.5cm) forall s in cal(S) $
+    ]
+  ][
+
+    #align(center)[#image("images/policies-1.png")]
   ]
-
-  #align(center)[#image("images/policies-1.png", width: 43%)]
 ]
 
 // *****************************************************************************
@@ -1774,7 +1772,7 @@
 
 #slide(title: "Trabajo propuesto")[
 
-  #text(size: 19pt)[
+  #text(size: 17pt)[
 
     - Leer sobre otros tipos de *MDPs* / *POMDPs* y conocer sus diferencias.
 
@@ -1791,9 +1789,10 @@
       - ¿Qué es?
       - ¿En qué se diferencia de las funciones de valor estudiadas?
 
-    #text(size: 24pt)[*Bibliografía y vídeos*]
+    #text(size: 23pt)[*Bibliografía y recursos*]
 
-    #text(size: 15pt)[
+    #text(size: 16pt)[
+      - *Capítulo 3* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
       - https://youtu.be/lfHX2hHRMVQ?si=2jR4HI72ReErh7rb
       - https://web.stanford.edu/class/cme241/lecture_slides/david_silver_slides/MDP.pdf
     ]

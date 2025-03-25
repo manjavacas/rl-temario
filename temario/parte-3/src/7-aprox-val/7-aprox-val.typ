@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.4": *
+#import "@preview/typslides:1.2.5": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -1810,14 +1810,17 @@
 
 #slide(title: "Trabajo propuesto")[
 
+  #set text(size: 18pt)
+
   - Estudiar las #stress[implementaciones] de los algoritmos vistos.
     - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/value_approx/")
     - Impleméntalos por tu cuenta y aplícalos en otros problemas.
   - Lectura sobre #stress[_coarse coding_] y #stress[_tile coding_] (_ver Sutton & Barto sec. 9.5 & 9.6_ #text(size:18pt)[#emoji.books]).
   - Investiga sobre el algoritmo #stress[DQN] (Deep Q-Network).
 
-  #text(size: 24pt)[*Bibliografía y vídeos*]
+  #text(size: 24pt)[*Bibliografía y recursos*]
 
+  - *Capítulos 9 y 10* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
   - #link("https://youtu.be/Xg0WGzlEefY?si=r8Z2wrocsoHcyo7r")
   - #link("https://statquest.org/neural-networks-part-1-inside-the-black-box/")
   - #link("https://michaeloneill.github.io/RL-tutorial.html")

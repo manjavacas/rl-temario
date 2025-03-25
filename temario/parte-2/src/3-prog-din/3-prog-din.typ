@@ -1754,7 +1754,7 @@
         - Compara los *tiempos de ejecución*, variando el número de *estados* y *acciones*.
       - Profundizar sobre el concepto *"_curse of dimensionality_"* y conocer su impacto en RL.
 
-      #text(size: 24pt)[*Bibliografía y vídeos*]
+      #text(size: 24pt)[*Bibliografía y recursos*]
 
       #text(size: 18pt)[
         - *Capítulo 4* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
