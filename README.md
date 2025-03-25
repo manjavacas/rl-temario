@@ -21,7 +21,7 @@ Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es))
 3. [Programación dinámica](temario/parte-2/3-prog-din.pdf)
 4. Métodos basados en muestreo\
     4.1. [Monte Carlo](temario/parte-2/4-muestreo-mc.pdf)\
-    4.2. [_TD-learning_](temario/parte-2/4-muestreo-td.pdf)\
+    4.2. [_TD-learning_](temario/parte-2/4-muestreo-td.pdf)
 5. [Planificación](temario/parte-2/5-planificacion.pdf)
 6. [Resumen](temario/parte-2/6-resumen.pdf)
 
