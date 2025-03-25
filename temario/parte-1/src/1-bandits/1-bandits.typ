@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.3": *
+#import "@preview/typslides:1.2.5": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -32,8 +32,6 @@
   - Ya conocemos las diferencias entre aprendizaje #stress[instructivo] y #stress[evaluativo].
 
   - También hemos visto que el aprendizaje #stress[evaluativo] es la base del #stress[aprendizaje por refuerzo] (RL).
-
-  #v(1cm)
 
   #framed[
     *OBJETIVO*: profundizar sobre RL en un #stress[entorno simplificado], en el cual no es necesario aprender a actuar en más de una situación.
@@ -73,8 +71,8 @@
 
 #slide(title: [El problema de los _K-armed bandits_])[
   #columns(2)[
-    - #stress[*_K-armed bandits_*], también llamado #stress[_multi-armed bandit problem_]
-      #text(size: 12pt)["problema de las _tragaperras multi-brazo_" (#emoji.face.inv)]
+    - #stress[_K-armed bandits_], también llamado #stress[_multi-armed bandit problem_]\
+      #text(size: 12pt)["problema de las _tragaperras multi-brazo_" #emoji.face.inv]
 
     - Problema clásico en RL y teoría de la probabilidad.
 
@@ -109,7 +107,7 @@
     - Desconocemos la *distribución de recompensas* de cada máquina.
 
     #framed[
-      #stress[*OBJETIVO*]: obtener la mayor recompensa posible (*recompensa acumulada*).
+      #stress[OBJETIVO]: obtener la mayor recompensa posible (*recompensa acumulada*).
     ]
   ]
 ]
@@ -560,7 +558,7 @@
 
     #set text(size: 25pt)
     #align(center)[
-      #framed[
+      #grayed[
         #set text(size: 30pt)
         #v(1cm)
         $Q_t (a) = (sum_(i=1)^(t-1) R_(i,a)) / (sum_(i=1)^(t-1) n_(i,a))$
@@ -589,7 +587,7 @@
 
   Selección de acciones #stress[_greedy_]:
 
-  #text(28pt)[$ A_t = op("argmax")_a Q_t (a) $]
+  #grayed[#text(28pt)[$ A_t = op("argmax")_a Q_t (a) $]]
 
   - Seleccionar la acción con el mayor valor estimado.
 
@@ -609,7 +607,7 @@
   #v(.3cm)
 
   #align(center)[
-    #framed[
+    #grayed[
       #set text(28pt)
       #v(1cm)
       $A_t = cases(
@@ -719,7 +717,7 @@
 
   Previamente hemos propuesto estimar el valor de las acciones de la siguiente forma:
 
-  #text(28pt)[$ Q_t (a) = (sum_(i=1)^(t-1) R_(i,a)) / (sum_(i=1)^(t-1) n_(i,a)) $]
+  #grayed[#text(28pt)[$ Q_t (a) = (sum_(i=1)^(t-1) R_(i,a)) / (sum_(i=1)^(t-1) n_(i,a)) $]]
 
   El problema de este cálculo es que requiere mantener en *memoria* todas las recompensas obtenidas para cada acción en el tiempo.
 
@@ -791,11 +789,12 @@
 
   #let a = $frac(1,N(A))$
 
-  #text(26pt)[
-    $
-      Q(A) <- Q( A ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
-    $
-  ]
+  #grayed[
+    #text(26pt)[
+      $
+        Q(A) <- Q( A ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
+      $
+    ]]
 
   #v(.5cm)
 
@@ -813,7 +812,7 @@
 
   #let a = $frac(1,N(A))$
 
-  #text(26pt)[
+  #grayed[
     $
       Q(A) <- Q( A ) + underbracket(#a, "step\nsize") dot underbracket([underbracket(R, "objetivo") - underbracket(Q(A), "estimación\nactual")], "error de estimación")
     $
@@ -829,7 +828,7 @@
 
 // *****************************************************************************
 
-#focus-slide("Un ejemplo...")
+#focus-slide("Ejemplo")
 
 // *****************************************************************************
 
@@ -1021,11 +1020,11 @@
 
   En métodos con #stress[_step size_ constante], el sesgo es permanente, aunque decrece con el tiempo:
 
-  #set text(24pt)
-  $
-    Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
-    &= (1-alpha)^n Q_1 + sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i
-  $
+  #grayed[
+    $
+      Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
+      &= (1-alpha)^n Q_1 + sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i
+    $]
 
 ]
 
@@ -1039,11 +1038,11 @@
 
   En métodos con #stress[_step size_ constante], el sesgo es permanente, aunque decrece con el tiempo:
 
-  #set text(24pt)
-  $
-    Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
-    &= (1-alpha)^n Q_1 + colmath(underbracket(sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i, #l), #blue)
-  $
+  #grayed[
+    $
+      Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
+      &= (1-alpha)^n Q_1 + colmath(underbrace(sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i, #l), #blue)
+    $]
 
 ]
 
@@ -1219,7 +1218,7 @@
 
   El método del #stress[límite superior de confianza], o _Upper-confidence-bound_ (#stress[*UCB*]), nos permite balancear *valor* e *incertidumbre* a la hora de seleccionar acciones:
 
-  $ A_t = op("argmax")_a [Q_t (a) + c #h(0.2cm) sqrt((ln t) / (N_t (a)))] $
+  #grayed[$ A_t = op("argmax")_a [Q_t (a) + c #h(0.2cm) sqrt((ln t) / (N_t (a)))] $]
 
 ]
 
@@ -1314,8 +1313,9 @@
       - ¿Qué son?
       - ¿Que relación podrían tener con las próximas lecciones?
 
-    #text(25pt)[*Recursos interesantes*]
+    #text(25pt)[*Bibliografía y recursos*]
 
+    - *Capítulo 2* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
     - https://www.ma.imperial.ac.uk/~cpikebur/trybandits/trybandits.html
     - https://rlplaygrounds.com/reinforcement/learning/Bandits.html
     - https://youtu.be/bkw6hWvh_3k

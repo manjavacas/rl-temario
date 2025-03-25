@@ -1516,16 +1516,16 @@
     - ¿Y _actor-critic_?
   - Investiga sobre el algoritmo #stress[A2C] y trata de implementarlo.
 
-  #text(size: 24pt)[*Bibliografía, vídeos y material recomendado*]
-  #set text(size: 13pt)
+  #text(size: 24pt)[*Bibliografía y recursos*]
 
+  #set text(size: 13pt)
+  - *Capítulo 13* de Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction.
   - #link("https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning")
   - #link("https://www.youtube.com/watch?v=e20EY4tFC_Q")
   - #link("https://www.youtube.com/watch?v=AiFM6LZ7Vuo")
   - #link("https://www.youtube.com/watch?v=ZODHxkjkuv4")
   - #link("https://lilianweng.github.io/posts/2018-04-08-policy-gradient/")
   - #link("https://tatika.pythonanywhere.com/post_group/12")
-  - #link("https://medium.com/geekculture/policy-based-methods-for-a-continuous-action-space-7b5ecffac43a")
   - #link("https://www.decisionsanddragons.com/")
 ]
 

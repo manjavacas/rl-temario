@@ -1,4 +1,4 @@
-#import "@preview/typslides:1.2.3": *
+#import "@preview/typslides:1.2.5": *
 
 #show: typslides.with(
   ratio: "16-9",
@@ -450,7 +450,7 @@
     gutter: 0.8cm,
     box[
       #text(size: 17pt)[
-        - #stress[*Aprendizaje supervisado*] $->$ aprendizaje a partir de un conjunto de datos previamente *etiquetados* por un *supervisor externo*.
+        - #stress[Aprendizaje supervisado] $->$ aprendizaje a partir de un conjunto de datos previamente *etiquetados* por un *supervisor externo*.
 
         - Cada ejemplo está compuesto por un conjunto de *características* ($X_1, X_2, X_3, ...$) y una *etiqueta* o *valor* a predecir ($Y$).
 
@@ -493,7 +493,7 @@
     gutter: 0.8cm,
     box[
       #text(size: 20pt)[
-        - #stress[*Aprendizaje no supervisado*] $->$ aprendizaje de la estructura intrínseca de un conjunto de datos no etiquetados.
+        - #stress[Aprendizaje no supervisado] $->$ aprendizaje de la estructura intrínseca de un conjunto de datos no etiquetados.
 
         - Tanto RL como ANS carecen de supervisión externa, pero sus objetivos son diferentes.
 
@@ -564,11 +564,14 @@
 
   #pagebreak()
 
+  #set text(size: 18pt)
+
   #text(size: 30pt, weight: "semibold")[#smallcaps("Recursos Web")]
 
   - https://github.com/huggingface/deep-rl-class
   - https://spinningup.openai.com/en/latest/index.html
   - https://julien-vitay.net/deeprl/
+  - https://github.com/MathFoundationRL/Book-Mathematical-Foundation-of-Reinforcement-Learning
 
   #text(size: 30pt, weight: "semibold")[#smallcaps("Cursos")]
 

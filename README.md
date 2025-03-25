@@ -36,7 +36,7 @@ Elaborado por Antonio Manjavacas ([manjavacas@ugr.es](mailto:manjavacas@ugr.es))
 
 ## 📁 Material
 
-- [Diapositivas](temario/) (elaboradas con [Typslides](https://github.com/manjavacas/typslides) y [Polylux](https://github.com/andreasKroepelin/polylux)).
+- [Diapositivas](temario/) (elaboradas con [Typslides](https://github.com/manjavacas/typslides)).
 - [Ejemplos y ejercicios](ejemplos/) referenciados a lo largo del temario.
 
 ## 📚 Bibliografía
