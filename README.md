@@ -1,7 +1,5 @@
 ![License](https://img.shields.io/badge/license-GPLv3-blue)
 
-> **ℹ️  Temario en desarrollo**. Se irá completando y revisando progresivamente.
-
 # Aprendizaje por refuerzo
 
 Temario sobre **aprendizaje por refuerzo** (_reinforcement learning_) en español.
