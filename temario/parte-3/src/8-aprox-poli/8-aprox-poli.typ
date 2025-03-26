@@ -1302,30 +1302,80 @@
 
 // *****************************************************************************
 
-// #slide(title: [Función de ventaja])[
+#focus-slide([Función de ventaja])
 
-//   De forma general, el gradiente del rendimiento $gradient J(bold(theta))$ se puede expresar como:
+// *****************************************************************************
 
-//   #grayed[
-//     $
-//       gradient J(bold(theta)) = EE_pi_bold(theta) [gradient_bold(theta) ln pi_bold(theta) (s,a) A(s, a)]
-//     $
-//   ]
+#slide(title: [Función de ventaja])[
 
-//   Denominamos a $A(s,a)$ #stress[función de ventaja]. Se define como la diferencia entre valor esperado y real, tal que:
+  La #stress[función de ventaja] $A(s,a)$ nos permite cuantificar *cómo de buena es una acción* $a$ en un estado $s$ en comparación con el valor de dicho estado. Esto es:
 
-//   #cols(gutter: .1cm)[
-//     #framed(title: [#text(size: 22pt)[REINFORCE con _baseline_]])[
-//       #set text(size: 25pt)
-//       $A(s,a) &= G_t - hat(v)(s,bold(w))$
-//     ]
-//   ][
-//     #framed(title: [_Actor-critic_])[
-//       #set text(size: 23pt)
-//       $A(s,a) = hat(q)_pi (s,a) - hat(v)_pi (s) \ #h(.5cm) tilde.eq r + gamma hat(v)_pi (s') + hat(v)_pi (s)$]
-//   ]
+  #grayed[$ A(s,a) = Q(s,a) - V(s) $]
 
-// ]
+  La función de ventaja *implica conocer* $Q(s,a)$ y $V(s)$, o contar al menos con una aproximación de estas.
+
+]
+
+
+// *****************************************************************************
+
+#slide(title: [Función de ventaja])[
+
+  Dado que $ Q(s,a) = r + gamma V(s')$, podemos reescribir $A(s,a)$ tal que:
+
+  #grayed[ $ A(s,a) = underbrace(r + gamma V(s') - V(s), "TD-error") $]
+
+  Es decir...
+
+  #align(center)[#framed[El _TD-error_ es un buen estimador de la función de ventaja.]]
+
+
+]
+
+// *****************************************************************************
+
+#slide(title: [Función de ventaja])[
+
+  #grayed[ $ A(s,a) &= Q(s,a) - V(s) &= r + gamma V(s') - V(s) $]
+
+  - Si elegir una acción $a$ en un estado $s$ resulta en un retorno $Q(s,a)$ mayor que el valor de dicho estado $V(s)$, la función de ventaja será positiva, $A(s,a) > 0$.
+
+  Esto hace que su aplicación en los métodos vistos sea interesante, ya que permite *reforzar* acciones que resultan en retornos superiores a la media, y *reducir* la probabilidad de acciones que resultan en retornos inferiores.
+
+  - Es por esto que los métodos _actor-critic_ también suelen denominarse en la literatura como #stress[_advantage actor-critic_].
+]
+
+
+// *****************************************************************************
+
+#slide(title: [Función de ventaja])[
+
+  De forma general, el gradiente del rendimiento $gradient J(bold(theta))$ se puede expresar como:
+
+  #grayed[
+    $
+      gradient J(bold(theta)) = EE_pi_bold(theta) [gradient_bold(theta) ln pi_bold(theta) (s,a) A(s, a)]
+    $
+  ]
+
+  Así, la #stress[función de ventaja] se define de diferente forma dependiendo del método empleado:
+
+  #cols(gutter: .1cm)[
+    #framed(title: [#text(size: 22pt)[REINFORCE con _baseline_]])[
+      #set text(size: 25pt)
+      $A(s,a) &tilde.eq G_t - hat(v)(s)$
+
+    ]
+    #h(1cm) _Empleando retornos empíricos._
+  ][
+    #v(-1.2cm)
+    #framed(title: [_Actor-critic_])[
+      #set text(size: 23pt)
+      $A(s,a) &tilde.eq hat(q)_pi (s,a) - hat(v)_pi (s)\ &tilde.eq r + gamma hat(v)_pi (s') - hat(v)_pi (s)$]
+    #h(1cm) _Empleando retornos estimados._
+  ]
+
+]
 
 // *****************************************************************************
 
@@ -1509,8 +1559,9 @@
 
   #set text(size: 18pt)
   - #stress[Implementar los algoritmos estudiados] y utilizarlos en un entorno de Gymnasium.
-    - REINFORCE, REINFORCE con _baseline_ y _One-step actor-critic_.
+    - REINFORCE, REINFORCE con _baseline_ y _1-step actor-critic_.
     - Compara su rendimiento.
+    - #link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/policy_approx/")
   - Implementar un agente en un entorno de Gymnasium con un #stress[espacio de acciones continuo].
   - ¿Qué algoritmos basados en gradiente de la política son más empleados en la actualidad?
     - ¿Y _actor-critic_?
