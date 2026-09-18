@@ -1,4 +1,4 @@
-![License](https://img.shields.io/badge/license-MIT-blue)
+[![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
 
 # Aprendizaje por refuerzo
 
@@ -52,4 +52,4 @@ Si quieres ayudar a mejorar este proyecto, envía sugerencias o colabora reporta
 
 ## ✍️ Uso y licencia
 
-Este material se distribuye bajo licencia [GPLv3](LICENSE). 
+Este material se distribuye bajo licencia [CC BY-NC 4.0](LICENSE). 
