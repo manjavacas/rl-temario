@@ -53,4 +53,18 @@ Si quieres ayudar a mejorar este proyecto, envía sugerencias o colabora reporta
 
 ## ✍️ Uso y licencia
 
-Este material se distribuye bajo licencia [CC BY-NC 4.0](LICENSE). 
+Este material se distribuye bajo licencia [CC BY-NC 4.0](LICENSE).
+
+Cita: 
+
+```bibtex
+@software{manjavacas2026rltemario,
+  author       = {Manjavacas, Antonio},
+  title        = {manjavacas/rl-temario: v1.0.1},
+  year         = {2026},
+  version      = {v1.0.1},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.22829281},
+  url          = {https://doi.org/10.5281/zenodo.22829281}
+}
+```
