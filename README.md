@@ -1,4 +1,4 @@
-![License](https://img.shields.io/badge/license-GPLv3-blue)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 # Aprendizaje por refuerzo
 
