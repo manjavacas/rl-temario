@@ -38,21 +38,6 @@ Elaborado por [Antonio Manjavacas](https://www.linkedin.com/in/antonio-manjavaca
 - [Diapositivas](temario/) (elaboradas con [Typslides](https://github.com/manjavacas/typslides)).
 - [Ejemplos y ejercicios](ejemplos/) referenciados a lo largo del temario.
 
-## 🛠️ Compilación
-
-Las fuentes de cada tema están en `temario/parte-N/src/<tema>/` y cada PDF se genera en `temario/parte-N/`. Se necesita [Typst](https://typst.app/) (probado con la versión 0.15) y la fuente [Fira Sans](https://fonts.google.com/specimen/Fira+Sans):
-
-```bash
-make            # compila los PDF desactualizados (admite -j)
-make parte-2    # compila solo una parte
-make -B         # recompila todo
-make list       # muestra cada fuente y su PDF
-```
-
-Si Fira Sans no está instalada, puedes indicar su carpeta con `make FONT_PATH=/ruta/a/fuentes`. Los PDF son reproducibles: recompilar sin cambios genera exactamente los mismos ficheros.
-
-Al añadir imágenes nuevas, conviene ejecutar `make optimize-images` (requiere [Pillow](https://pypi.org/project/pillow/)): reduce las que superan con creces la resolución de una diapositiva sin cambiar su tamaño en la página.
-
 ## 📚 Bibliografía
 
 Principales fuentes empleadas en la elaboración de este temario:
@@ -65,6 +50,17 @@ Principales fuentes empleadas en la elaboración de este temario:
 ## 🚀 Contribuye 
 
 Si quieres ayudar a mejorar este proyecto, envía sugerencias o colabora reportando errores a través de _issues_.
+
+## 🛠️ Compilación
+
+Las fuentes de cada tema están en `temario/parte-N/src/<tema>/` y cada PDF se genera en `temario/parte-N/`. Se necesita [Typst](https://typst.app/) (probado con la versión 0.15) y la fuente [Fira Sans](https://fonts.google.com/specimen/Fira+Sans):
+
+```bash
+make            # compila los PDF desactualizados (admite -j)
+make parte-2    # compila solo una parte
+make -B         # recompila todo
+make list       # muestra cada fuente y su PDF
+```
 
 ## ✍️ Uso y licencia
 
