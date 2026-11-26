@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color: red) = text(fill: color)[$#x$]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Métodos basados en muestreo: Monte Carlo],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -87,7 +87,7 @@
 
   #v(.3cm)
 
-  La idea básica detrás de la #stress[prediccón Monte Carlo] (_Monte Carlo prediction_) es seguir múltiples trayectorias aleatorias desde diferentes estados.
+  La idea básica detrás de la #stress[predicción Monte Carlo] (_Monte Carlo prediction_) es seguir múltiples trayectorias aleatorias desde diferentes estados.
 
   - Para aproximar el valor de un estado, calculamos la *media* de las recompensas acumuladas obtenidas cada vez que se visitó.
 
@@ -243,7 +243,7 @@
 
 #slide(title: [#fvev])[
 
-  - Denominamos a este método #stress[_First-visit Monte Carlo prediction_], porque sólo tenemos en cuenta la recompensa obtenida en la *primera visita* a cada estado.
+  - Denominamos a este método #stress[_First-visit Monte Carlo prediction_], porque solo tenemos en cuenta la recompensa obtenida en la *primera visita* a cada estado.
 
   - Una alternativa es #stress[_Every-visit Monte Carlo prediction_], que tiene en cuenta *todas las visitas* a un mismo estado.
 
@@ -296,7 +296,7 @@
     #text(size: 17pt)[
       *Episodio 1: *
 
-      $V(s_1) = 3+2+ -4 +4 -3 = bold(2)\ V(s_2) = -4 + 4 - 3 = bold(-3)$
+      $V(s_1) = 3+2-4+4-3 = bold(2)\ V(s_2) = -4 + 4 - 3 = bold(-3)$
 
       #colbreak()
 
@@ -307,8 +307,8 @@
       #colbreak()
 
       #grayed[
-        #set text(size: 20pt)
-        $V(s_1) = (2+0) / 2 = bold(1)$\ #v(0.4cm) $V(s_2) = (-3 -2) / 2 = bold(2.5)$
+        #set text(size: 19pt)
+        $V(s_1) = (2+0) / 2 = bold(1)$\ #v(0.4cm) $V(s_2) = (-3 -2) / 2 = bold(-2.5)$
       ]
     ]
   ]
@@ -319,7 +319,7 @@
 
 #slide(title: "Ejemplo")[
   #box(height: 400pt)[
-    #framed[#stress[_EVERY-VISIT_ MC] \ Consideramos las recompensas acumuladas a partir todas las visitas.]
+    #framed[#stress[_EVERY-VISIT_ MC] \ Consideramos las recompensas acumuladas a partir de todas las visitas.]
 
     #align(center + top)[
       #image("images/ev-example.png", width: 75%)
@@ -330,13 +330,13 @@
 
         *Episodio 1: *
 
-        $V(s_1) = (3+2-4+4-3) + (2-4+4-3) + (4-3) = bold(2)\ V(s_2) = (-4+4-3)+(-3)= bold(0)$
+        $V(s_1) = (3+2-4+4-3) + (2-4+4-3) + (4-3) = bold(2)\ V(s_2) = (-4+4-3)+(-3)= bold(-6)$
 
         #colbreak()
 
         *Episodio 2: *
 
-        $V(s_1) = 3 -3 = bold(0)\ V(s_2) = (-2 + 3 -3) + (-3) = bold(1)$
+        $V(s_1) = 3 -3 = bold(0)\ V(s_2) = (-2 + 3 -3) + (-3) = bold(-5)$
 
 
       ]
@@ -345,7 +345,7 @@
     #align(center)[
       #grayed[
         #set text(size: 18pt)
-        $V(s_1) = (2-1+1+0) / 4 = bold(0.5)$ #h(4cm) $V(s_2) = (-3 -3 -2 -3) / 4 = bold(2.75)$
+        $V(s_1) = (2-1+1+0) / 4 = bold(0.5)$ #h(4cm) $V(s_2) = (-3 -3 -2 -3) / 4 = bold(-2.75)$
       ]
     ]
   ]
@@ -361,7 +361,7 @@
   #framed[
     Un aspecto importante de MC es que la estimación del valor de un estado #stress[*NO* depende de las estimaciones de valor de otros estados].
 
-    - El #stress[valor de cada estado es independiente del resto], y *sólo depende de la recompensa acumulada al final del episodio*.
+    - El #stress[valor de cada estado es independiente del resto], y *solo depende de la recompensa acumulada al final del episodio*.
 
     - Es decir, no se emplea #stress[_bootstrapping_] (#stress[estimaciones a partir de estimaciones]).
   ]
@@ -434,7 +434,7 @@
 
 #slide(title: "Estimación de valores de acción con MC")[
 
-  #framed[*Con un modelo del entorno*, el agente sólo tiene que estimar los valores de los estados y actuar de forma _greedy_ para alcanzar su objetivo.]
+  #framed[*Con un modelo del entorno*, el agente solo tiene que estimar los valores de los estados y actuar de forma _greedy_ para alcanzar su objetivo.]
 
   #align(center)[#image("images/with-model.png")]
 
@@ -1051,7 +1051,7 @@
 
   - Todo episodio empieza desde un *par estado-acción aleatorio*:
 
-  #let t = text[Dependientes de $pi$,$p$]
+  #let t = text[Dependientes de $pi$, $p$]
   #let m = text[$s_1, a_1, s_2, a_2, dots$]
 
   #grayed[$ underbrace(#stress[$s_0, a_0$], "Aleatorios"), underbrace(#m, #t) $]
@@ -1110,7 +1110,7 @@
 
   El #stress[problema] es que #stress[no siempre podemos emplear inicios de exploración].
 
-  - Existen problemas en los que es difícil comenzar es un par estado-acción aleatorio.
+  - Existen problemas en los que es difícil comenzar en un par estado-acción aleatorio.
 
   #framed[Es difícil asegurar que un agente pueda empezar desde toda configuración posible, especialmente en problemas lo suficientemente complejos.]
 
@@ -1257,7 +1257,7 @@
 
 #slide(title: [#soft])[
 
-  - Si $epsilon > 0$ estas políticas nunca pueden ser óptimas. Esto se debe a que *siempre existe cierta probabilidad de realizar acciones sub-óptimas* (explorar).
+  - Si $epsilon > 0$ estas políticas nunca pueden ser óptimas. Esto se debe a que *siempre existe cierta probabilidad de realizar acciones subóptimas* (explorar).
 
   - No convergen en una política óptima, pero sí en una #stress[muy aproximada]. Además, evitan emplear inicios de exploración.
 
@@ -1285,7 +1285,7 @@
 
     #framed[#emoji.quest ¿Existe alguna #stress[alternativa] a mantener siempre cierta probabilidad de explorar?]
 
-    - MC _on-policy_ supone aprender una política *muy cercana a la óptima*, pero siempre existe cierta probabilidad de elegir acciones sub-óptimas.
+    - MC _on-policy_ supone aprender una política *muy cercana a la óptima*, pero siempre existe cierta probabilidad de elegir acciones subóptimas.
 
     #framed[Los métodos #emoji.silhouette.double #stress[_off-policy_] son una alternativa.]
 
@@ -1391,10 +1391,10 @@
 
 // *****************************************************************************
 
-#slide(title: [_Imitation learning_])[
+#slide(title: [#offon2])[
 
   #framed[
-    #emoji.silhouette Los métodos *_on-policy_* son más simples, porque sólo se requiere una política.
+    #emoji.silhouette Los métodos *_on-policy_* son más simples, porque solo se requiere una política.
 
     #emoji.silhouette.double Los métodos *_off-policy_* requieren más tiempo para converger y presentan una mayor varianza (cambios de comportamiento más bruscos).
   ]
@@ -1443,7 +1443,7 @@
 
   #framed[#stress[Objetivo]: estimar $v_pi$ o $q_pi$ dadas las políticas $pi$ (objetivo) y $b$ (comportamiento).]
 
-  Si queremos emplear episodios de $b$ para estimar valores para $pi$, es necesario que cada acción tomada por $b$ la pueda tomar también $pi$ (al menos, eventualmente).
+  Si queremos emplear episodios de $b$ para estimar valores para $pi$, es necesario que cada acción tomada por $pi$ la pueda tomar también $b$ (al menos, eventualmente).
 
   Denominamos a esto #stress[supuesto de cobertura]:
 
@@ -1486,14 +1486,14 @@
 
 // *****************************************************************************
 
-#slide(title: "Políticas de comportamiento estocásticas")[
+#slide(title: "Políticas objetivo estocásticas")[
 
 
   #cols(gutter: 1cm)[
 
     #framed[¿Para qué una #stress[política objetivo $pi$ estocástica?]]
 
-    En este ejemplo, si $pi$ es *determinista* sólo contemplará una acción por estado, incluso si hay varias acciones óptimas.
+    En este ejemplo, si $pi$ es *determinista* solo contemplará una acción por estado, incluso si hay varias acciones óptimas.
 
     Pero si es *estocástica*, tenemos una política que permite una #stress[mayor variedad de acciones óptimas] para un mismo estado.
 
@@ -1536,7 +1536,7 @@
 #slide(title: [#imp])[
 
   #framed(title: [#imp])[
-    El #stress[muestreo por importancia], o *_importance sampling_* es una técnica empleada en estadística para estimar el valor esperado de una distribución en base a ejemplos muestreados de una distribución diferente.
+    El #stress[muestreo por importancia], o *_importance sampling_*, es una técnica empleada en estadística para estimar el valor esperado de una distribución en base a ejemplos muestreados de una distribución diferente.
   ]
 
   #v(1cm)
@@ -1814,7 +1814,7 @@
 
   #v(.5cm)
 
-  - #stress[_First-visit_]: $cal(T)(s)$ sólo considera los _time steps_ de la primera visita a $s$ en cada episodio.
+  - #stress[_First-visit_]: $cal(T)(s)$ solo considera los _time steps_ de la primera visita a $s$ en cada episodio.
 
   - #stress[_Every-visit_]: $cal(T)(s)$ incluye todas las visitas a $s$.
 
@@ -1837,13 +1837,13 @@
 
   #columns(2)[
 
-    #align(center)[#framed[#stress[_First-visit_]: $cal(T)(s) = {1,7}$]]
+    #align(center)[#framed[#stress[_First-visit_]: $cal(T)(s) = {2,7}$]]
 
     $ V(s) = frac(rho_(1:3) dot 10 + rho_(7:10) dot 5, 2) $
 
     #colbreak()
 
-    #align(center)[#framed[#stress[_Every-visit_]: $cal(T)(s) = {1,7,9}$]]
+    #align(center)[#framed[#stress[_Every-visit_]: $cal(T)(s) = {2,7,9}$]]
 
     $ V(s) = frac(rho_(1:3) dot 10 + rho_(7:10) dot 5 + rho_(9:10) dot 5, 3) $
 
@@ -1883,7 +1883,7 @@
 
   - Presenta *mayor sesgo*:
 
-    - Si sólo se visita un estado una vez, $v_pi (s) = v_b (s)$, el _importance sampling ratio_ se cancela y hay un sesgo hacia la política de comportamiento.
+    - Si solo se visita un estado una vez, $v_pi (s) = v_b (s)$, el _importance sampling ratio_ se cancela y hay un sesgo hacia la política de comportamiento.
 
   - Sin embargo, *la varianza es menor* (actualizaciones menos extremas).
 
@@ -2036,7 +2036,7 @@
 
 #slide[
 
-  - Los métodos #stress[Monte Carlo] aprenden funciones de valor y políticas óptimas a partir de experiencia procedente de #stress[episodios muestreados / aleatorios].
+  - Los métodos #stress[Monte Carlo] aprenden funciones de valor y políticas óptimas a partir de experiencia procedente de #stress[episodios muestreados/aleatorios].
 
 
   - Las políticas óptimas se aprenden directamente, #stress[sin requerir un modelo del entorno] ni emplear _bootstrapping_ (estimaciones a partir de estimaciones).
@@ -2053,7 +2053,7 @@
 
 #slide[
 
-  - Para garantizar la exploración, empleamos técnicas como #stress[inicios de exploración], aunque presenta algunas limitaciones.
+  - Para garantizar la exploración, empleamos técnicas como #stress[inicios de exploración], aunque presentan algunas limitaciones.
 
   - Los métodos #stress[_on-policy_] permiten asegurar la exploración y alcanzar una política muy cercana a la óptima.
 
@@ -2069,5 +2069,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Métodos basados en muestreo: Monte Carlo],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

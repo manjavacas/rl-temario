@@ -3,7 +3,7 @@ import numpy as np
 
 class CliffWalk:
     '''
-    Cliff walking environment - Example 6.6 in Sutton & Barto)
+    Cliff walking environment (Example 6.6 in Sutton & Barto)
     '''
 
     def __init__(self, height=4, width=12):

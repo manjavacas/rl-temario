@@ -9,8 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
-
-#let colmath(x, color: red) = text(fill: color)[$#x$]
+#set document(date: none)
 
 // *****************************************************************************
 
@@ -18,7 +17,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Resumen],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -50,7 +48,7 @@
 
   #framed[¿Diferencia entre problemas #stress[episódicos] y #stress[continuados]?]
 
-  - #text(fill:olive)[*Episódicos*]: problemas divisibles en episodios con un duración determinada, desde un estado inicial hasta un estado terminal.
+  - #text(fill:olive)[*Episódicos*]: problemas divisibles en episodios con una duración determinada, desde un estado inicial hasta un estado terminal.
 
   - #text(fill:purple)[*Continuados*]: no existen estados terminales.
 
@@ -269,5 +267,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Resumen],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

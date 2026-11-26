@@ -9,7 +9,7 @@ from tqdm.auto import trange
 
 class ActorCriticNetwork(nn.Module):
     """
-    Red neuronal unificado para ACTOR y CRITICO:
+    Red neuronal unificada para ACTOR y CRÍTICO:
       - Actor: estima la política (devuelve la media y log_std de la distribución normal).
       - Crítico: estima el valor del estado.
     """
@@ -86,7 +86,7 @@ class ActorCriticContinuousAgent():
                     obs, dtype=torch.float32).to(self.device)
                 mean, std, value = self.actor_critic_net(state_tensor)
 
-                # Obtener accion y log_prob de distribución normal
+                # Obtener acción y log_prob de distribución normal
                 dist = torch.distributions.Normal(mean, std)
                 action = dist.sample()
                 log_prob = dist.log_prob(action).sum(dim=-1)

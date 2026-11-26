@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color: red) = text(fill: color)[$#x$]
 
@@ -18,16 +19,11 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Aproximación de políticas",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
 
 #table-of-contents(title: "Contenidos")
-
-// *****************************************************************************
-
-// #title-slide("Políticas parametrizadas")
 
 // *****************************************************************************
 
@@ -84,9 +80,6 @@
     $ pi(a | s, bold(theta)) = Pr{A_t = a | S_t = s, bold(theta)_t = bold(theta)} $
   ]
 
-  // #set text(size: 17pt)
-  // - Si el método empleado usa además una función de valor aproximada, entonces volveremos a contar con el vector de pesos $bold(w) in RR^d$ y $hat(v)(s, bold(w))$.
-
 ]
 
 // *****************************************************************************
@@ -106,19 +99,6 @@
   #framed[Todos los métodos que siguen este esquema se denominan #stress[_policy gradient_] (métodos basados en el *gradiente de la política*).]
 ]
 
-
-// *****************************************************************************
-
-// #slide(title: [Métodos actor-crítico])[
-
-//   También veremos métodos que aproximan la *política* y la *función de valor* al mismo tiempo.
-
-//   Estos se denominan #stress[actor-crítico] (_actor-critic_), donde:
-
-//   - El *actor* es la política aprendida.
-
-//   - El *crítico* es la función de valor aproximada (normalmente, estado-valor).
-// ]
 
 // *****************************************************************************
 
@@ -151,7 +131,7 @@
 
   $ pi(a|s,bold(theta)) = (e^h(s,a,bold(theta))) / (sum_b e^h(s,b,bold(theta))) $
 
-  - La parametrización de las preferencias pueden venir dadas por los pesos de una *red neuronal* (ej. AlphaGo) o por características lineales (_linear features_):
+  - La parametrización de las preferencias puede venir dada por los pesos de una *red neuronal* (ej. AlphaGo) o por características lineales (_linear features_):
 
   $ h(s,a,bold(theta)) = bold(theta)^T bold(x)(s,a) #h(.5cm) bold(x)(s,a) in RR^d' $
 
@@ -216,7 +196,7 @@
 
   - Útil en problemas donde, en un mismo estado, dos acciones pueden ser viables con diferente probabilidad.
 
-    - Por ejemplo, juegos de cartas parcialmente observables donde jugar de forma óptima requiere en ocasiones actuar de forma diferente con probabilidades específicas (ej. jugar de farol en Poker).
+    - Por ejemplo, juegos de cartas parcialmente observables donde jugar de forma óptima requiere en ocasiones actuar de forma diferente con probabilidades específicas (ej. jugar de farol en póker).
 
   - Los métodos basados en _action values_ no tienen una forma natural de converger en políticas estocásticas óptimas.
 
@@ -244,7 +224,7 @@
 
   - La #stress[parametrización de la política] supone *cambios suaves* en las probabilidades de las acciones durante el aprendizaje.
 
-  - Por el contrario, la #stress[aproximación de funciones de valor + $bold(epsilon)$-_greedy_], hace que las probabilidades de las acciones cambien de forma *drástica* dada una variación menor en el valor estimado de pares acciones-estado.
+  - Por el contrario, la #stress[aproximación de funciones de valor + $bold(epsilon)$-_greedy_] hace que las probabilidades de las acciones cambien de forma *drástica* dada una variación menor en el valor estimado de pares acción-estado.
 
   Esto será especialmente relevante a la hora de aplicar *ascenso del gradiente* para optimizar $bold(theta)$.
 
@@ -311,27 +291,9 @@
 
 // *****************************************************************************
 
-// #slide(title: [Teorema del gradiente de la política])[
-
-//   Pero, ¿cómo calculamos el gradiente de $J(bold(theta))?$
-
-//   La respuesta viene dada por el #stress[teorema del gradiente de la política] (_policy gradient theorem_):
-
-//   #grayed[
-//     $ gradient J(bold(theta)) prop sum_s mu(s) sum_a q_pi_theta (s,a) gradient pi_theta(a|s,bold(theta)) $
-//   ]
-
-//   - Recordemos que $mu(s)$ es la frecuencia de visita de $s$ bajo $pi_bold(theta)$ (fracción de tiempo invertido en $s$).
-
-// ]
-
-// *****************************************************************************
-
 #slide(title: [Gradiente de $J(bold(theta))$])[
 
-  // #grayed[$J(bold(theta)) = v_pi_bold(theta) (s_0)$]
-
-  #grayed[Optimizar de $J(bold(theta))$ requiere calcular el gradiente $gradient_theta J(bold(theta))$]
+  #grayed[Optimizar $J(bold(theta))$ requiere calcular el gradiente $gradient_theta J(bold(theta))$]
 
   Debemos tener en cuenta que el rendimiento depende de:
 
@@ -345,7 +307,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Gradiente $J(bold(theta))$])[
+#slide(title: [Gradiente de $J(bold(theta))$])[
 
   #figure(image("images/dynamics.png"))
 
@@ -357,7 +319,7 @@
 
   - Dado un estado, es relativamente sencillo calcular cómo afectan los parámetros de la política a la #stress[elección de la acción] y, por tanto, a la recompensa obtenida.
 
-  - Sin embargo, el efecto de la política sobre la #stress[distribución de estados] (es decir, qué estados se visitarán) es algo que también depende del entorno y es, generalmente, desconocido.#footnote[Andriy Drozdyuk expresa esto con el ejempo: "las dinámicas de una roca no dependen de quién la levanta".]
+  - Sin embargo, el efecto de la política sobre la #stress[distribución de estados] (es decir, qué estados se visitarán) es algo que también depende del entorno y es, generalmente, desconocido.#footnote[Andriy Drozdyuk expresa esto con el ejemplo: "las dinámicas de una roca no dependen de quién la levanta".]
 
   #framed[#emoji.quest ¿Cómo podemos estimar la dirección del gradiente y *mejorar la política* cuando parte de ese gradiente depende de un *efecto desconocido* sobre la distribución de estados?]
 
@@ -375,7 +337,7 @@
     $ gradient_theta J(bold(theta)) prop sum_s mu(s) sum_a q_pi_theta (s,a) gradient_theta pi_theta (a|s,bold(theta)) $
   ]
 
-  Éste ofrece una definición del gradiente del rendimiento con respecto a $bold(theta)$ *sin necesidad de tener en cuenta la derivada de la distribución de estados visitados* empleando $pi_bold(theta)$.
+  Este ofrece una definición del gradiente del rendimiento con respecto a $bold(theta)$ *sin necesidad de tener en cuenta la derivada de la distribución de estados visitados* empleando $pi_bold(theta)$.
 
   - Es decir, calcular $gradient_bold(theta) J(bold(theta))$ sin necesidad de calcular $sum_s gradient_bold(theta) mu(s)$.
 
@@ -393,7 +355,7 @@
 
   - $pi$ es la política asociada al vector de parámetros $bold(theta)$.
 
-  - $prop$ denota propocionalidad. En problemas #stress[episódicos], la constante de proporcionalidad es la longitud media del episodio, mientras que en problemas #stress[continuados] es 1 (la relación pasa a ser de igualdad).
+  - $prop$ denota proporcionalidad. En problemas #stress[episódicos], la constante de proporcionalidad es la longitud media del episodio, mientras que en problemas #stress[continuados] es 1 (la relación pasa a ser de igualdad).
 
   - La distribución $mu$ es la distribución _on-policy_ bajo $pi_theta$. Representa la fracción de tiempo invertido en un determinado estado.
 
@@ -435,7 +397,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
 
   #framed[#emoji.warning Para simplificar la notación, de aquí en adelante expresaremos $gradient_bold(theta)$ como $gradient$, y $pi_bold(theta)$ como $pi$.]
@@ -458,7 +420,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Si incluimos el gradiente, tenemos:
 
@@ -473,7 +435,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Si aplicamos la regla del producto de gradientes, obtenemos:
 
@@ -494,7 +456,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
 
   Expandimos el siguiente término:
@@ -518,7 +480,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   #grayed[
     $
@@ -534,7 +496,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   A continuación, buscamos eliminar las recompensas de $sum_(s',r)$
 
@@ -554,7 +516,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   - Simplificamos $p(s',r|s,a)$ como $rho$.
 
@@ -573,7 +535,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Los términos con gradiente $0$ con respecto a $bold(theta)$ se anulan:
 
@@ -593,7 +555,7 @@
     #set text(size: 20pt)
     $
       gradient v_pi (s)
-      &= sum_a [gradient pi(a|s) q_pi (s,a) + pi(a|s) colmath(sum_s' sum_r + p(s',r|s,a) gradient v_pi (s'))]
+      &= sum_a [gradient pi(a|s) q_pi (s,a) + pi(a|s) colmath(sum_s' sum_r p(s',r|s,a) gradient v_pi (s'))]
     $
   ]
 
@@ -601,7 +563,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Si reorganizamos la ecuación:
 
@@ -620,7 +582,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   De esta forma, tenemos:
 
@@ -635,7 +597,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Ahora, sustituimos $gradient v_pi (s')$ por su definición (_unrolling_):
 
@@ -654,7 +616,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Finalmente, resumimos la expresión obtenida como:
 
@@ -668,7 +630,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Bajo estas premisas, podemos demostrar el #stress[teorema del gradiente de la política].
 
@@ -688,7 +650,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Comprimimos la probabilidad de transición en el término $eta(s)$ y normalizamos para que sea una distribución de probabilidad:
 
@@ -705,7 +667,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Dado que $sum_s' eta(s')$ es una constante:
 
@@ -721,7 +683,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   - La distribución $mu(s) = eta(s) / (sum_s' eta(s'))$ es la distribución _on-policy_ bajo $pi$ (tiempo invertido en el estado $s$ bajo la política $pi$).
 
@@ -741,7 +703,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   Finalmente, podemos reordenar la expresión y escribirla en términos de *valor esperado*, obteniendo:
 
@@ -758,7 +720,7 @@
 
 // *****************************************************************************
 
-#slide(title: [Demostración del teorema del grandiente de la política])[
+#slide(title: [Demostración del teorema del gradiente de la política])[
 
   #grayed[
     #set text(size: 26pt)
@@ -784,16 +746,9 @@
 
 #slide(title: [REINFORCE])[
 
-  #framed[#stress[REINFORCE]#footnote[_*RE* eward *I* ncrement = *N* onnegative *F* actor $times$ *O* ffset *R* einforcement $times$ *C* haracteristic *E* ligibility_], o *_gradiente de la política Monte Carlo_*, es un algoritmo clásico basado en el gradiente de la política #footnote[#emoji.books _Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine learning, 8, 229-256._].]
+  #framed[#stress[REINFORCE]#footnote[_#strong[RE]ward #strong[I]ncrement = #strong[N]onnegative #strong[F]actor $times$ #strong[O]ffset #strong[R]einforcement $times$ #strong[C]haracteristic #strong[E]ligibility_], o *_gradiente de la política Monte Carlo_*, es un algoritmo clásico basado en el gradiente de la política#footnote[#emoji.books _Williams, R. J. (1992). Simple statistical gradient-following algorithms for connectionist reinforcement learning. Machine Learning, 8, 229--256._].]
 
   - Es de tipo #stress[Monte Carlo], ya que actualiza los parámetros de la política basándose en el retorno obtenido al final de cada episodio.
-
-  // #cols[
-  //   - Partiendo del teorema: #grayed[#text(size:18pt)[$gradient J(bold(theta))
-  //     prop EE_pi [sum_a q_pi (S_t,a) gradient pi(a|S_t)]$]]
-  // ][
-  //   - Empleamos la #stress[regla de actualización]:#grayed[ #text(size:18pt)[ $bold(theta) <- bold(theta) + alpha sum_a hat(q)(S_t,a,bold(w)) gradient pi (a | S_t, bold(theta))$]]
-  // ]
 
   #figure(image("images/trajectory.png", width: 60%))
 
@@ -877,7 +832,7 @@
 
   Su interpretación es intuitiva:
 
-  - Cada incremento de $bold(theta)$ es proporcional a el *retorno acumulado* $G_t$ hasta el instante $t$, multiplicado por el *gradiente de la probabilidad de realizar * $A_t$ dividido por la *probabilidad de realizar* $A_t$.
+  - Cada incremento de $bold(theta)$ es proporcional al *retorno acumulado* $G_t$ hasta el instante $t$, multiplicado por el *gradiente de la probabilidad de realizar * $A_t$ dividido por la *probabilidad de realizar* $A_t$.
 
   - El resultado es un *vector* que representa la dirección en el espacio de parámetros que más incrementa la probabilidad de repetir $A_t$ en futuras visitas a $S_t$.
 
@@ -890,18 +845,18 @@
   #set text(size: 18pt)
 
   #framed[
-    #emoji.thumb.up Si una acción lleva a una alta recompensa acumulada, su probabilidad aumentará en futuros epsiodios.
+    #emoji.thumb.up Si una acción lleva a una alta recompensa acumulada, su probabilidad aumentará en futuros episodios.
 
     #emoji.thumb.down Si el retorno obtenido es bajo, la acción se tomará con menor frecuencia.
 
     #emoji.arm Esto *refuerza* acciones buenas y reduce la probabilidad de realizar acciones potencialmente peores.
   ]
 
-  Además, #stress[la actualización es proporcional a la probabilidad]:
+  Además, #stress[la actualización es inversamente proporcional a la probabilidad]:
 
-  - *Acciones que ya eran probables no cambian tanto*. Esto evita que acciones seleccionadas con más frecuencia no tengan una ventaja injusta, ya que podrían predominar sin generar altos retornos.
+  - *Acciones que ya eran probables no cambian tanto*. Esto evita que acciones seleccionadas con más frecuencia tengan una ventaja injusta, ya que podrían predominar sin generar altos retornos.
 
-  - *Acciones que eran improbables* pero resultaron en un alto $G_t$, se ven reforzadas significativamente.
+  - *Acciones que eran improbables* pero resultaron en un alto $G_t$ se ven reforzadas significativamente.
 
 ]
 
@@ -925,7 +880,7 @@
   Esto permite una representación más compacta y facilita el cálculo del gradiente.
 
   #text(size: 16pt)[
-    - Al vector $gradient ln pi(A_t|S_t, bold(theta)_t)$ se le suele denominar *vector de elegiblidad* (_eligibility vector_).
+    - Al vector $gradient ln pi(A_t|S_t, bold(theta)_t)$ se le suele denominar *vector de elegibilidad* (_eligibility vector_).
   ]
 
 ]
@@ -939,27 +894,6 @@
   - Se incluye el _factor de descuento_ $gamma$ para problemas con retorno descontado.
 
 ]
-
-// *****************************************************************************
-
-// #slide(title: [Otra posible formulación...])[
-
-//   El *objetivo* de REINFORCE también puede expresarse como:
-
-//   #grayed[
-//     $gradient J(bold(theta)) prop EE_pi [q_pi (S_t, A_t) gradient pi (A_t|S_t, bold(theta))]$
-//   ]
-
-//   y la *regla de actualización* como:
-
-//   #grayed[
-//     $
-//       bold(theta) <- bold(theta) + alpha q_pi (S_t, A_t) gradient ln pi(A_t|S_t, bold(theta))
-//     $
-//   ]
-
-//   dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$.
-// ]
 
 // *****************************************************************************
 
@@ -1012,7 +946,7 @@
 #slide(title: [Problemas de REINFORCE])[
 
   #framed[
-    #emoji.arrow.r La *acumulación de eventos aleatorios* a lo largo de las trayectorias ---incluyendo la *aleatoriedad del estado inicial*--- dan lugar a un retorno $G$ que puede variar significativamente de un episodio a otro.
+    #emoji.arrow.r La *acumulación de eventos aleatorios* a lo largo de las trayectorias ---incluyendo la *aleatoriedad del estado inicial*--- da lugar a un retorno $G$ que puede variar significativamente de un episodio a otro.
   ]
 
 
@@ -1022,21 +956,12 @@
 
 #slide(title: [REINFORCE con _baseline_])[
 
-  // El teorema del gradiente de la política permite incluir una comparación del valor de $q_pi_bold(theta) (s,a)$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
-
   El teorema del gradiente de la política permite incluir una comparación del valor $G$ con un *valor de referencia* (#stress[_baseline_]) arbitrario: $b(s)$.
 
   - El #stress[valor de referencia] $b(s)$ puede ser cualquier valor o función, siempre que no dependa de la acción tomada $a$.
 
-  // De esta forma, y dado que $EE_pi [G_t | S_t, A_t] = q_pi (S_t, A_t)$, tenemos:
   De esta forma, tenemos que:
 
-  // #grayed[
-  //   $
-  //     gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(q_pi (s,a) - b(s))) gradient pi(a|s,bold(theta))
-  //   $
-  // ]
-  //
   #grayed[
     $
       gradient J(bold(theta)) prop sum_s mu(s) sum_a (colmath(G - b(s))) gradient pi(a|s,bold(theta))
@@ -1096,7 +1021,7 @@
 
   #framed[Es común emplear como _baseline_ la estimación del #stress[estado-valor], $hat(v) (S_t, bold(w))$.]
 
-  - Dado que que REINFORCE está basado en Monte Carlo, los pesos $bold(w)$ pueden estimarse *de la misma manera*, tal y como vimos en el tema anterior.
+  - Dado que REINFORCE está basado en Monte Carlo, los pesos $bold(w)$ pueden estimarse *de la misma manera*, tal y como vimos en el tema anterior.
 
   De esta forma, REINFORCE empleando $hat(v)$ como _baseline_ se resume en:
   #grayed[
@@ -1133,9 +1058,9 @@
 
   - En resumen, #stress[REINFORCE con _baseline_], o #stress[VPG], es un método robusto basado en el teorema del gradiente de la política.
 
-  - Decimos que es un método *_no-sesgado_*, porque la actualización de $bold(theta)$ se basa en #stress[retornos episódicos] $G$, obtenidos directamente a partir de la interacción con el entorno.
+  - Decimos que es un método *_no sesgado_*, porque la actualización de $bold(theta)$ se basa en #stress[retornos episódicos] $G$, obtenidos directamente a partir de la interacción con el entorno.
 
-  - El único *sesgo* que presentan se encuentran la *función de valor aproximada* $hat(v)$ que empleamos como #stress[_baseline_], pero este sesgo es prácticamente nulo.
+  - El único *sesgo* que presentan se encuentra en la *función de valor aproximada* $hat(v)$ que empleamos como #stress[_baseline_], pero este sesgo es prácticamente nulo.
 
 ]
 
@@ -1183,7 +1108,7 @@
 
 #slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
 
-  - #stress[REINFORCE con _baseline_] es un algoritmo de tipo Monte Carlo, ya que requiere esperar *final* del episodio para evaluar el error.
+  - #stress[REINFORCE con _baseline_] es un algoritmo de tipo Monte Carlo, ya que requiere esperar al *final* del episodio para evaluar el error.
 
   #grayed[$delta = G - hat(v)(S_t, bold(w))$]
 
@@ -1191,23 +1116,6 @@
 
   #grayed[$delta = R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))$]
 ]
-
-// // *****************************************************************************
-
-// #slide(title: [_Actor-critic_ _vs._ REINFORCE con _baseline_])[
-
-//   #framed(title: [#emoji.books Morales, M. (2020). Grokking deep reinforcement learning.])[
-//     #set text(size: 17pt)
-//     (...) _according to one of the fathers of RL, Rich Sutton, policy-gradient methods approximate the gradient of the performance measure, whether or not they learn an approximate
-//     value function. However, David Silver, one of the most prominent figures in DRL, and a former
-//     student of Sutton, disagrees. He says that policy-based methods don’t additionally learn a
-//     value function, only actor-critic methods do. But, Sutton further explains that only methods
-//     that learn the value function using bootstrapping should be called actor-critic, because it’s
-//     bootstrapping that adds bias to the value function, and thus makes it a “critic.” I like this distinction; therefore, REINFORCE and VPG, as presented in this book, aren’t considered actor-
-//     critic methods. But beware of the lingo, it’s not consistent._
-//   ]
-
-// ]
 
 // *****************************************************************************
 
@@ -1217,7 +1125,7 @@
 
   - Es decir, en vez de esperar al final del episodio y utilizar el retorno real $G$ para actualizar $bold(theta)$, se emplea una *estimación* de este.
 
-  - Es análogo a TD, Sarsa o _Q-learning_, donde sustituimos el retorno de episodios completos por *estimaciones _n_ pasos hacia delante* desde el estado actual.
+  - Es análogo a TD, SARSA o _Q-learning_, donde sustituimos el retorno de episodios completos por *estimaciones _n_ pasos hacia delante* desde el estado actual.
 
 ]
 
@@ -1234,7 +1142,7 @@
   #grayed[
     $
       bold(theta)_(t+1)
-      = bold(theta)_t + alpha (colmath(R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w))) gradient ln pi(A_t|S_t, bold(theta)_t)
+      = bold(theta)_t + alpha (colmath(R_(t+1) + gamma hat(v)(S_(t+1), bold(w)) - hat(v)(S_t, bold(w)))) gradient ln pi(A_t|S_t, bold(theta)_t)
     $
 
   ]
@@ -1251,16 +1159,6 @@
 
 // *****************************************************************************
 
-// #slide(title: [_One-step actor-critic_])[
-
-//   Igualmente aplicable para la función $q(s,a,bold(w))$:
-
-//   #figure(image("images/qac.png"))
-
-// ]
-
-// *****************************************************************************
-
 #slide(title: [Arquitectura _actor-critic_])[
 
   #figure(image("images/ac_arch.png", width: 53%))
@@ -1274,11 +1172,11 @@
   Como hemos visto, las reglas de actualización para actor ($bold(theta)$) y crítico ($bold(w)$) son:
 
   #framed(title: "Actualización del actor")[
-    $bold(theta) <- bold(theta) + alpha_bold(theta)[R_t + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient ln (pi(A_t | S_t, bold(theta)))$
+    $bold(theta) <- bold(theta) + alpha_bold(theta)[R_(t+1) + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient ln (pi(A_t | S_t, bold(theta)))$
   ]
 
   #framed(title: "Actualización del crítico")[
-    $bold(w) <- bold(w) + alpha_bold(w)[R_t + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient hat(v)_pi (S_t, bold(w))$
+    $bold(w) <- bold(w) + alpha_bold(w)[R_(t+1) + gamma hat(v)_pi (S_(t+1), bold(w)) - hat(v) (S_t, bold(w))] gradient hat(v)_pi (S_t, bold(w))$
   ]
 
   - A diferencia de REINFORCE con _baseline_, se utiliza el _TD target_ en lugar del retorno.
@@ -1293,11 +1191,11 @@
 
   - Los métodos _actor-critic_ permiten *actualizaciones más frecuentes* de los parámetros de la política, ya que no es necesario esperar al final del episodio para obtener el retorno.
 
-    - De hecho, podemos ajustar al nivel de _bootstrapping_ a emplear (número de _steps_ hacia delante).
+    - De hecho, podemos ajustar el nivel de _bootstrapping_ a emplear (número de _steps_ hacia delante).
 
   - Mientras que se aumenta el *sesgo* (_bias_), la *varianza* de la actualización de los parámetros se reduce, ya que se emplea una estimación del retorno en lugar del retorno real.
 
-  - Esto da lugar a una velocidad *convergencia* mayor, y favorece la aplicación en *problemas continuados*.
+  - Esto da lugar a una velocidad de *convergencia* mayor, y favorece la aplicación en *problemas continuados*.
 ]
 
 // *****************************************************************************
@@ -1447,7 +1345,7 @@
 
 #slide(title: [Espacios de acciones continuos])[
 
-  Hasta ahora hemos visto cómo aplicar los métodos basados en _gradient de la política_ empleando #stress[espacios de acciones discretos].
+  Hasta ahora hemos visto cómo aplicar los métodos basados en _gradiente de la política_ empleando #stress[espacios de acciones discretos].
 
   #cols(columns: (2fr, 1fr))[
     - Es decir, el conjunto de acciones es finito y cada acción tiene una probabilidad asociada.
@@ -1586,5 +1484,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Aproximación de políticas",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

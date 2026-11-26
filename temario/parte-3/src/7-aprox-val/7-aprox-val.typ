@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color: red) = text(fill: color)[$#x$]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Aproximación de funciones de valor",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -67,12 +67,6 @@
 
 // *****************************************************************************
 
-// #slide(title: "Por ejemplo...")[
-//     #figure(image("images/table.png"))
-// ]
-
-// *****************************************************************************
-
 #title-slide([Predicción _on-policy_ aproximada])
 
 // *****************************************************************************
@@ -109,7 +103,7 @@
 
 #slide(title: [Valor aproximado])[
 
-  #framed[Normalmente, el número de pesos en $bold(w) in RR^d$ es *mucho menor que el número de estados* $|cal(S)|$, $(d << |cal(S)|)$ por lo que modificar un peso da lugar a una alteración del valor estimado de múltiples estados.]
+  #framed[Normalmente, el número de pesos en $bold(w) in RR^d$ es *mucho menor que el número de estados* $|cal(S)|$ $(d << |cal(S)|)$, por lo que modificar un peso da lugar a una alteración del valor estimado de múltiples estados.]
 
   - De la misma forma, cuando el valor de un estado cambia, esta actualización repercute en el valor de otros estados.
 
@@ -251,8 +245,6 @@
 
 #slide(title: [Error de predicción ponderado])[
 
-  // Como tenemos más estados que pesos, $|cal(S)| >= |bold(w)|$, hacer estimaciones más precisas de unos estados supondrá un deterioro en las estimaciones de otros.
-
   Podemos decidir *qué estados son más relevantes*, de tal forma que el #stress[error] en la estimación de su valor se tenga más en cuenta:
 
   $ underbrace(mu (s) >= 0, "importancia\n del error de\n estimación para\n el estado s"), sum_s mu(s) = 1 $
@@ -287,7 +279,7 @@
   - #text(size: 19pt)[Por ejemplo, definamos de la siguiente forma la #stress[frecuencia de visita] a un estado $s$:]
 
   #grayed[$
-      eta(s) = h(s) + sum_(s prime) eta(overline(s)) sum_a pi(a | s prime) p(s | s prime, a), #h(1cm) forall s, s prime in cal(S)
+      eta(s) = h(s) + sum_(s prime) eta(s prime) sum_a pi(a | s prime) p(s | s prime, a), #h(1cm) forall s, s prime in cal(S)
     $]
 
   #set text(size: 19pt)
@@ -312,7 +304,7 @@
 
   #v(.1cm)
 
-  - $mu(s)$ es un un valor normalizado, tal que $sum_(s in cal(S)) mu(s) = 1 $
+  - $mu(s)$ es un valor normalizado, tal que $sum_(s in cal(S)) mu(s) = 1 $
 
 ]
 
@@ -371,7 +363,7 @@
 
     #grayed[$hat(v) (s, bold(w))$]
 
-    #grayed[$bold(w) = vec(w_1, w_2, dots, w_n)$]
+    #grayed[$bold(w) = vec(w_1, w_2, dots, w_d)$]
 
   ]
 
@@ -383,7 +375,7 @@
 
 #slide(title: "Función de valor diferenciable")[
 
-  - El vector de pesos $bold(w)$ se actualizará en cada _timestep_, por lo que emplearemos $w_t$ para denotar los pesos del modelo en el instante $t = 0, 1, 2, 3, dots$
+  - El vector de pesos $bold(w)$ se actualizará en cada _timestep_, por lo que emplearemos $bold(w)_t$ para denotar los pesos del modelo en el instante $t = 0, 1, 2, 3, dots$
 
   - Asumimos que los estados son seleccionados de acuerdo a la misma distribución, $mu$, y que buscamos minimizar el error $overline("VE")$.
 
@@ -427,7 +419,7 @@
 
     - El #stress[gradiente de la función de error] con respecto a los pesos es un vector que apunta en la *dirección del mayor incremento del error*:
 
-    #grayed[$gradient E(bold(w)) = [(diff E) / (diff w_1), (diff E) / (diff w_2), dots, (diff E) / (diff w_d)]^T$]
+    #grayed[$gradient E(bold(w)) = [(partial E) / (partial w_1), (partial E) / (partial w_2), dots, (partial E) / (partial w_d)]^T$]
 
     #colbreak()
 
@@ -487,7 +479,7 @@
   #grayed[
     #show math.equation: set text(size: 26pt)
     $bold(w)_(t+1) &= bold(w)_t - 1 / 2 alpha gradient [v_pi (S_t) - hat(v) (S_t, bold(w)_t)]^2 \
-      &= bold(w)_t - alpha[v_pi (S_t) - hat(v) (S_t, bold(w)_t)] gradient hat(v) (S_t, bold(w)_t)$
+      &= bold(w)_t + alpha[v_pi (S_t) - hat(v) (S_t, bold(w)_t)] gradient hat(v) (S_t, bold(w)_t)$
   ]
 
   #set text(size: 14pt)
@@ -503,11 +495,11 @@
   #show math.equation: set text(size: 35pt)
 
   #let x = text(fill: red)[Tamaño del error]
-  #let y = text(fill: blue)[Dirección de #linebreak() la actualizacion]
+  #let y = text(fill: blue)[Dirección de #linebreak() la actualización]
 
   #grayed[
     $
-      bold(w) <- bold(w) - alpha[underbrace(v_pi (S_t) - hat(v) (S_t, bold(w)_t), #x) ] underbrace(gradient hat(v) (S_t, bold(w)_t), #y)
+      bold(w) <- bold(w) + alpha[underbrace(v_pi (S_t) - hat(v) (S_t, bold(w)_t), #x) ] underbrace(gradient hat(v) (S_t, bold(w)_t), #y)
     $
   ]
 
@@ -520,7 +512,7 @@
   - En nuestro caso, el vector de derivadas parciales es:
 
   $
-    gradient overline("VE")(bold(w)) = vec((diff overline("VE")) / (diff w_1), (diff overline("VE")) / (diff w_2), dots, (diff overline("VE")) / (diff w_d))
+    gradient overline("VE")(bold(w)) = vec((partial overline("VE")) / (partial w_1), (partial overline("VE")) / (partial w_2), dots, (partial overline("VE")) / (partial w_d))
   $
 
   - SGD es *estocástico* porque el estado observado en cada _timestep_ es aleatorio.
@@ -599,7 +591,7 @@
 
   Igualmente, podemos aproximarlo sustituyendo $v_pi (S_t)$ por $U_t$, dando lugar a la siguiente actualización de $bold(w)$:
 
-  #grayed[$bold(w)_(t+1) = bold(w)_t - alpha [U_t - hat(v)(S_t, bold(w)_t) gradient hat(v)(S_t, bold(w)_t)]$]
+  #grayed[$bold(w)_(t+1) = bold(w)_t + alpha [U_t - hat(v)(S_t, bold(w)_t)] gradient hat(v)(S_t, bold(w)_t)$]
 
   siendo $U_t$ una #stress[estimación no sesgada] de $v_pi (S_t)$.
 
@@ -607,18 +599,6 @@
     #framed[Si $EE[U_t | S_t = s] = v_pi (S_t), forall t = 0, 1, 2, dots$\ se garantiza que $bold(w)_t$ *convergerá en un óptimo local* empleando SGD.]
   ]
 ]
-
-// *****************************************************************************
-
-// #slide(title: "Valor objetivo aproximado")[
-
-//   #align(center)[#framed[_The expectation of each stochastic\ gradient equals the gradient of the objective._]]
-
-//   #v(1cm)
-
-//    SGD permite estimar $bold(w)$ a partir de gradientes aleatorios (_sampling_, aproximación "rudiosa" del gradiente).
-
-// ]
 
 // *****************************************************************************
 
@@ -655,11 +635,11 @@
 
   *Monte Carlo* aproxima $hat(v)$ con garantías porque su _target_ $U_t = G_t$ es una estimación #stress[no sesgada] (_unbiased target_) de $v_pi$. Es decir, estamos sustituyendo:
 
-  #grayed[$ w <- w + alpha [ bold(colmath(v_pi (S_t))) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+  #grayed[$ bold(w) <- bold(w) + alpha [ bold(colmath(v_pi (S_t))) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
 
   por:
 
-  #grayed[$ w <- w + alpha [ bold(colmath(G_t)) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+  #grayed[$ bold(w) <- bold(w) + alpha [ bold(colmath(G_t)) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
 
   teniendo en cuenta que $ #emoji.checkmark.box v_pi (s) = EE_pi [G_t | S_t = s] $
 
@@ -673,7 +653,7 @@
 
   - #stress[Utilizar retornos estimados obtenidos a través de _sampling_ no afecta al objetivo del descenso del gradiente.]
 
-  #grayed[$ w <- w + alpha [ bold(G_t) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
+  #grayed[$ bold(w) <- bold(w) + alpha [ bold(G_t) - hat(v)(S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $]
 
 ]
 
@@ -705,7 +685,7 @@
 
       2. Para cada _step_ del episodio, actualizar $bold(w)$ tal que:
 
-        $ bold(w) <- bold(w) + alpha [G_t - hat(v) (S_t, bold(w)) gradient hat(v)(S_t, bold(w))] $
+        $ bold(w) <- bold(w) + alpha [G_t - hat(v) (S_t, bold(w))] gradient hat(v)(S_t, bold(w)) $
 
         basándonos en retornos muestreados ($G_t$).
 
@@ -782,7 +762,7 @@
   Si el objetivo está #stress[sesgado], *no se produce un verdadero descenso del gradiente*.
 
 
-  #framed[Debido a esto, a los metodos que estiman $hat(v)$ mediante _bootstrapping_ se les denomina #stress[métodos semi-gradiente] (_semi-gradient methods_).]
+  #framed[Debido a esto, a los métodos que estiman $hat(v)$ mediante _bootstrapping_ se les denomina #stress[métodos semi-gradiente] (_semi-gradient methods_).]
 
   - No podemos garantizar la convergencia en un óptimo local.
   - No obstante, convergen en la mayoría de los casos.
@@ -857,7 +837,7 @@
 
 #slide(title: "Ejemplo")[
 
-  Consideremos el siguiente ejemplo (_random walk_), con $pi =$ {#emoji.arrow.r : 0.5, #emoji.arrow.l: 0.5}, $gamma = 1$.
+  Consideremos el siguiente ejemplo (_random walk_), con $pi =$ {#emoji.arrow.r: 0.5, #emoji.arrow.l: 0.5}, $gamma = 1$.
 
   #figure(image("images/example-random-walk.png", width: 95%))
 
@@ -953,7 +933,7 @@
 
   #h(.6cm) Este vector *contiene el mismo número de elementos* que $bold(w)$.
 
-  #h(.6cm) #emoji.arrow.r Como $|bold(x)| = |bold(w)|$, existe #stress[una valor $x_i$ por peso $w_i$].
+  #h(.6cm) #emoji.arrow.r Como $|bold(x)| = |bold(w)|$, existe #stress[un valor $x_i$ por peso $w_i$].
 
 ]
 
@@ -992,7 +972,7 @@
 
 #slide(title: "Convergencia")[
 
-  En la aproximación de funciones lineales, sólo existe un óptimo, por lo que cualquier método que pueda converger en un *óptimo local* lo hará también en el *global*.
+  En la aproximación de funciones lineales, solo existe un óptimo, por lo que cualquier método que pueda converger en un *óptimo local* lo hará también en el *global*.
 
   - #stress[Monte Carlo] converge en el óptimo global de $overline("VE")$ siguiendo una aproximación de función lineal siempre que $alpha$ tienda a $0$ con el tiempo.
 
@@ -1016,7 +996,7 @@
   #let err = text(fill: red)[TD-error]
   #let tar = text(fill: blue)[TD-target]
 
-  #grayed[$underbrace(delta_t = underbrace(R_(t+1) + gamma hat(v) (S_(t+1), bold(w)), #tar) - hat(v) (S_(t+1), bold(w)), #err)$]
+  #grayed[$underbrace(delta_t = underbrace(R_(t+1) + gamma hat(v) (S_(t+1), bold(w)), #tar) - hat(v) (S_t, bold(w)), #err)$]
 ]
 
 // *****************************************************************************
@@ -1071,29 +1051,14 @@
 
     #colbreak()
 
-    Dependiendo de la calidad de las *características* (_features_), el _TD fixed-point_ y el óptimo global serán maś o menos cercanos.
+    Dependiendo de la calidad de las *características* (_features_), el _TD fixed-point_ y el óptimo global serán más o menos cercanos.
   ]
 
 ]
 
 // *****************************************************************************
 
-// #slide(title: "Definición de características")[
-
-//     Los métodos lineales ofrecen *garantías de convergencia* y *eficiencia*, aunque estas ventajas dependen de las características (_features_) elegidos para representar los #stress[estados].
-
-//     #framed(title: "Característica")[
-//       Aspecto relevante del espacio de estados.
-//       - Ej. localización, velocidad, lectura de sensores, etc.
-//     ]
-
-// ]
-
-// *****************************************************************************
-
 #slide(title: "Aproximación de funciones lineales")[
-
-  // #stress[En resumen]: aunque TD lineal no converge en el valor mínimo de $overline("VE")$, sí que converge en el mínimo de un objetivo definido basado en las ecuaciones de Bellman.
 
   #framed[¿Por qué es interesante la aproximación de funciones lineales?]
 
@@ -1111,13 +1076,13 @@
 
 #slide(title: "Aproximación de funciones lineales")[
 
-  #stress[Sin embargo], las funciones lineales también presentan ciertan limitaciones...
+  #stress[Sin embargo], las funciones lineales también presentan ciertas limitaciones...
 
   - Son incapaces de capturar *relaciones complejas entre variables*.
 
   - Requieren de una *definición precisa y manual de las características* que definen un estado.
 
-  Esto motiva el uso de métodos #stress[no-lineales] de aproximación de funciones, tales como las #stress[redes neuronales].
+  Esto motiva el uso de métodos #stress[no lineales] de aproximación de funciones, tales como las #stress[redes neuronales].
 
   - Permiten capturar relaciones complejas entre variables / _features_.
 
@@ -1245,7 +1210,7 @@
     - Explicabilidad.
     - Calidad de datos.
     - Desvanecimiento del gradiente.
-    - ....
+    - ...
   ]
 
 ]
@@ -1255,7 +1220,7 @@
 #slide(title: "Otras arquitecturas")[
 
   #framed[
-    #emoji.pencil Aparte de las _feedforward_, existen múltiles tipos de redes neuronales.
+    #emoji.pencil Aparte de las _feedforward_, existen múltiples tipos de redes neuronales.
 
     Su uso dependerá del problema que tratemos de abordar.
   ]
@@ -1311,7 +1276,7 @@
 
   En este caso, la actualización basada en descenso del gradiente para aproximar $q(s,a)$ es:
 
-  #grayed[$ bold(w)_(t+1) = bold(w)_(t+1) + alpha[U_t - hat(q)(s,a, bold(w_t))] gradient hat(q)(S_t, A_t, bold(w)) $]
+  #grayed[$ bold(w)_(t+1) = bold(w)_t + alpha[U_t - hat(q)(S_t, A_t, bold(w_t))] gradient hat(q)(S_t, A_t, bold(w)) $]
 
 ]
 
@@ -1390,11 +1355,11 @@
   - $A_t = "argmax"_a #h(.1cm) hat(q)(S_t, a, bold(w)) $ con probabilidad $1 - epsilon$.
   - $A_t$ aleatoria con probabilidad $epsilon$.
 
-  Recordemos que (_semi-gradient_) SARSA es un método #stress[_on-policy_], de tal manera que siempre habrá cierta probabilidad de actuar de forma sub-óptima a menos que $epsilon$ se reduzca con el tiempo.
+  Recordemos que (_semi-gradient_) SARSA es un método #stress[_on-policy_], de tal manera que siempre habrá cierta probabilidad de actuar de forma subóptima a menos que $epsilon$ se reduzca con el tiempo.
 
-  - No se garantiza una exploración sistémica (_vs._ valores iniciales optimistas), sino que se basa en la aleatoriedad.
+  - No se garantiza una exploración sistemática (_vs._ valores iniciales optimistas), sino que se basa en la aleatoriedad.
 
-  #framed[#emoji.face.think ¿Pero por qué no es posible emplear *valores iniciales optimistas* en problemas con *aproximación de funciones no-lineales*?]
+  #framed[#emoji.face.think ¿Pero por qué no es posible emplear *valores iniciales optimistas* en problemas con *aproximación de funciones no lineales*?]
 
 ]
 
@@ -1406,7 +1371,7 @@
 
   $ bold(w) <- vec(1000, 1000, 1000, ...) $
 
-  - Pero en problemas *no-lineales*, ¿cómo sabemos qué pesos iniciales de una red neuronal son apropiados? #stress[Es por esto por lo que empleamos $epsilon$-_greedy_.]
+  - Pero en problemas *no lineales*, ¿cómo sabemos qué pesos iniciales de una red neuronal son apropiados? #stress[Es por esto por lo que empleamos $epsilon$-_greedy_.]
 
   $ hat(q)(s,a,bold(w)) = "RN"(s,a,bold(w))\ bold(w) <- ??? $
 
@@ -1470,7 +1435,7 @@
 
   - Retorno #stress[episódico], empleado en problemas finitos:
 
-  $ G_t = sum^(T-t)_(k=0) r_(t + k + 1) $
+  $ G_t = sum^(T-t-1)_(k=0) r_(t + k + 1) $
 
   - Retorno #stress[_descontado_], empleable en problemas continuados:
 
@@ -1686,57 +1651,6 @@
 
 ]
 
-
-// // *****************************************************************************
-
-// #slide(title: [Ejemplo])[
-
-//     #columns(4)[
-
-//       Siempre $pi_"izq"$:
-//       $ G_t &= 1 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 0 - 0.2 + dots  = 0.4 \
-//       $
-
-//       #colbreak()
-
-//       Siempre $pi_"der"$:
-//       $ G_t &= 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 2 - 0.4 + dots  = -0.8 \
-//       $
-
-//       #colbreak()
-
-//       $pi_"izq"$ y después $pi_"der"$ siempre:
-//       $ G_t &= 1 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & 0 - 0.4 + \
-//             & -0.8 = -1.8 \
-//       $
-
-//       #colbreak()
-
-//       $pi_"der"$ y después $pi_"izq"$ siempre:
-//       $ G_t &= 0 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 0 - 0.2 + \
-//             & 2 - 0.2 + \
-//             & 0.4= 1.4 \
-//       $
-
-//     ]
-
-// ]
-
 // *****************************************************************************
 
 #slide(title: [Ecuaciones de Bellman con retorno diferencial])[
@@ -1782,7 +1696,7 @@
   Dada la siguiente definición del #stress[retorno diferencial _n-step_]:
 
   $
-    G_(t:t+n) = R_(t+1) + overline(R)_(t+n-1) + dots + R_(t+n) - overline(R)_(t+n-1) + hat(q)(S_(t+n), A_(t+n), bold(w)_(t+n-1))
+    G_(t:t+n) = R_(t+1) - overline(R)_(t+n-1) + dots + R_(t+n) - overline(R)_(t+n-1) + hat(q)(S_(t+n), A_(t+n), bold(w)_(t+n-1))
   $
 
   la versión #stress[_n-step_ del _TD-error_ diferencial] es:
@@ -1834,5 +1748,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Aproximación de funciones de valor",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

@@ -49,7 +49,7 @@ class DynaQ:
 
         ########################## DynaQ algorithm ##########################
 
-        # Initialize Q(s,a) and Model(s,a) for each s € Ss, a € As
+        # Initialize Q(s,a) and Model(s,a) for each s ∈ S, a ∈ A(s)
 
         # loop forever:
 

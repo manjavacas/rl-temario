@@ -1,5 +1,5 @@
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc/4.0/)
-[![DOI]([https://zenodo.org/badge/825724051.svg](https://img.shields.io/badge/DOI-10.5281/3781524-blue))](https://doi.org/10.5281/zenodo.22829280)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22829280.svg)](https://doi.org/10.5281/zenodo.22829280)
 
 # Aprendizaje por refuerzo
 
@@ -38,13 +38,28 @@ Elaborado por [Antonio Manjavacas](https://www.linkedin.com/in/antonio-manjavaca
 - [Diapositivas](temario/) (elaboradas con [Typslides](https://github.com/manjavacas/typslides)).
 - [Ejemplos y ejercicios](ejemplos/) referenciados a lo largo del temario.
 
+## 🛠️ Compilación
+
+Las fuentes de cada tema están en `temario/parte-N/src/<tema>/` y cada PDF se genera en `temario/parte-N/`. Se necesita [Typst](https://typst.app/) (probado con la versión 0.15) y la fuente [Fira Sans](https://fonts.google.com/specimen/Fira+Sans):
+
+```bash
+make            # compila los PDF desactualizados (admite -j)
+make parte-2    # compila solo una parte
+make -B         # recompila todo
+make list       # muestra cada fuente y su PDF
+```
+
+Si Fira Sans no está instalada, puedes indicar su carpeta con `make FONT_PATH=/ruta/a/fuentes`. Los PDF son reproducibles: recompilar sin cambios genera exactamente los mismos ficheros.
+
+Al añadir imágenes nuevas, conviene ejecutar `make optimize-images` (requiere [Pillow](https://pypi.org/project/pillow/)): reduce las que superan con creces la resolución de una diapositiva sin cambiar su tamaño en la página.
+
 ## 📚 Bibliografía
 
 Principales fuentes empleadas en la elaboración de este temario:
 
-- Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.
+- Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT Press.
 - Morales, M. (2020). Grokking deep reinforcement learning. Manning Publications.
-- [Coursera RL speclization](https://www.coursera.org/specializations/reinforcement-learning).
+- [Coursera RL Specialization](https://www.coursera.org/specializations/reinforcement-learning).
 - [RL course by David Silver](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ).
 
 ## 🚀 Contribuye 

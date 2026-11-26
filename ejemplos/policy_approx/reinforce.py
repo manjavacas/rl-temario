@@ -15,7 +15,7 @@ class PolicyNetwork(nn.Module):
 
     def __init__(self, state_dim, action_dim, hidden_size=64):
         """
-        Inicializacion de la red neuronal.
+        Inicialización de la red neuronal.
         """
         super().__init__()
 
@@ -24,7 +24,7 @@ class PolicyNetwork(nn.Module):
 
     def forward(self, state):
         """
-        Devuelve la probabilidad de cada accion (softmax).
+        Devuelve la probabilidad de cada acción (softmax).
         """
         x = F.relu(self.fc1(state))
         return F.softmax(self.fc2(x), dim=-1)
@@ -97,7 +97,7 @@ class ReinforceAgent():
             returns = returns[::-1]
             returns = torch.tensor(returns, dtype=torch.float32).to(self.device)
 
-            # Calcular pérdida (minimizar perdida --> maximizar la recompensa esperada)
+            # Calcular pérdida (minimizar pérdida --> maximizar la recompensa esperada)
             loss = -sum(log_prob * G for log_prob,
                         G in zip(log_probs, returns))
 

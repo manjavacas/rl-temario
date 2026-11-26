@@ -10,8 +10,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
-
-#let colmath(x, color: red) = text(fill: color)[$#x$]
+#set document(date: none)
 
 // *****************************************************************************
 
@@ -19,7 +18,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Planificación],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -204,7 +202,7 @@
 
     - Las acciones producen transiciones entre *estados* y las *funciones de valor* se calculan sobre dichos estados.
 
-    - Es el tipo de planificación comunmente empleada en RL.
+    - Es el tipo de planificación comúnmente empleada en RL.
   ]
 
 
@@ -238,7 +236,7 @@
 
   1. *Calcular las funciones de valor* como paso intermedio y fundamental de cara a mejorar la *política* existente.
 
-  2. Dicho cálcula se realiza mediante *actualizaciones* u *operaciones de _backup_* aplicadas a experiencia simulada.
+  2. Dicho cálculo se realiza mediante *actualizaciones* u *operaciones de _backup_* aplicadas a experiencia simulada.
 
   #align(center)[#image("images/state-space-plan.png")]
 
@@ -285,12 +283,12 @@
 
 #slide(title: [Planificación _vs._ aprendizaje])[
 
-  La diferencia entre planificaicón y aprendizaje es que...
+  La diferencia entre planificación y aprendizaje es que...
 
-  - la #stress[planificacion] emplea experiencia simulada, generada por un *modelo*,
+  - la #stress[planificación] emplea experiencia simulada, generada por un *modelo*,
   - ...mientras que el #stress[aprendizaje] se basa en experiencia real generada por el *entorno*.
 
-  #framed[Tanto *planificacion* como *aprendizaje* buscan estimar las funciones de valor mediante operaciones _backup_.]
+  #framed[Tanto *planificación* como *aprendizaje* buscan estimar las funciones de valor mediante operaciones _backup_.]
 
   - Esto permite que múltiples ideas y algoritmos puedan transferirse de unos métodos a otros.
 
@@ -324,7 +322,7 @@
   #framed[1. *Mejorar su modelo del entorno* (hacerlo más preciso).]
   #h(1cm) #emoji.circle.blue Aprendizaje del modelo (#stress[_Model learning_])
 
-  #framed[2. *Mejorar la estimación de la función de valor y la política*]
+  #framed[2. *Mejorar la estimación de la función de valor y la política*.]
   #h(1cm) #emoji.circle.yellow RL directo (#stress[_DIRECT reinforcement learning_])
 
   #h(1cm) #emoji.circle.green RL indirecto (#stress[_INDIRECT reinforcement learning_])
@@ -441,7 +439,7 @@
 
     #grayed[ $ m(S_t, A_t) --> S_(t+1), R_(t+1) $]
 
-    Contar con un buen modelo suponer necesitar de menos experiencia *real* para alcanzar una misma política $arrow$ se reducen las interacciones con el entorno.
+    Contar con un buen modelo supone necesitar de menos experiencia *real* para alcanzar una misma política $arrow$ se reducen las interacciones con el entorno.
 
   ]
 
@@ -609,7 +607,7 @@
     #framed(
       title: text(
         size: 17pt,
-      )[#emoji.books Sutton, R. S., & Barto, A. G. (2018). _Reinforcement learning: An introduction_. MIT press.],
+      )[#emoji.books Sutton, R. S., & Barto, A. G. (2018). _Reinforcement learning: An introduction_. MIT Press.],
     )[
       #set text(size: 18pt)
       #v(0.5cm)
@@ -735,7 +733,7 @@
 
     Si un *modelo* del entorno *no es preciso*, las transiciones predichas no son correctas.
 
-    - Es decir, la función de transición $p(s,a|s',r)$ modelada *no se ajusta a la realidad*.
+    - Es decir, la función de transición $p(s',r|s,a)$ modelada *no se ajusta a la realidad*.
 
     #framed[Los errores en los modelos se deben a la #stress[estocasticidad] de los entornos en combinación con la #stress[falta de experiencia].]
 
@@ -795,7 +793,7 @@
 
   #framed[Cuando el modelo es incorrecto, la planificación da lugar a #stress[políticas subóptimas].]
 
-  En algnos casos, la política subóptima obtenida mediante planificación puede llevar al #stress[descubrimiento] y #stress[corrección] de los *errores* del modelo.
+  En algunos casos, la política subóptima obtenida mediante planificación puede llevar al #stress[descubrimiento] y #stress[corrección] de los *errores* del modelo.
 
   - Esto ocurre principalmente cuando el modelo es *optimista* y se predicen mejores recompensas o transiciones de las que son realmente posibles.
 
@@ -820,7 +818,7 @@
 
 #slide(title: [Modelos imprecisos con Dyna-Q])[
 
-  Una ventaja de #stress[Dyna-Q] es que permite planificar aun contando con un modelo incompleto, ya que sólo muestrea estados y acciones que hayan sido *previamente visitados*. Véanse los primeros dos pasos de *(f)*:
+  Una ventaja de #stress[Dyna-Q] es que permite planificar aun contando con un modelo incompleto, ya que solo muestrea estados y acciones que hayan sido *previamente visitados*. Véanse los primeros dos pasos de *(f)*:
 
   #align(center)[#image("images/tabular-dynaq.png", width: 80%)]
 
@@ -867,7 +865,7 @@
 
     Cuanto más tiempo haya transcurrido, se asume una mayor probabilidad de que las dinámicas asociadas a un par acción--estado hayan cambiado y que, por tanto, el modelo sea *incorrecto*.
 
-    - Para favorecer que "se vuelva intentar", se añade un #stress[_bonus_] a la recompensa de las experiencias simuladas que impliquen al par poco visitado.
+    - Para favorecer que "se vuelva a intentar", se añade un #stress[_bonus_] a la recompensa de las experiencias simuladas que impliquen al par poco visitado.
 
   ]
 
@@ -924,7 +922,7 @@
   #box(height: 500pt)[
     #text(size: 18pt)[
 
-      - Analiza esta *implementación de DynaQ* y trata de hacer la tuya:
+      - Analiza esta *implementación de Dyna-Q* y trata de hacer la tuya:
 
         - #text(size: 16pt)[#link("https://github.com/manjavacas/rl-temario/tree/main/ejemplos/dynaq")]
 
@@ -954,5 +952,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Planificación],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color) = text(fill: color)[#x]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [_Bandits_],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -58,7 +58,7 @@
     - Las acciones pueden afectar el estado del entorno y, por tanto, influir en las recompensas futuras.
 
   - Antes de abordar problemas de RL complejos, estudiaremos un #stress[problema simplificado] donde el concepto de _estado_ no es tan relevante, y únicamente se tienen en cuenta las _acciones_ a realizar por el agente.
-    - Es lo que llamos un #stress[entorno no asociativo].
+    - Es lo que llamamos un #stress[entorno no asociativo].
 ]
 
 // *****************************************************************************
@@ -72,7 +72,7 @@
 #slide(title: [El problema de los _K-armed bandits_])[
   #columns(2)[
     - #stress[_K-armed bandits_], también llamado #stress[_multi-armed bandit problem_]\
-      #text(size: 12pt)["problema de las _tragaperras multi-brazo_" #emoji.face.inv]
+      #text(size: 12pt)["problema de las _tragaperras multibrazo_" #emoji.face.inv]
 
     - Problema clásico en RL y teoría de la probabilidad.
 
@@ -83,7 +83,7 @@
     #colbreak()
 
     #v(1.5cm)
-    #figure(image("images/bandit.png", width: 60%), caption: [_Armed bandit_])
+    #figure(image("images/bandit.png", width: 60%), caption: [_One-armed bandit_])
   ]
 ]
 
@@ -150,9 +150,9 @@
       Buscamos maximizar la #stress[recompensa acumulada] concentrando nuestras acciones en las mejores acciones.
     ]
 
-    - Las recompensas medias de $b_1$ y $b_2$ son similares. No obstante, $b_2$ es más conservador (menor $sigma ->$ valores más próximos a la media).
+    - Las recompensas medias de $b_1$ y $b_2$ son similares. No obstante, $b_1$ es más conservador (menor $sigma ->$ valores más próximos a la media).
 
-    - Jugar $b_2$ es más arriesgado (mayor $sigma$), porque puede darnos mejores recompensas que $b_2$ y $b_3$, pero también recompensas mucho peores.
+    - Jugar $b_2$ es más arriesgado (mayor $sigma$), porque puede darnos mejores recompensas que $b_1$ y $b_3$, pero también recompensas mucho peores.
 
     - Jugar $b_3$ no parece una buena idea...
 
@@ -211,15 +211,6 @@
 
   El #stress[valor de una acción] (_action-value_) es la recompensa que esperamos obtener al realizarla:
 
-  // #alternatives-match((
-  //       "1" : [
-  //         $ q_*(a) = EE[R_t | A_t = a] $
-  //         #v(7cm)
-  //       ],
-  //       "2" : [
-  //         $ underbracket(q_*(a), "Valor de\nla acción") = underbracket(EE[R_t | A_t = a], "Recompensa esperada\nal realizar dicha acción") $
-  //       ]
-  //
   #v(-.5cm)
 
   #text(size: 27pt)[
@@ -247,7 +238,7 @@
 
 // *****************************************************************************
 
-#slide(title: "Problemas deteministas y estocásticos")[
+#slide(title: "Problemas deterministas y estocásticos")[
 
   #columns(2)[
 
@@ -280,24 +271,11 @@
 
   Si desarrollamos la fórmula:
 
-  // #align(center)[
-  //   #alternatives-match((
-  //     "1": [
-  //       $q_*(a) = EE[R_t | A_t = a] = sum_r r #v(1cm) p(r|a)$
-  //     ],
-  //     "2": [
-  //       $q_*(a) = EE[
-  //           R_t | A_t = a
-  //         ] = colmath(underbracket(sum_r r #h(0.2cm) p(r|a), "Suma ponderada de\nlas recompensas por\n sus probabilidades"), #red)$
-  //     ],
-  //   ))
-  // ]
-  //
   #v(1cm)
 
   #align(center)[
     #text(size: 25pt)[
-      $q_*(a) = EE[ R_t | A_t = a ] = colmath(underbracket(sum_r r #h(0.2cm) p(r|a), "Suma ponderada de\nlas recompensas por\n sus probabilidades"), #blue)$
+      $q_*(a) = EE[ R_t | A_t = a ] = colmath(underbracket(sum_r r #h(0.2cm) p(r|a), "Suma ponderada de\nlas recompensas por\nsus probabilidades"), #blue)$
     ]
   ]
 
@@ -309,7 +287,7 @@
 
     #v(2.5cm)
 
-    $q_*(a) &= 0 dot 0.25 + 10 dot 0.25 + dot (-1) dot 0.5 \
+    $q_*(a) &= 0 dot 0.25 + 10 dot 0.25 + (-1) dot 0.5 \
       &= 0 + 2.5 - 0.5 = bold(2)$
 
   ]
@@ -356,7 +334,7 @@
 
     - Inicialmente, desconocemos el valor de cada acción:
 
-    #h(3cm) $q_*(a) = 0, forall a in cal(A)$
+    #h(3cm) $Q_1 (a) = 0, forall a in cal(A)$
 
     - Por tanto, comenzamos eligiendo una acción arbitraria.
 
@@ -457,7 +435,7 @@
 
   #columns(2, gutter: 2cm)[
 
-    - En $t=3$ hemos realizado todas las acciones posibles y recibidas sus correspondientes recompensas.
+    - En $t=3$ hemos realizado todas las acciones posibles y recibido sus correspondientes recompensas.
 
       A partir de aquí podemos:
 
@@ -542,11 +520,11 @@
 
 // *****************************************************************************
 
-#title-slide([Estimación de _action--values_])
+#title-slide([Estimación de _action-values_])
 
 // *****************************************************************************
 
-#slide(title: [Estimación de _action--values_])[
+#slide(title: [Estimación de _action-values_])[
 
   Existen diferentes formas de estimar el valor de una acción.
 
@@ -611,8 +589,8 @@
       #set text(28pt)
       #v(1cm)
       $A_t = cases(
-        op("argmax")_a Q_t (a) text("                        con prob.") 1-epsilon\
-        a ~ op("Uniform")({a_1, a_2, dots a_k})text("         con prob.") epsilon
+        op("argmax")_a Q_t (a) text("                        con prob.") 1-epsilon,
+        a ~ op("Uniform")({a_1, a_2, dots, a_k})text("         con prob.") epsilon
       )$
       #v(1cm)
     ]
@@ -682,7 +660,7 @@
 
 // *****************************************************************************
 
-#slide(title: "No estacionareidad")[
+#slide(title: "No estacionariedad")[
 
   #v(-1cm)
 
@@ -854,9 +832,9 @@
 
       [0], [-], [-], [-], [-], [0],
       [1], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0 + 1 (0 - 0)$], [0],
-      [2], [#emoji.scissors], [#emoji.page], [+1], [$Q(op("tijeras")) = 0 + 1 / 2 (1 - 0)$], [0.1],
-      [3], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0.5 + 1 / 3 (0 - 0.5)$], [0.09],
-      [4], [#emoji.scissors], [#emoji.scissors], [0], [$Q(op("tijeras")) = 0.335 + 1 / 4 (0-0.335)$], [0.081],
+      [2], [#emoji.scissors], [#emoji.page], [+1], [$Q(op("tijeras")) = 0 + 1 / 2 (1 - 0)$], [0.5],
+      [3], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0.5 + 1 / 3 (0 - 0.5)$], [0.333],
+      [4], [#emoji.scissors], [#emoji.scissors], [0], [$Q(op("tijeras")) = 0.333 + 1 / 4 (0-0.333)$], [0.25],
       [$dots$], [$dots$], [$dots$], [$dots$], [$dots$], [$dots$],
       [N-1], [-], [-], [-], [-], [0.33],
     )
@@ -888,9 +866,9 @@
 
       [0], [-], [-], [-], [-], [0],
       [1], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0 + bold(0.1) (0 - 0)$], [0],
-      [2], [#emoji.scissors], [#emoji.page], [+1], [$Q(op("tijeras")) = 0 + bold(0.1) (1 - 0)$], [0.5],
-      [3], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0.5 + bold(0.1) (0 - 0.5)$], [0.335],
-      [4], [#emoji.scissors], [#emoji.scissors], [0], [$Q(op("tijeras")) = 0.335 + bold(0.1) (0-0.335)$], [0.25125],
+      [2], [#emoji.scissors], [#emoji.page], [+1], [$Q(op("tijeras")) = 0 + bold(0.1) (1 - 0)$], [0.1],
+      [3], [#emoji.scissors], [#emoji.rock], [0], [$Q(op("tijeras")) = 0.1 + bold(0.1) (0 - 0.1)$], [0.09],
+      [4], [#emoji.scissors], [#emoji.scissors], [0], [$Q(op("tijeras")) = 0.09 + bold(0.1) (0-0.09)$], [0.081],
       [$dots$], [$dots$], [$dots$], [$dots$], [$dots$], [$dots$],
       [N-1], [-], [-], [-], [-], [0.33],
     )
@@ -910,7 +888,7 @@
 
   #v(.5cm)
 
-  - $alpha = 1/N$ supone una convergencia más lenta a medida que aumenta $N$. Esto provoca que actualizaciones más pequeñas y menos impactantes con el paso del tiempo.
+  - $alpha = 1/N$ supone una convergencia más lenta a medida que aumenta $N$. Esto provoca actualizaciones más pequeñas y menos impactantes con el paso del tiempo.
 
   #v(.1cm)
 
@@ -930,7 +908,7 @@
 
   #columns(2)[
 
-    - En #stress[problemas estacionarios], los métodos basados en media muestral (_average sampling_) son apropiados, porque las distribuciones de probabilidad de las recompensas no varían con el tiempo.
+    - En #stress[problemas estacionarios], los métodos basados en media muestral (_sample average_) son apropiados, porque las distribuciones de probabilidad de las recompensas no varían con el tiempo.
 
       - Es decir, preferimos $alpha = 1/N$
 
@@ -953,8 +931,6 @@
   #align(center)[#image("images/comparison.png", width: 90%)]
 
 ]
-
-// *****************************************************************************
 
 // *****************************************************************************
 
@@ -985,32 +961,6 @@
 ]
 
 // *****************************************************************************
-
-// #slide(title: "Valores iniciales optimistas")[
-
-//   #let l = text("A mayor número de\nexperiencias pasadas (n)\nmenor peso tienen las\nrecompensas anteriores")
-
-//   En métodos con #stress[_step size_ constante], el sesgo es permanente, aunque decrece con el tiempo:
-
-//   #align(center)[
-//     #alternatives-match((
-//       "1": [
-//         $
-//           Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
-//           &= (1-alpha)^n Q_1 + sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i
-//         $
-//         #v(2.5cm)
-//       ],
-//       "2": [
-//         $
-//           Q_(n+1) &= Q_n + alpha[R_n - Q_n] \
-//           &= (1-alpha)^n Q_1 + colmath(underbracket(sum_(i=1)^n alpha(1 - alpha)^(n-i) R_i, #l), #red)
-//         $
-//       ],
-//     ))
-//   ]
-// ]
-//
 
 #slide(title: "Valores iniciales optimistas")[
 
@@ -1052,7 +1002,7 @@
 
   En la práctica, el sesgo no suele ser un problema y a veces puede resultar útil.
 
-  - Las estimaciones inciales pueden proporcionar #stress[conocimiento previo/experto] sobre qué recompensas podemos esperar de cada acción.
+  - Las estimaciones iniciales pueden proporcionar #stress[conocimiento previo/experto] sobre qué recompensas podemos esperar de cada acción.
 
   - Un inconveniente es que estas estimaciones iniciales se convierten en un #stress[conjunto de parámetros que el usuario debe elegir], aunque por defecto pueden ser = 0.
 ]
@@ -1061,7 +1011,7 @@
 
 #slide(title: "Sesgo como apoyo a la exploración")[
 
-  Podemos utilizar el sesgo para guitar la exploración inicial de nuestro agente.\ Por ejemplo:
+  Podemos utilizar el sesgo para guiar la exploración inicial de nuestro agente.\ Por ejemplo:
 
   #grid(
     columns: (1fr, 1fr, 1fr),
@@ -1116,7 +1066,7 @@
       ]
       #align(right)[
         #text(size: 13pt)[
-          #emoji.books _Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT press. (p. 35)._]
+          #emoji.books _Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT Press. (p. 35)._]
       ]
     ]
   ]
@@ -1132,13 +1082,13 @@
 
   #v(1cm)
 
-  $epsilon$-_greedy_ fuerza la seleccion de acciones _non-greedy_ de forma indiscriminada:
+  $epsilon$-_greedy_ fuerza la selección de acciones _non-greedy_ de forma indiscriminada:
 
   #text(23pt)[
     $
       A_t = cases(
-      op("argmax")_a Q_t (a) text("                        con prob.") 1-epsilon\
-      colmath(a ~ op("Uniform")({a_1, a_2, dots a_k})text("        con prob.") epsilon, #red)
+      op("argmax")_a Q_t (a) text("                        con prob.") 1-epsilon,
+      colmath(a ~ op("Uniform")({a_1, a_2, dots, a_k})text("        con prob.") epsilon, #red)
     )
     $
   ]
@@ -1187,31 +1137,6 @@
 
 // *****************************************************************************
 
-// #slide(title: [_Upper-confidence-bound_])[
-
-//   La técnica del #stress[límite superior de confianza], o _Upper-confidence-bound_ (#stress[*UCB*]), nos permite balancear *valor* e *incertidumbre* a la hora de seleccionar acciones:
-
-//   #alternatives-match((
-//     "1": [
-//       #align(center)[
-//         $ A_t = op("argmax")_a [Q_t (a) + c #h(0.2cm) sqrt((ln t) / (N_t (a)))] $
-//       ]
-//       #v(2cm)
-//     ],
-//     "2": [
-//       #v(0.5cm)
-//       #align(center)[
-//         $ A_t = op("argmax")_a [Q_t (a) + colmath(c, #blue) #h(0.2cm) colmath(sqrt((ln t) / (N_t (a))), #red)] $
-//       ]
-//       #v(1cm)
-//       - $colmath(c>0, #blue)$ controla cuánto explorar.
-//       - $colmath(N_t (a), #red)$ indica el número de seleccione sprevias de la acción $a$.
-//         - Si $N_t (a) = 0$, se considera $a$ como la acción más preferible
-//     ],
-//   ))
-
-// ]
-
 #slide(title: [_Upper-confidence-bound_])[
 
   #v(1cm)
@@ -1233,7 +1158,7 @@
   $ A_t = op("argmax")_a [Q_t (a) + colmath(c, #blue) #h(0.2cm) colmath(sqrt((ln t) / (N_t (a))), #red)] $
 
   - $colmath(c>0, #blue)$ controla cuánto explorar.
-  - $colmath(N_t (a), #red)$ indica el número de seleccione sprevias de la acción $a$.
+  - $colmath(N_t (a), #red)$ indica el número de selecciones previas de la acción $a$.
     - Si $N_t (a) = 0$, se considera $a$ como la acción más preferible
 
 ]
@@ -1311,7 +1236,7 @@
 
     - *_Contextual bandits_*
       - ¿Qué son?
-      - ¿Que relación podrían tener con las próximas lecciones?
+      - ¿Qué relación podrían tener con las próximas lecciones?
 
     #text(25pt)[*Bibliografía y recursos*]
 
@@ -1328,5 +1253,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [_Bandits_],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

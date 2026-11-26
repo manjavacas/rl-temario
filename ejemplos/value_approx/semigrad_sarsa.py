@@ -113,7 +113,7 @@ class SemiGradientSARSA():
                 else:
                     target = reward
 
-                # Actualizar la funcion de valor
+                # Actualizar la función de valor
                 state_tensor = torch.tensor(
                     obs, dtype=torch.float32).to(self.device)
                 action_tensor = torch.tensor(

@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 // *****************************************************************************
 
@@ -16,7 +17,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Introducción",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -75,13 +75,13 @@
 
     #v(3cm)
 
-    A partir de las ideas de *Pávlov*, *Watson*, *Thonrdike* y *Skinner* surge la psicología conductista, o #stress[conductismo].
+    A partir de las ideas de *Pávlov*, *Watson*, *Thorndike* y *Skinner* surge la psicología conductista, o #stress[conductismo].
 
     - Estudio de las leyes comunes que determinan el comportamiento humano y animal.
 
     #colbreak()
 
-    #image("images/conductism.png")
+    #image("images/conductism.jpg")
   ]
 
 ]
@@ -152,7 +152,7 @@
 
     #v(.5cm)
 
-    #figure(image("images/suttonbarto.png"))
+    #figure(image("images/suttonbarto.jpg"))
   ]
 ]
 
@@ -173,7 +173,7 @@
 #slide(title: "Aprendizaje por refuerzo en la IA")[
   #columns(2, gutter: 2cm)[
     #v(3cm)
-    #stress[*2013*]. Investigadores de DeepMind desarrollan el algoritmo _DQN_, capaz de superar al ser humano en 22 juegos de la consola Atari.
+    #stress[*2013--2015*]. Investigadores de DeepMind desarrollan el algoritmo _DQN_, capaz de superar al ser humano en 22 juegos de la consola Atari.
     #colbreak()
     #figure(image("images/atari.jpg"))
   ]
@@ -185,7 +185,7 @@
   #columns(2, gutter: 2cm)[
     - #stress[*2015--2017*]. _AlphaGo_, desarrollado por DeepMind, vence a varios de los mejores jugadores de Go del mundo.
 
-    - #stress[*2017*]. _AlphaZero_, vence 100--0 a su predecesor y alcanza un nivel superhumano en ajedrez.
+    - #stress[*2017*]. _AlphaGo Zero_ vence 100--0 a su predecesor y _AlphaZero_ alcanza un nivel superhumano en ajedrez.
 
     - #stress[*2017--2019*]. _OpenAI Five_ vence a jugadores profesionales de Dota 2.
 
@@ -206,7 +206,7 @@
 
   - #stress[*2023--*]. Aprendizaje por refuerzo aplicado a mejorar las respuestas de agentes conversacionales como _ChatGPT_.
 
-  #figure(image("images/drones.png", width: 60%))
+  #figure(image("images/drones.jpg", width: 60%))
 ]
 
 // *****************************************************************************
@@ -424,7 +424,7 @@
       Modelo del entorno:
       - Variables observadas.
       - Función de recompensa.
-      - _Model free_ vs. _model-based_.
+      - _Model-free_ vs. _model-based_.
 
       Definición del espacio de acciones (discreto o continuo).
     ]
@@ -498,7 +498,7 @@
         - Tanto RL como ANS carecen de supervisión externa, pero sus objetivos son diferentes.
 
         #framed[
-          Aunque tanto el aprendizaje no supervisado como el aprendizaje por refuerzo carecen de ejemplos de comportamiento “correcto”, el #stress[aprendizaje por refuerzo] trata de *maximizar una señal de recompensa*, en lugar de intentar encontrar *patrones comunes en conjuntos datos*.
+          Aunque tanto el aprendizaje no supervisado como el aprendizaje por refuerzo carecen de ejemplos de comportamiento “correcto”, el #stress[aprendizaje por refuerzo] trata de *maximizar una señal de recompensa*, en lugar de intentar encontrar *patrones comunes en conjuntos de datos*.
         ]
       ]
     ],
@@ -531,7 +531,7 @@
   ]
   #v(-.5cm)
   #framed[
-    #stress[Evaluar] (_evaluative feedback_) consiste en indicar cómo buena o mala ha sido una decisión, pero no si ha sido la mejor o peor posible.
+    #stress[Evaluar] (_evaluative feedback_) consiste en indicar cómo de buena o mala ha sido una decisión, pero no si ha sido la mejor o peor posible.
 
     - Motiva la exploración.
     - Búsqueda de un comportamiento óptimo en base a información parcial del problema.
@@ -554,7 +554,7 @@
 
   #text(size: 30pt, weight: "semibold")[#smallcaps("Libros")]
 
-  - #underline[*Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT press.*]
+  - #underline[*Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT Press.*]
 
   - Morales, M. (2020). Grokking deep reinforcement learning. Manning Publications.
 
@@ -586,5 +586,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Introducción",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

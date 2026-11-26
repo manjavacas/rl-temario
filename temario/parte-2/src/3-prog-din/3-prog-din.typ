@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color: red) = text(fill: color)[$#x$]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Programación dinámica",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -127,19 +127,19 @@
 
 #slide(title: "Programación dinámica")[
 
-  Emplearemos las #stress[funciones de valor] ($v$, $q$) para emprender la búsqueda de políticas óptimas
+  Emplearemos las #stress[funciones de valor] ($v$, $q$) para emprender la búsqueda de políticas óptimas.
 
   - Recordemos las #stress[ecuaciones de optimalidad de Bellman]:
 
   #grayed[
     #set text(size: 24pt)
-    $v^* (s) &= op(max)_a EE [R_(t+1) + gamma v^* (S_(t+1)) | S_t = S, A_t = a] \
+    $v^* (s) &= op(max)_a EE [R_(t+1) + gamma v^* (S_(t+1)) | S_t = s, A_t = a] \
       &= op(max)_a sum_(s',r) p(s',r|s, a)[r + gamma v^*(s')]$
   ]
 
   #grayed[
     #set text(size: 24pt)
-    $q^*(s,a) &= EE[R_(t+1) + gamma op(max)_a' q^*(S_(t+1)) | S_t = s, A_t = a] \
+    $q^*(s,a) &= EE[R_(t+1) + gamma op(max)_a' q^*(S_(t+1), a') | S_t = s, A_t = a] \
       &= sum_(s',r)p(s',r|s,a)[r + gamma op(max)_a' q^*(s',a')]$
   ]
 
@@ -167,7 +167,7 @@
 
 // *****************************************************************************
 
-#title-slide("Iteración de la polítca")
+#title-slide("Iteración de la política")
 
 // *****************************************************************************
 
@@ -175,7 +175,7 @@
 
   #stress[Iteración de la política] (_policy iteration_) es un método empleado para aproximar progresivamente la política óptima en un MDP.
 
-  - Consiste en la alternancia *evaluación* y *mejora* de la política:
+  - Consiste en la alternancia entre *evaluación* y *mejora* de la política:
 
 
   #framed[
@@ -222,7 +222,7 @@
   3. Cada aproximación sucesiva se obtiene empleando la ecuación de Bellman para $v_pi$ como una #stress[regla de actualización], esto es:
 
   #grayed[
-    $v_(k+1) (S_t) &= EE_pi [R_(t+1) + gamma v_k (S_(t+1)) | S_t = s] \
+    $v_(k+1) (s) &= EE_pi [R_(t+1) + gamma v_k (S_(t+1)) | S_t = s] \
       &= sum_a pi(a|s) sum_(s',r) p(s',r|s,a) [r + gamma v_k (s')]$
   ]
 
@@ -256,11 +256,11 @@
 
   #cols[
 
-    - Vector de #stress[valores originales] $v_k (s)$ :
+    - Vector de #stress[valores originales] $v_k (s)$:
 
     #v(.9cm)
 
-    - Vector de #stress[valores actualizados] $v_(k+1) (s)$ :
+    - Vector de #stress[valores actualizados] $v_(k+1) (s)$:
 
   ][
 
@@ -280,7 +280,7 @@
 
   ]
 
-  $dots$ ya que el cálculo de $v_k (s)$ requiere del valor de $v_(k+1) (s)$.
+  $dots$ ya que el cálculo de $v_(k+1) (s)$ requiere del valor de $v_k (s)$.
 
   No obstante, podemos simplificar el algoritmo y emplear *un único vector* donde los valores se sobreescriban.
 
@@ -330,7 +330,7 @@
 
     - Chocar contra una pared supone volver al mismo estado.
 
-    - Asumimos $gamma = 1$, #h(0.1cm) $theta = 0.1$
+    - Asumimos $gamma = 1$, #h(0.1cm) $theta = 0.1$.
 
     - Evaluación *síncrona*.
 
@@ -402,7 +402,7 @@
       #set text(size: 18pt)
       $ V(s) <- sum_a pi(a|s) sum_(s',r) p(s',r|s,a) [r + gamma V(s')] $]
 
-    hasta que: #h(1cm) $|v_(k+1) - v_k| < theta$ .
+    hasta que: #h(1cm) $|v_(k+1) - v_k| < theta$.
 
   ]
 
@@ -457,13 +457,13 @@
       #text(size: 16pt)[
 
         $v^2_pi (s_1) &= 0.25 [-1 + gamma underbrace(v^1_pi (s_0), #stress[0])] \
-          &+ 0.25 [-1 + underbrace(v^1_pi (s_0), #stress[-1])] \
+          &+ 0.25 [-1 + gamma underbrace(v^1_pi (s_1), #stress[-1])] \
           &+ 0.25 [-1 + gamma v^1_pi (s_2)] \
-          &+ 0.25 [-1 + gamma v^1_pi (s_4)] = bold(1.75)$
+          &+ 0.25 [-1 + gamma v^1_pi (s_4)] = bold(-1.75)$
 
         #v(0.5cm)
 
-        $v^2_pi (s_4) &= 0.25 [-1 + gamma underbrace(v^1_pi (s_0), #stress[-1])] \
+        $v^2_pi (s_4) &= 0.25 [-1 + gamma underbrace(v^1_pi (s_1), #stress[-1])] \
           &+ 0.25 [-1 + gamma v^1_pi (s_3)] \
           &+ 0.25 [-1 + gamma v^1_pi (s_5)] \
           &+ 0.25 [-1 + gamma v^1_pi (s_7)] = bold(-2)$
@@ -578,7 +578,7 @@
               "images/arrow.png",
               width: 50%,
             )],
-          [v($s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
+          [$v(s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
 
           [$v(s_6) tilde.eq -21$\ #image("images/arrow.png", width: 50%)],
           [$v(s_7) tilde.eq -23.3$\ #image(
@@ -611,7 +611,7 @@
 
   #framed[Por el contrario, la actualización #stress[asíncrona] permite que los valores actualizados se puedan utilizar tan pronto como son calculados.
 
-    - Sólo se requiere un vector de valores.
+    - Solo se requiere un vector de valores.
 
     - La convergencia es más rápida.
   ]
@@ -691,7 +691,7 @@
               "images/arrow2.png",
               width: 50%,
             )],
-          [v($s_5) tilde.eq -9.3$\ #image("images/arrow2.png",width:50%)],
+          [$v(s_5) tilde.eq -9.3$\ #image("images/arrow2.png",width:50%)],
 
           [$v(s_6) tilde.eq -9.1$\ #image("images/arrow2.png", width: 50%)],
           [$v(s_7) tilde.eq -10.2$\ #image(
@@ -747,7 +747,7 @@
               "images/arrow2.png",
               width: 50%,
             )],
-          [v($s_5) tilde.eq -9.3$\ #image("images/arrow2.png",width:50%)],
+          [$v(s_5) tilde.eq -9.3$\ #image("images/arrow2.png",width:50%)],
 
           [$v(s_6) tilde.eq -9.1$\ #image("images/arrow2.png", width: 50%)],
           [$v(s_7) tilde.eq -10.2$\ #image(
@@ -783,7 +783,7 @@
 
 #slide(title: [#impr])[
 
-  #framed[*Objetivo*: #stress[mejorar una política $pi$ a partir de su funcion de valor $v_pi$]]
+  #framed[*Objetivo*: #stress[mejorar una política $pi$ a partir de su función de valor $v_pi$]]
 
   - Problema de *control* $-->$ mejora de una política dada.
 
@@ -882,7 +882,7 @@
                 "images/arrow.png",
                 width: 50%,
               )],
-            [v($s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
+            [$v(s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
 
             [$v(s_6) tilde.eq -21$\ #image("images/arrow.png", width: 50%)],
             [$v(s_7) tilde.eq -23.3$\ #image(
@@ -997,7 +997,7 @@
   #cols[
     #text(size: 15pt)[
       #align(center)[
-        *_POLICY EVALUATION_* ($pi_0 comma v^78_pi_1 tilde.eq v_pi_0$)
+        *_POLICY EVALUATION_* ($pi_0 comma v^78_pi_0 tilde.eq v_pi_0$)
         #v(0.2cm)
         #table(
           columns: 3,
@@ -1015,7 +1015,7 @@
               "images/arrow.png",
               width: 50%,
             )],
-          [v($s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
+          [$v(s_5) tilde.eq -23.2$\ #image("images/arrow.png",width:50%)],
 
           [$v(s_6) tilde.eq -21$\ #image("images/arrow.png", width: 50%)],
           [$v(s_7) tilde.eq -23.3$\ #image(
@@ -1077,7 +1077,7 @@
               "images/arrow.png",
               width: 50%,
             )],
-          [v($s_5) tilde.eq -3$\ #image("images/arrow.png",width:50%)],
+          [$v(s_5) tilde.eq -3$\ #image("images/arrow.png",width:50%)],
 
           [$v(s_6) tilde.eq -2$\ #image("images/arrow.png", width: 50%)],
           [$v(s_7) tilde.eq -3$\ #image(
@@ -1142,7 +1142,7 @@
     #box(height: 500pt)[
       #text(size: 18pt)[
         ```python
-        def sync_policy_eval(states, pi, theta):
+        def sync_policy_eval(states, pi, theta=0.1):
           while (True):
               delta = 0
               states_old = copy.deepcopy(states)
@@ -1174,7 +1174,7 @@
     #box(height: 500pt)[
       #text(size: 18pt)[
         ```python
-        def async_policy_eval(states, pi, theta):
+        def async_policy_eval(states, pi, theta=0.1):
             while (True):
                 delta = 0
                 for state in states:
@@ -1186,8 +1186,8 @@
                             if action_prob > 0:
                                 next_state, reward = get_transition(
                                     state, action, states)
-                                v_new += action_prob *
-                                  (reward + GAMMA * next_state.value)
+                                v_new += action_prob * \
+                                    (reward + GAMMA * next_state.value)
                         state.value = v_new
                         delta = max(delta, abs(v_old - v_new))
                 if (delta < theta):
@@ -1298,7 +1298,7 @@
 
   #grayed[
     $
-      v_pi_1, v_pi_2, v_pi_3 dots, underbrace(colmath(v_pi_(k-2)) comma colmath(v_pi_(k-1))), v_pi_k = v_pi
+      v_pi_1, v_pi_2, v_pi_3, dots, underbrace(colmath(v_pi_(k-2)) comma colmath(v_pi_(k-1))), v_pi_k = v_pi
     $
   ]
 
@@ -1371,7 +1371,7 @@
   #framed[
     - La *convergencia* está teóricamente garantizada.
 
-    - En la práctica, el algoritmo de _value iteration_ converge cuando la diferencia etre $v_k$ y $v_(k+1)$ es lo suficientemente pequeña ($epsilon$).
+    - En la práctica, el algoritmo de _value iteration_ converge cuando la diferencia entre $v_k$ y $v_(k+1)$ es lo suficientemente pequeña ($epsilon$).
   ]
 
 ]
@@ -1519,7 +1519,7 @@
 
       [Parte de una política aleatoria], [Parte de una función de valor aleatoria],
       [Algoritmo más complejo. Implica:\ (1) evaluación hasta convergencia\ (2) mejora de la política\ en varias iteraciones],
-      [Algoritmo más simple:\ un sólo paso incluye\ evaluación y mejora],
+      [Algoritmo más simple:\ un solo paso incluye\ evaluación y mejora],
 
       [Requiere pocas iteraciones\ para converger],
       [Requiere más iteraciones\ para converger, aunque\ generalmente es más rápido],
@@ -1630,7 +1630,7 @@
 
 #slide(title: "Iteración de la política generalizada")[
 
-  - *#itv* sólo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
+  - *#itv* solo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
     #h(1cm) #emoji.arrow.l.hook $= (#emoji.chart.bar + #emoji.chart.up) times n_"iter"$
 
   - *#itp* utiliza los valores de convergencia de _policy evaluation_ antes de cada _policy improvement_:
@@ -1648,11 +1648,11 @@
 
   #box(height: 360pt, inset: 20pt, outset: 10pt, radius: 10pt, stroke: red)[
 
-    #text(fill: red, size: 22pt)[*¡ TODOS ESTÁN DENTRO DE GPI !*]
+    #text(fill: red, size: 22pt)[*¡TODOS ESTÁN DENTRO DE GPI!*]
     #v(0.5cm)
 
     #text(size: 17pt)[
-      - *#itv* sólo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
+      - *#itv* solo utiliza una iteración de _policy evaluation_ entre cada _policy improvement_:
         #h(1cm) #emoji.arrow.l.hook $= (#emoji.chart.bar + #emoji.chart.up) times n_"iter"$
 
       - *#itp* utiliza los valores de convergencia de _policy evaluation_ antes de cada _policy improvement_:
@@ -1686,7 +1686,7 @@
     5. La política se estabiliza cuando es _greedy_ con respecto a la función de valor actual.
   ]
 
-  Se trata de un proceso donde política y función de valor cooperan y compiten al mismo tiempo hasta obtener $pi^*$ y $v_(pi^*)$
+  Se trata de un proceso donde política y función de valor cooperan y compiten al mismo tiempo hasta obtener $pi^*$ y $v_(pi^*)$.
 ]
 
 // *****************************************************************************
@@ -1775,5 +1775,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: "Programación dinámica",
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

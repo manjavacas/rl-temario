@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color) = text(fill: color)[#x]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Procesos de decisión de Markov],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -33,7 +33,7 @@
 
   - Problemas en los que _no asociamos_ diferentes acciones a diferentes situaciones.
 
-  - El objetivo es encontrar la mejor acción si el problema es #stress[_estacionario_], o buscarla directamente si es #stress[_no-estacionario_].
+  - El objetivo es encontrar la mejor acción si el problema es #stress[_estacionario_], o buscarla directamente si es #stress[_no estacionario_].
 
   No obstante, en problemas de RL más complejos, pueden darse diferentes situaciones donde *el valor de una acción varía dependiendo del estado actual del agente*.
 
@@ -94,7 +94,7 @@
     [
       - Elegimos una acción en cada instante de tiempo.
       - Buscamos maximizar la recompensa acumulada a lo largo del tiempo.
-      - El valor de las acciones puede ser siempre el mismo (problema estacionario) o variar a lo largo del tiempo (problema no-estacionario).
+      - El valor de las acciones puede ser siempre el mismo (problema estacionario) o variar a lo largo del tiempo (problema no estacionario).
     ],
 
     [_Contextual bandits_],
@@ -106,7 +106,7 @@
     [_RL completo_],
     [
       - Buscamos maximizar la recompensa en un ambiente desconocido.
-      - Las acciones afectan, no sólo a las recompensas inmediatas, sino también al estado del etnorno, que a su vez repercute en las recompensas futuras.
+      - Las acciones afectan, no solo a las recompensas inmediatas, sino también al estado del entorno, que a su vez repercute en las recompensas futuras.
       - Generalmente entornos estocásticos, no estacionarios y con grandes espacios de estados y acciones.
     ],
   )
@@ -134,8 +134,8 @@
 
     [_Contextual bandits_],
     [
-      - Añadimos contexto: informaicón sobre el usuario, edad, género, historial de búsqueda, etc.
-      - Las recompensas también varían dependiendo dle usuario que haga _click_ sobre el anuncio.
+      - Añadimos contexto: información sobre el usuario, edad, género, historial de búsqueda, etc.
+      - Las recompensas también varían dependiendo del usuario que haga _click_ sobre el anuncio.
     ],
 
     [_RL completo_],
@@ -204,11 +204,11 @@
 
 // *****************************************************************************
 
-#slide(title: "Definicion formal de MDP")[
+#slide(title: "Definición formal de MDP")[
 
   #v(1cm)
 
-  Un proceso de decisión de Markov se define como una 5-tupla: $angle.l cal(S), cal(A), cal(P), cal(R), gamma angle.r$.
+  Un proceso de decisión de Markov se define como una 5-tupla: $chevron.l cal(S), cal(A), cal(P), cal(R), gamma chevron.r$.
 
   #v(.4cm)
 
@@ -250,7 +250,7 @@
 
   En un #stress[MDP finito], los conjuntos $cal(S)$ (estados) y $cal(A)$ (acciones) *son finitos*.
 
-  $R_t$ y $S_t$ son variables aleatorias con distribuciones de probabilidad bien definidas, que solamente dependen del estado anterior $S_(t-1)$ y de la acción realizada $A_t$.
+  $R_t$ y $S_t$ son variables aleatorias con distribuciones de probabilidad bien definidas, que solamente dependen del estado anterior $S_(t-1)$ y de la acción realizada $A_(t-1)$.
 
   Para todo $s' in cal(S), r in cal(R)$, existe la probabilidad de que estos valores se den en un instante $t$ dados unos valores particulares para $s in cal(S)$ y $a in cal(A)$:
 
@@ -321,7 +321,7 @@
 
   #grayed[
     #set text(size: 24pt)
-    $ p(s'|s,a) = Pr{S_t = s | S_(t-1) = s, A_(t-1) = a} = sum_(r in cal(R)) p(s',r|s,a) $
+    $ p(s'|s,a) = Pr{S_t = s' | S_(t-1) = s, A_(t-1) = a} = sum_(r in cal(R)) p(s',r|s,a) $
   ]
 
   #v(.5cm)
@@ -446,7 +446,7 @@
 
     $ p(s_0, 1 | s_1, a_1) = bold(0) $
 
-    #stress[Propiedad de Markov]: las transiciones sólo dependen del *estado actual* (y la *acción* realizada).
+    #stress[Propiedad de Markov]: las transiciones solo dependen del *estado actual* (y la *acción* realizada).
 
   ]
 
@@ -462,7 +462,7 @@
 
   #grayed[
     #set text(size: 24pt)
-    $ r(s,a) = EE[R_t | S_(t+1) = s, A_(t-1) = a] = sum_(r in cal(R)) r sum_(s' in cal(S)) p(s', r | s,a) $
+    $ r(s,a) = EE[R_t | S_(t-1) = s, A_(t-1) = a] = sum_(r in cal(R)) r sum_(s' in cal(S)) p(s', r | s,a) $
   ]
 
   ¿Qué *recompensa* podemos esperar de una tripleta #stress[estado-acción-estado]?
@@ -635,7 +635,7 @@
     ]
 
     #text(size: 14pt)[
-      - $M_t$ : matriz con posiciones libres (0) u ocupadas (1)
+      - $M_t$: matriz con posiciones libres (0) u ocupadas (1)
       - _type_: pieza actual
       - _pos_: posición de la pieza actual
       - _next_: próxima pieza
@@ -659,14 +659,14 @@
 
 // *****************************************************************************
 
-#slide(title: "Estados no-markovianos")[
+#slide(title: "Estados no markovianos")[
 
   En un proceso de decisión de Markov, el futuro depende únicamente del estado presente y no de los estados anteriores (*propiedad de Markov*).
 
-  Sin embargo, podemos encontrarnos ante problemas con #stress[estados no-markovianos], donde el estado actual no contiene toda la información relevante para predecir el futuro.
+  Sin embargo, podemos encontrarnos ante problemas con #stress[estados no markovianos], donde el estado actual no contiene toda la información relevante para predecir el futuro.
 
-  #framed(title: "Estado no-markoviano")[
-    Un estado no-markoviano es aquel en el que la información necesaria para tomar una decisión óptima no está completamente representada por el estado actual del sistema.
+  #framed(title: "Estado no markoviano")[
+    Un estado no markoviano es aquel en el que la información necesaria para tomar una decisión óptima no está completamente representada por el estado actual del sistema.
   ]
 
 ]
@@ -700,7 +700,7 @@
     - En este ejemplo, no podemos predecir el movimiento de la bola a partir de una sola imagen.
       - Una imagen instantánea no nos ofrece la suficiente información.
 
-      - #stress[Estado no-markoviano].
+      - #stress[Estado no markoviano].
 
     - Una posible solución sería *concatenar múltiples fotogramas consecutivos*.
 
@@ -722,7 +722,7 @@
     Por ejemplo:
 
     - Movimiento de piezas en una partida de ajedrez.
-    - Cambio de valor en el precio de un acción.
+    - Cambio de valor en el precio de una acción.
     - Acceso a la web de venta de un producto.
     - ...
 
@@ -850,7 +850,7 @@
       $ R_t in RR $
     ]
 
-    Buscamos maximizar la #stress[recompensa acumulada] a largo plazo, no sólo las #stress[recompensas inmediatas].
+    Buscamos maximizar la #stress[recompensa acumulada] a largo plazo, no solo las #stress[recompensas inmediatas].
 
     #colbreak()
 
@@ -864,14 +864,14 @@
 
 // *****************************************************************************
 
-#slide(title: [_Reward hypotheses_])[
+#slide(title: [_Reward hypothesis_])[
 
   #framed[
     _Todo lo que entendemos como objetivo o propósito puede interpretarse como la maximización del valor esperado para una suma acumulada de una señal escalar (llamada recompensa)_.
 
     #align(right)[
       #text(size: 12pt)[
-        #emoji.books _Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT press. (p. 53)._]
+        #emoji.books _Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction (2nd ed.). MIT Press. (p. 53)._]
     ]
   ]
 
@@ -1020,7 +1020,7 @@
 
   - Una recompensa recibida en $k$ _time steps_ futuros tiene un valor $gamma^(k-1)$ veces lo que valdría en el _time step_ actual.
 
-  - Si $gamma = 0$, el agente solamente tendrá en cuenta las #stress[recompensas inmediatas]. Se trata de un _agente miope_, que sólo tiene en cuenta $R_(t+1)$ para elegir $A_t$.
+  - Si $gamma = 0$, el agente solamente tendrá en cuenta las #stress[recompensas inmediatas]. Se trata de un _agente miope_, que solo tiene en cuenta $R_(t+1)$ para elegir $A_t$.
 
   - A medida que $gamma$ se aproxima a $1$, el agente tendrá más en cuenta aquellas acciones que maximicen las #stress[recompensas futuras].
 
@@ -1107,7 +1107,7 @@
 #slide(title: "¿Cómo definir la recompensa?")[
 
   #text(size: 19pt)[
-    Existen diferentes formas de guiar el aprendizaje mediante una funciones de recompensa.
+    Existen diferentes formas de guiar el aprendizaje mediante una función de recompensa.
 
     El aprendizaje puede basarse en #stress[refuerzos positivos] o #stress[negativos]. Por ejemplo:
 
@@ -1175,7 +1175,7 @@
   #h(1cm) Un *MDP* se define por la tupla:
 
   #text(size: 35pt)[
-    $ angle.l cal(S), cal(A), cal(P), cal(R), gamma angle.r $
+    $ chevron.l cal(S), cal(A), cal(P), cal(R), gamma chevron.r $
   ]
 
   #emoji.checkmark.box Un conjunto de #stress[estados] $cal(S)$.
@@ -1215,7 +1215,7 @@
   #columns(2, gutter: 20pt)[
 
     #framed(title: "Política determinista")[
-      La probabilidad de tomar una acción es 0 ó 1: #h(1cm)
+      La probabilidad de tomar una acción es 0 o 1: #h(1cm)
       $a_t = mu(s_t)$
     ]
 
@@ -1230,7 +1230,7 @@
 
     En ambos casos se cumple que:
     #grayed(text-size: 24pt)[
-      $ sum_(a in cal(A)(s)) pi(s|a) = 1 $
+      $ sum_(a in cal(A)(s)) pi(a|s) = 1 $
     ]
 
     #v(1cm)
@@ -1246,7 +1246,7 @@
 #slide(title: "Tipos de políticas")[
 
   #framed(title: "Política determinista")[
-    La probabilidad de tomar una acción es 0 ó 1: #h(1cm)$pi(a | s) in {0, 1} $
+    La probabilidad de tomar una acción es 0 o 1: #h(1cm)$pi(a | s) in {0, 1} $
   ]
 
   #align(center)[#image("images/deterministic.png")]
@@ -1297,7 +1297,7 @@
     #v(.5cm)
 
     #framed(title: "Política gaussiana")[
-      Muestrea acciones de una #stress[distribucción gaussiana].
+      Muestrea acciones de una #stress[distribución gaussiana].
       - Se emplea en *espacios de acciones continuos*.
     ]
 
@@ -1530,7 +1530,7 @@
 
   #set text(size: 27pt)
 
-  #let a = text[Probabilidades de transición\ (dependiente del entorno)]
+  #let a = text[Probabilidades de transición\ (dependientes del entorno)]
   #let b = text[Recompensa\ inmediata]
   #let c = text[Recompensa futura\, ponderada\ por la prob. de cada acción]
 
@@ -1561,7 +1561,7 @@
 
 #slide(title: "Políticas óptimas")[
 
-  Siempre existirá, al menos, una política mejor que cualquier otra, denominada #stress[política óptima], $pi^*$.
+  Siempre existirá, al menos, una política mejor o igual que cualquier otra, denominada #stress[política óptima], $pi^*$.
 
   #h(1cm) #emoji.warning Puede haber más de una política óptima.
 
@@ -1712,7 +1712,7 @@
   En MDPs finitos, las ecuaciones de optimalidad de Bellman tienen #stress[soluciones únicas].
 
   - Definimos una ecuación por estado.
-  - Dados #text(fill:red)[$n$ estados], tenemos #text(fill:red)[$n$ ecuaciones lineales] y, por tanto, #text(fill:red)[$n$ incógnitas].
+  - Dados #text(fill:red)[$n$ estados], tenemos #text(fill:red)[$n$ ecuaciones no lineales] y, por tanto, #text(fill:red)[$n$ incógnitas].
 
   La resolución del sistema de ecuaciones nos permite obtener la *política óptima*.
 
@@ -1805,5 +1805,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Procesos de decisión de Markov],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

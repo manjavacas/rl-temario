@@ -9,7 +9,7 @@ from tqdm.auto import trange
 
 class ActorCriticNetwork(nn.Module):
     """
-    Red neuronal unificado para ACTOR y CRITICO:
+    Red neuronal unificada para ACTOR y CRÍTICO:
       - Actor: estima la política (distribución sobre acciones).
       - Crítico: estima el valor del estado.
     """
@@ -79,7 +79,7 @@ class ActorCriticAgent():
                     obs, dtype=torch.float32).to(self.device)
                 action_probs, value = self.actor_critic_net(obs_tensor)
 
-                # Obtener accion y log_prob de distribución categórica
+                # Obtener acción y log_prob de distribución categórica
                 dist = torch.distributions.Categorical(action_probs)
                 action = dist.sample()
                 log_prob = dist.log_prob(action)

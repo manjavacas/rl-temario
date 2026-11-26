@@ -9,6 +9,7 @@
 #set text(hyphenate: false)
 
 #set figure(numbering: none)
+#set document(date: none)
 
 #let colmath(x, color: red) = text(fill: color)[$#x$]
 
@@ -18,7 +19,6 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Métodos basados en muestreo: _TD-learning_],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )
 
 // *****************************************************************************
@@ -235,7 +235,7 @@
 
   Es decir, para actualizar el valor de cada estado *no es necesario esperar al final del episodio* y emplear $G_t$ como objetivo.
 
-  Podemos simplemente utilizar #stress[el valor del siguiente estado], que es por definición, una expectativa del retorno que podemos obtener.
+  Podemos simplemente utilizar #stress[el valor del siguiente estado], que es, por definición, una expectativa del retorno que podemos obtener.
 
   #align(center)[#image("images/updates.png", width: 60%)]
 
@@ -258,8 +258,8 @@
 
   #grayed[
     $
-      G_t &= R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + dots + gamma^(T-1) R_T \
-      &= R_(t+1) + gamma (R_(t+2) + gamma R_(t+3) + dots + gamma^(T-2) R_T ) \
+      G_t &= R_(t+1) + gamma R_(t+2) + gamma^2 R_(t+3) + dots + gamma^(T-t-1) R_T \
+      &= R_(t+1) + gamma (R_(t+2) + gamma R_(t+3) + dots + gamma^(T-t-2) R_T ) \
       &= R_(t+1) + gamma G_(t+1)
     $]
 
@@ -294,7 +294,7 @@
 
   Esto significa que #stress[podemos estimar la función de valor $v_pi (s)$ en cada _time step_].
 
-  Dado una experiencia $S_t, A_t, R_(t+1), S_(t+1) tilde.op pi$, la estimación $V(S_t)$ se actualiza de la siguiente forma:
+  Dada una experiencia $S_t, A_t, R_(t+1), S_(t+1) tilde.op pi$, la estimación $V(S_t)$ se actualiza de la siguiente forma:
 
   #grayed[$ V_(t+1) (S_t) = V_t (S_t) + alpha [R_(t+1) + gamma V_t (S_(t+1)) - V_t (S_t)] $]
 
@@ -334,7 +334,7 @@
 
   #v(.5cm)
 
-  #framed(title: "¿Cómo afecta el valor de $alpha$ a la convergencia de TD?")[
+  #framed(title: [¿Cómo afecta el valor de $alpha$ a la convergencia de TD?])[
     Si $alpha$ es más pequeño, TD converge más despacio, pero disminuye el error.
   ]
 
@@ -392,7 +392,7 @@
 
     #v(0.2cm)
 
-    _Because it also uses *one step of the actual return* $R_(t+1)$, things work out fine. That reward signal $R_(t+1)$ progressivaley "*injects reality*" into the estimates_.
+    _Because it also uses *one step of the actual return* $R_(t+1)$, things work out fine. That reward signal $R_(t+1)$ progressively "*injects reality*" into the estimates_.
 
   ]
 ]
@@ -425,7 +425,7 @@
   #framed(
     title: text(
       size: 19pt,
-    )[#emoji.books Sutton, R. S., & Barto, A. G. (2018). _Reinforcement learning: An introduction_. MIT press.],
+    )[#emoji.books Sutton, R. S., & Barto, A. G. (2018). _Reinforcement learning: An introduction_. MIT Press.],
   )[
 
     _If one had to identify one idea as central and novel to reinforcement learning, it would undoubtedly be *temporal-difference (TD) learning*._
@@ -563,7 +563,7 @@
       - Alternativa a MC en *problemas continuados*.
       - TD aprende transición-a-transición, por lo que no depende de acciones tomadas en el futuro.
         - MC requiere esperar al final del episodio.
-        - TD *sólo necesita el siguiente _timestep_*.
+        - TD *solo necesita el siguiente _timestep_*.
 
     ]
   ]
@@ -578,7 +578,7 @@
 
 #slide(title: [_n-step_ TD])[
 
-  Hemos visto la actualización de valores en TD(0) solamente considera el estado *inmediatamente posterior* (#stress[_1-step TD_]).
+  Hemos visto que la actualización de valores en TD(0) solamente considera el estado *inmediatamente posterior* (#stress[_1-step TD_]).
 
   #grayed[ $ G_(t:t+1) = R_(t+1) + gamma V_(t) (S_(t+1)) $ ]
 
@@ -603,7 +603,7 @@
 
   Lo que resulta en la siguiente actualización de los _state-values_:
 
-  #grayed[ $ V_(t+n)(S_t) = V_(t+n-1) (S_t) + alpha[G_(t:t+n) - V_(t+n-1) (S_t)], #h(1cm) 0=<t<T $ ]
+  #grayed[ $ V_(t+n)(S_t) = V_(t+n-1) (S_t) + alpha[G_(t:t+n) - V_(t+n-1) (S_t)], #h(1cm) 0<=t<T $ ]
 
   Es lo que denominamos #stress[_n-step_ TD].
 
@@ -739,7 +739,7 @@
 
     2. Al mismo tiempo, $pi$ se actualiza de forma *_greedy_* con respecto al $q_pi$ estimado.
 
-    Se emplea una política #stress[$epsilon$-_greedy_] o, en general $epsilon$-_soft_.
+    Se emplea una política #stress[$epsilon$-_greedy_] o, en general, $epsilon$-_soft_.
   ][
     #text(size: 15pt)[#align(center)[Diagrama _backup_ de SARSA]]
     #align(center)[#image("images/sarsa-back.png", width: 30%)]
@@ -800,9 +800,9 @@
 
 #slide(title: [_Q-learning_ _vs._ SARSA])[
 
-  #framed[_Q-learning_ no itera entre _policy evaluatoin_ y _policy improvement_.\ *Aprende los valores óptimos directamente.*]
+  #framed[_Q-learning_ no itera entre _policy evaluation_ y _policy improvement_.\ *Aprende los valores óptimos directamente.*]
 
-  #framed[Tiene un #stress[_TD-target_] *más estable* que SARSA, porque sólo cambia si cambia el valor máximo de $Q(S_(t+1), A_(t+1))$.]
+  #framed[Tiene un #stress[_TD-target_] *más estable* que SARSA, porque solo cambia si cambia el valor máximo de $Q(S_(t+1), A_(t+1))$.]
 
   #v(.4cm)
 
@@ -902,7 +902,7 @@
   - Regla de actualización de #stress[_Q-learning_] (control TD _off-policy_):
 
     #grayed[$
-        Q(S_t, A_t) <- Q(S_t, A_t) + alpha[R_t + gamma #h(0.1cm) "max"_a Q(S_(t+1), a) - Q(S_t, A_t)]
+        Q(S_t, A_t) <- Q(S_t, A_t) + alpha[R_(t+1) + gamma #h(0.1cm) "max"_a Q(S_(t+1), a) - Q(S_t, A_t)]
       $]
 
 ]
@@ -917,12 +917,12 @@
   #grayed[
     #set text(size: 22pt)
     $
-      Q(S_t, A_t) &<- Q(S_t, A_t) + alpha[R_(t+1) + gamma EE_pi [Q(S_(t+1), A_(t+1) | S_(t+1)] - Q(S_t, A_t)] \
+      Q(S_t, A_t) &<- Q(S_t, A_t) + alpha[R_(t+1) + gamma EE_pi [Q(S_(t+1), A_(t+1)) | S_(t+1)] - Q(S_t, A_t)] \
       &<- Q(S_t, A_t) + alpha[R_(t+1) + gamma colmath(sum_a pi(a|S_(t+1)) Q(S_(t+1), a)) - Q(S_t, A_t)]
     $
   ]
 
-  Sigue un esquema similar al de _Q-learning_ pero, en vez utilizar el valor máximo para $Q(S_(t+1), A_(t+1))$, utiliza el #stress[valor esperado].
+  Sigue un esquema similar al de _Q-learning_ pero, en vez de utilizar el valor máximo para $Q(S_(t+1), A_(t+1))$, utiliza el #stress[valor esperado].
 
   #framed[_Expected SARSA_ emplea la suma de todos los posibles valores $Q(S_(t+1), A_(t+1))$ ponderados por la probabilidad de elección de $A_(t+1)$.]
 
@@ -956,7 +956,7 @@
 
   *_Q-learning_*: #h(2.55cm) #text(fill:blue)[$R_(t+1) + gamma bold("max"_a Q(S_(t+1), a))$]
 
-  - Emplea como estimación el valor del par ($S_(t+1), A_(t+1))$ con valor máximo, que sería el elegido por la política objetivo.
+  - Emplea como estimación el valor del par $(S_(t+1), A_(t+1))$ con valor máximo, que sería el elegido por la política objetivo.
 
   *_Expected SARSA_*: #h(1cm) #text(fill:red)[$R_(t+1) + gamma bold(sum_a pi(a|S_(t+1)) Q(S_(t+1), a))$]
 
@@ -1088,14 +1088,14 @@
 
     #image("images/example-sarsa.png")
 
-    El método _1-step_ refuerza sólo la última acción de la secuencia de acciones que condujeron a $G$, mientras que el método _n-step_ ($n=10$) refuerza las últimas $n$ acciones de la secuencia, por lo que se aprende mucho más en un solo episodio.
+    El método _1-step_ refuerza solo la última acción de la secuencia de acciones que condujeron a $G$, mientras que el método _n-step_ ($n=10$) refuerza las últimas $n$ acciones de la secuencia, por lo que se aprende mucho más en un solo episodio.
   ]
 ]
 
 
 // *****************************************************************************
 
-#slide(title: [Métdos _n-step_ _off-policy_])[
+#slide(title: [Métodos _n-step_ _off-policy_])[
 
 
   En el caso de los métodos _n-step_ #stress[off-policy], tenemos:
@@ -1106,14 +1106,14 @@
 
   Donde el _importance sampling ratio_ es:
 
-  #grayed[$rho_(t:h) product^("min"(h,T-1))_(k=t) pi(A_k|S_k) / b(A_k|S_k)$]
+  #grayed[$rho_(t:h) = product^("min"(h,T-1))_(k=t) pi(A_k|S_k) / b(A_k|S_k)$]
 
 ]
 
 
 // *****************************************************************************
 
-#slide(title: [Métdos _n-step_ _off-policy_])[
+#slide(title: [Métodos _n-step_ _off-policy_])[
   #align(center)[#box(height: 420pt)[
       #image("images/n-step-off.png")
     ]]
@@ -1281,5 +1281,4 @@
   title: "Aprendizaje por refuerzo",
   subtitle: [Métodos basados en muestreo: _TD-learning_],
   authors: "Antonio Manjavacas",
-  info: "manjavacas@ugr.es",
 )

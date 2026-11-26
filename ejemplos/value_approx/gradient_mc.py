@@ -13,15 +13,15 @@ import gymnasium as gym
 
 class QNetwork(nn.Module):
     """
-    Red neuronal para aproximar la funcion Q(s,a)
+    Red neuronal para aproximar la función Q(s,a)
 
-    - Input: vector de observaciones y valor de accion (un unico valor)
-    - Ouput: valor estimado
+    - Input: vector de observaciones y valor de acción (un único valor)
+    - Output: valor estimado
     """
 
     def __init__(self, state_dim, action_dim=1, hidden_size=128):
         """
-        Inicializacion de la red neuronal
+        Inicialización de la red neuronal
         """
         super().__init__()
 
@@ -35,7 +35,7 @@ class QNetwork(nn.Module):
 
     def forward(self, state, action):
         """
-        Prediccion de Q-value a partir de estado y accion
+        Predicción del Q-value a partir del estado y la acción
         """
         x = torch.cat((state, action), dim=0)
 
@@ -51,7 +51,7 @@ class QNetwork(nn.Module):
 
 class GradientMC():
     """
-    Agente basado en Gradient Monte Carlo para estimacion de Q(s,a)
+    Agente basado en Gradient Monte Carlo para estimar Q(s,a)
     """
 
     def __init__(self, env_name, model_file=None):
@@ -71,7 +71,7 @@ class GradientMC():
 
     def fit(self, n_episodes, alpha=1e-4, gamma=.99, init_eps=.99, eps_decay=.01, min_eps=.1, save_filename='model.pth'):
         """
-        Estimacion de funcion Q(s,a) mediante Gradient Monte Carlo
+        Estimación de la función Q(s,a) mediante Gradient Monte Carlo
         """
         state_dim = self.env.observation_space.shape[0]
         self.q_net = QNetwork(state_dim).to(self.device)
@@ -138,7 +138,7 @@ class GradientMC():
 
     def _e_greedy(self, state, epsilon=.1):
         """
-        Seleccion de accion mediante e-greedy
+        Selección de acción mediante política e-greedy
         """
 
         if random.random() < epsilon:
@@ -158,7 +158,7 @@ class GradientMC():
 
     def act(self, state, deterministic=True, eps=.1):
         """
-        Seleccion de accion (determinista por defecto)
+        Selección de acción (determinista por defecto)
         """
         if deterministic:
             eps = 0
