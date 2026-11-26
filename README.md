@@ -5,7 +5,7 @@
 
 Temario sobre **aprendizaje por refuerzo** (_reinforcement learning_) en español.
 
-Elaborado por [Antonio Manjavacas](https://www.linkedin.com/in/antonio-manjavacas/) ([manjavacas@ugr.es](mailto:manjavacas@ugr.es)).
+Elaborado por [Antonio Manjavacas](https://www.linkedin.com/in/antonio-manjavacas/).
 
 ## 📃 Contenidos
 
