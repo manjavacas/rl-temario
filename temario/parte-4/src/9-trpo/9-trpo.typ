@@ -154,7 +154,7 @@
 
   #emoji.checkmark *Estabilidad*: evita que la política cambie demasiado en una sola actualización.
 
-  #emoji.checkmark *Garantías teóricas*: mejora monotónicas en el rendimiento de la política (cada actualización da lugar a una política que es al menos tan buena como la anterior).
+  #emoji.checkmark *Garantías teóricas*: en determinadas condiciones, mejora monotónica en el rendimiento de la política (cada actualización da lugar a una política que es al menos tan buena como la anterior).
 
 ]
 
